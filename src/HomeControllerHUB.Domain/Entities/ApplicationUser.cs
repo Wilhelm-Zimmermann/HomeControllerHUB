@@ -2,10 +2,10 @@
 using HomeControllerHUB.Shared.Normalize;
 namespace HomeControllerHUB.Domain.Entities;
 
-public class ApplicationUser : IdentityUser<Guid>
+public class ApplicationUser : IdentityUser
 {
     public Guid EstablishmentId { get; set; }
-    // public virtual Establishment? Establishment { get; set; }
+    public virtual Establishment? Establishment { get; set; }
     public string? Name { get; set; }
     [Normalized(nameof(Name))]
     public string? NormalizedName { get; set; }
@@ -21,6 +21,6 @@ public class ApplicationUser : IdentityUser<Guid>
     public DateTimeOffset? LastModified { get; set; }
     public Guid? LastModifiedBy { get; set; }
     public string LastModifiedByUserName { get; set; }
-    // public virtual IList<UserEstablishment> UserEstablishments { get; private set; } = new List<UserEstablishment>();
-    // public virtual IList<UserProfile>? UserProfiles { get; private set; }
+    public virtual IList<UserEstablishment> UserEstablishments { get; private set; } = new List<UserEstablishment>();
+    public virtual IList<UserProfile>? UserProfiles { get; private set; }
 }

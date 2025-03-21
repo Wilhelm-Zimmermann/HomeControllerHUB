@@ -6,10 +6,10 @@ public class Base
     public DateTime Created { get; set; }
     public DateTime Modified { get; set; }
 
-    public Base(Guid id, DateTime created, DateTime modified)
+    public Base()
     {
-        Id = id;
-        Created = created;
-        Modified = modified;
+        Id = Guid.NewGuid();
+        Created = DateTime.Now;
+        Modified = DateTime.Now;
     }
 }

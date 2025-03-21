@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\HomeControllerHUB.Api.props" />
+</Project>

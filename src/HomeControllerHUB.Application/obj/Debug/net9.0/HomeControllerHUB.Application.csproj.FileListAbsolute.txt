@@ -1,0 +1,12 @@
+C:\proj\personal\HomeControllerHUB\src\HomeControllerHUB.Application\bin\Debug\net9.0\HomeControllerHUB.Application.deps.json
+C:\proj\personal\HomeControllerHUB\src\HomeControllerHUB.Application\bin\Debug\net9.0\HomeControllerHUB.Application.dll
+C:\proj\personal\HomeControllerHUB\src\HomeControllerHUB.Application\bin\Debug\net9.0\HomeControllerHUB.Application.pdb
+C:\proj\personal\HomeControllerHUB\src\HomeControllerHUB.Application\obj\Debug\net9.0\HomeControllerHUB.Application.GeneratedMSBuildEditorConfig.editorconfig
+C:\proj\personal\HomeControllerHUB\src\HomeControllerHUB.Application\obj\Debug\net9.0\HomeControllerHUB.Application.AssemblyInfoInputs.cache
+C:\proj\personal\HomeControllerHUB\src\HomeControllerHUB.Application\obj\Debug\net9.0\HomeControllerHUB.Application.AssemblyInfo.cs
+C:\proj\personal\HomeControllerHUB\src\HomeControllerHUB.Application\obj\Debug\net9.0\HomeControllerHUB.Application.csproj.CoreCompileInputs.cache
+C:\proj\personal\HomeControllerHUB\src\HomeControllerHUB.Application\obj\Debug\net9.0\HomeControllerHUB.Application.sourcelink.json
+C:\proj\personal\HomeControllerHUB\src\HomeControllerHUB.Application\obj\Debug\net9.0\HomeControllerHUB.Application.dll
+C:\proj\personal\HomeControllerHUB\src\HomeControllerHUB.Application\obj\Debug\net9.0\refint\HomeControllerHUB.Application.dll
+C:\proj\personal\HomeControllerHUB\src\HomeControllerHUB.Application\obj\Debug\net9.0\HomeControllerHUB.Application.pdb
+C:\proj\personal\HomeControllerHUB\src\HomeControllerHUB.Application\obj\Debug\net9.0\ref\HomeControllerHUB.Application.dll
