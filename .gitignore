@@ -1,7 +1,6 @@
 # -----------------
 # Custom directories
 # ----------------- 
-src/
 .idea/
 .vs/
 NuGet.Config
