@@ -10,3 +10,11 @@ C:\proj\personal\HomeControllerHUB\src\HomeControllerHUB.Application\obj\Debug\n
 C:\proj\personal\HomeControllerHUB\src\HomeControllerHUB.Application\obj\Debug\net9.0\refint\HomeControllerHUB.Application.dll
 C:\proj\personal\HomeControllerHUB\src\HomeControllerHUB.Application\obj\Debug\net9.0\HomeControllerHUB.Application.pdb
 C:\proj\personal\HomeControllerHUB\src\HomeControllerHUB.Application\obj\Debug\net9.0\ref\HomeControllerHUB.Application.dll
+C:\proj\personal\HomeControllerHUB\src\HomeControllerHUB.Application\bin\Debug\net9.0\HomeControllerHUB.Domain.dll
+C:\proj\personal\HomeControllerHUB\src\HomeControllerHUB.Application\bin\Debug\net9.0\HomeControllerHUB.Infra.dll
+C:\proj\personal\HomeControllerHUB\src\HomeControllerHUB.Application\bin\Debug\net9.0\HomeControllerHUB.Shared.dll
+C:\proj\personal\HomeControllerHUB\src\HomeControllerHUB.Application\bin\Debug\net9.0\HomeControllerHUB.Infra.pdb
+C:\proj\personal\HomeControllerHUB\src\HomeControllerHUB.Application\bin\Debug\net9.0\HomeControllerHUB.Domain.pdb
+C:\proj\personal\HomeControllerHUB\src\HomeControllerHUB.Application\bin\Debug\net9.0\HomeControllerHUB.Shared.pdb
+C:\proj\personal\HomeControllerHUB\src\HomeControllerHUB.Application\obj\Debug\net9.0\HomeControllerHUB.Application.csproj.AssemblyReference.cache
+C:\proj\personal\HomeControllerHUB\src\HomeControllerHUB.Application\obj\Debug\net9.0\HomeCont.3D95C3FE.Up2Date

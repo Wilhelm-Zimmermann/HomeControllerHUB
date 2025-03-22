@@ -2,7 +2,7 @@
 using HomeControllerHUB.Shared.Normalize;
 namespace HomeControllerHUB.Domain.Entities;
 
-public class ApplicationUser : IdentityUser
+public class ApplicationUser : IdentityUser<Guid>
 {
     public Guid EstablishmentId { get; set; }
     public virtual Establishment? Establishment { get; set; }

@@ -711,6 +711,10 @@
       },
       "System.Threading.Channels/7.0.0": {},
       "HomeControllerHUB.Application/1.0.0": {
+        "dependencies": {
+          "HomeControllerHUB.Infra": "1.0.0",
+          "MediatR": "12.4.1"
+        },
         "runtime": {
           "HomeControllerHUB.Application.dll": {
             "assemblyVersion": "1.0.0.0",

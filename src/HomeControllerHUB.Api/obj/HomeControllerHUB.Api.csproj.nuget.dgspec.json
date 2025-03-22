@@ -138,7 +138,11 @@
         "frameworks": {
           "net9.0": {
             "targetAlias": "net9.0",
-            "projectReferences": {}
+            "projectReferences": {
+              "C:\\proj\\personal\\HomeControllerHUB\\src\\HomeControllerHUB.Infra\\HomeControllerHUB.Infra.csproj": {
+                "projectPath": "C:\\proj\\personal\\HomeControllerHUB\\src\\HomeControllerHUB.Infra\\HomeControllerHUB.Infra.csproj"
+              }
+            }
           }
         },
         "warningProperties": {
@@ -156,6 +160,12 @@
       "frameworks": {
         "net9.0": {
           "targetAlias": "net9.0",
+          "dependencies": {
+            "MediatR": {
+              "target": "Package",
+              "version": "[12.4.1, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",

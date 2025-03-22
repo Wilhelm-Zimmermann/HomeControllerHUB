@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("HomeControllerHUB.Domain")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d357300845f09d4cb61e84c8029aa1184b5fc765")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+66093f31f086419362e4259bd4514cf7a66e7882")]
 [assembly: System.Reflection.AssemblyProductAttribute("HomeControllerHUB.Domain")]
 [assembly: System.Reflection.AssemblyTitleAttribute("HomeControllerHUB.Domain")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

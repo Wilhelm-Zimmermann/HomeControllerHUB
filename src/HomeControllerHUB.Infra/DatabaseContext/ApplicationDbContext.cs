@@ -1,11 +1,12 @@
 ﻿using HomeControllerHUB.Domain;
 using HomeControllerHUB.Domain.Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace HomeControllerHUB.Infra.DatabaseContext;
 
-public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : IdentityDbContext<ApplicationUser>(options)
+public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>(options)
 {
     public DbSet<ApplicationUser> Users => Set<ApplicationUser>();
     public DbSet<ApplicationDomain> Domains => Set<ApplicationDomain>();
