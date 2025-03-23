@@ -2,19 +2,6 @@
 using HomeControllerHUB.Infra.DatabaseContext;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Authorization;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using Asp.Versioning;
 
 namespace HomeControllerHUB.Api;
@@ -45,6 +32,11 @@ public static class ConfigureServices
             options.AssumeDefaultVersionWhenUnspecified = true; //default => false;
             options.DefaultApiVersion = new ApiVersion(1, 0); //v1.0 == v1
             options.ReportApiVersions = true;
+            options.ApiVersionReader = new UrlSegmentApiVersionReader();
+        }).AddApiExplorer(options =>
+        {
+            options.GroupNameFormat = "'v'V"; // Format: "v1"
+            options.SubstituteApiVersionInUrl = true;
         });
     }
 }
