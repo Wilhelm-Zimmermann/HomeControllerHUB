@@ -16,11 +16,7 @@ public class ApplicationUser : IdentityUser<Guid>
     public string? Document { get; set; }
     public bool Enable { get; set; }
     public DateTimeOffset Created { get; set; }
-    public Guid? CreatedBy { get; set; }
-    public string CreatedByUserName { get; set; }
-    public DateTimeOffset? LastModified { get; set; }
-    public Guid? LastModifiedBy { get; set; }
-    public string LastModifiedByUserName { get; set; }
+    public DateTimeOffset Modified { get; set; }
     public virtual IList<UserEstablishment> UserEstablishments { get; private set; } = new List<UserEstablishment>();
     public virtual IList<UserProfile>? UserProfiles { get; private set; }
 }

@@ -1,11 +1,25 @@
+using System.Text.Json.Serialization;
 using HomeControllerHUB.Api;
+using HomeControllerHUB.Application;
+using HomeControllerHUB.Infra;
+using HomeControllerHUB.Infra.Settings;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+});
 builder.Services.AddOpenApi();
+builder.Services.AddInfra(builder.Configuration);
+builder.Services.AddApplicationServices();
 builder.Services.ConfigureDatabase(builder.Configuration);
+builder.Services.AddSingleton<ApplicationSettings>(sp =>
+{
+    var settings = new ApplicationSettings();
+    builder.Configuration.GetSection("ApplicationSettings").Bind(settings);
+    return settings;
+});
 const string allowedOrigins = "AllowAllOrigins";
 
 builder.Services.AddCors(options =>
@@ -20,16 +34,15 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+app.IntializeDatabase();
+app.UseRouting();
+app.UseCors(allowedOrigins);
+app.UseAuthentication();
+app.MapControllers();
+
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
-
-app.UseRouting();
-app.UseCors(allowedOrigins);
-app.UseAuthentication();
-app.UseAuthorization();
-app.MapControllers();
 
 app.Run();

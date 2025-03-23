@@ -14,6 +14,7 @@ public class GenericConfiguration : IEntityTypeConfiguration<Generic>
 
         builder.Property(x => x.Code)
             .IsRequired()
+            .ValueGeneratedOnAdd()
             .HasColumnType("varchar(50)")
             .HasDefaultValueSql("nextval('GenericCodeSequence')");
 

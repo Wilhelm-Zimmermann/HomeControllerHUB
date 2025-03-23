@@ -9,7 +9,7 @@ public class Base
     public Base()
     {
         Id = Guid.NewGuid();
-        Created = DateTime.Now;
-        Modified = DateTime.Now;
+        Created = DateTime.UtcNow;
+        Modified = DateTime.UtcNow;
     }
 }
