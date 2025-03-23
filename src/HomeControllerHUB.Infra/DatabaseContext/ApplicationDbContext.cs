@@ -1,5 +1,6 @@
 ﻿using HomeControllerHUB.Domain;
 using HomeControllerHUB.Domain.Entities;
+using HomeControllerHUB.Domain.Entities.Configuration;
 using HomeControllerHUB.Infra.Interceptors;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -33,7 +34,13 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityR
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-        modelBuilder.ApplyConfigurationsFromAssembly(typeof(ConfigureServices).Assembly);
+        modelBuilder.ApplyConfiguration(new ApplicationUserConfiguration());
+        modelBuilder.ApplyConfiguration(new ApplicationDomainConfiguration());
+        modelBuilder.ApplyConfiguration(new ApplicationMenuConfiguration());
+        modelBuilder.ApplyConfiguration(new EstablishmentConfiguration());
+        modelBuilder.ApplyConfiguration(new GenericConfiguration());
+        modelBuilder.ApplyConfiguration(new PrivilegeConfiguration());
+        modelBuilder.ApplyConfiguration(new ProfileConfiguration());
     }
     
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

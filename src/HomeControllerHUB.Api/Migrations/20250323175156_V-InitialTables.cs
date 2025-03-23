@@ -12,6 +12,11 @@ namespace HomeControllerHUB.Api.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.Sql("CREATE SEQUENCE EstablishmentCodeSequence START 1 INCREMENT 1;");
+            migrationBuilder.Sql("CREATE SEQUENCE CurrencyCodeSequence START 1 INCREMENT 1;");
+            migrationBuilder.Sql("CREATE SEQUENCE GenericCodeSequence START 1 INCREMENT 1;");
+            migrationBuilder.Sql("CREATE SEQUENCE ApplicationUserCodeSequence START 1 INCREMENT 1;");
+            
             migrationBuilder.CreateTable(
                 name: "AspNetRoles",
                 columns: table => new
@@ -31,9 +36,9 @@ namespace HomeControllerHUB.Api.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: false),
+                    Name = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
                     NormalizedName = table.Column<string>(type: "text", nullable: true),
-                    Description = table.Column<string>(type: "text", nullable: true),
+                    Description = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
                     NormalizedDescription = table.Column<string>(type: "text", nullable: true),
                     Enable = table.Column<bool>(type: "boolean", nullable: false)
                 },
@@ -47,12 +52,12 @@ namespace HomeControllerHUB.Api.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Code = table.Column<string>(type: "text", nullable: true),
-                    Name = table.Column<string>(type: "text", nullable: true),
-                    NormalizedName = table.Column<string>(type: "text", nullable: true),
-                    SiteName = table.Column<string>(type: "text", nullable: true),
-                    NormalizedSiteName = table.Column<string>(type: "text", nullable: true),
-                    Document = table.Column<string>(type: "text", nullable: false),
+                    Code = table.Column<string>(type: "varchar(50)", nullable: false, defaultValueSql: "nextval('EstablishmentCodeSequence')"),
+                    Name = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
+                    NormalizedName = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
+                    SiteName = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
+                    NormalizedSiteName = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
+                    Document = table.Column<string>(type: "character varying(14)", maxLength: 14, nullable: false),
                     Enable = table.Column<bool>(type: "boolean", nullable: false),
                     IsMaster = table.Column<bool>(type: "boolean", nullable: false),
                     Created = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
@@ -68,11 +73,11 @@ namespace HomeControllerHUB.Api.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Identifier = table.Column<string>(type: "text", nullable: false),
-                    Code = table.Column<string>(type: "text", nullable: true),
-                    Value = table.Column<string>(type: "text", nullable: true),
-                    NormalizedValue = table.Column<string>(type: "text", nullable: true),
-                    DisplayOrder = table.Column<int>(type: "integer", nullable: true),
+                    Identifier = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Code = table.Column<string>(type: "varchar(50)", nullable: false, defaultValueSql: "nextval('GenericCodeSequence')"),
+                    Value = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
+                    NormalizedValue = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
+                    DisplayOrder = table.Column<int>(type: "integer", nullable: false),
                     Enable = table.Column<bool>(type: "boolean", nullable: false),
                     Created = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     Modified = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
@@ -110,13 +115,13 @@ namespace HomeControllerHUB.Api.Migrations
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     ParentId = table.Column<Guid>(type: "uuid", nullable: true),
                     DomainId = table.Column<Guid>(type: "uuid", nullable: true),
-                    Name = table.Column<string>(type: "text", nullable: true),
+                    Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     NormalizedName = table.Column<string>(type: "text", nullable: false),
-                    Description = table.Column<string>(type: "text", nullable: true),
+                    Description = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
                     NormalizedDescription = table.Column<string>(type: "text", nullable: true),
-                    IconClass = table.Column<string>(type: "text", nullable: true),
-                    Link = table.Column<string>(type: "text", nullable: true),
-                    Target = table.Column<string>(type: "text", nullable: true),
+                    IconClass = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    Link = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
+                    Target = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
                     Order = table.Column<int>(type: "integer", nullable: false),
                     Enable = table.Column<bool>(type: "boolean", nullable: false)
                 },
@@ -141,20 +146,20 @@ namespace HomeControllerHUB.Api.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     EstablishmentId = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: true),
-                    NormalizedName = table.Column<string>(type: "text", nullable: true),
+                    Name = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
+                    NormalizedName = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
                     NormalizedUserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
-                    Code = table.Column<string>(type: "text", nullable: true),
-                    Login = table.Column<string>(type: "text", nullable: true),
-                    Document = table.Column<string>(type: "text", nullable: true),
+                    Code = table.Column<string>(type: "varchar(50)", nullable: false, defaultValueSql: "nextval('ApplicationUserCodeSequence')"),
+                    Login = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Document = table.Column<string>(type: "character varying(11)", maxLength: 11, nullable: true),
                     Enable = table.Column<bool>(type: "boolean", nullable: false),
                     Created = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     Modified = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     UserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
-                    Email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    Email = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
                     NormalizedEmail = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     EmailConfirmed = table.Column<bool>(type: "boolean", nullable: false),
-                    PasswordHash = table.Column<string>(type: "text", nullable: true),
+                    PasswordHash = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
                     SecurityStamp = table.Column<string>(type: "text", nullable: true),
                     ConcurrencyStamp = table.Column<string>(type: "text", nullable: true),
                     PhoneNumber = table.Column<string>(type: "text", nullable: true),
@@ -180,11 +185,11 @@ namespace HomeControllerHUB.Api.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    NormalizedName = table.Column<string>(type: "text", nullable: true),
-                    Description = table.Column<string>(type: "text", nullable: true),
-                    NormalizedDescription = table.Column<string>(type: "text", nullable: true),
-                    Actions = table.Column<string>(type: "text", nullable: true),
+                    Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    NormalizedName = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
+                    Description = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    NormalizedDescription = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
+                    Actions = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     Enable = table.Column<bool>(type: "boolean", nullable: false),
                     DomainId = table.Column<Guid>(type: "uuid", nullable: false),
                     EstablishmentId = table.Column<Guid>(type: "uuid", nullable: false),
@@ -436,15 +441,41 @@ namespace HomeControllerHUB.Api.Migrations
                 column: "EstablishmentId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_AspNetUsers_Login",
+                table: "AspNetUsers",
+                column: "Login",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "UserNameIndex",
                 table: "AspNetUsers",
                 column: "NormalizedUserName",
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_Domains_NormalizedDescription",
+                table: "Domains",
+                column: "NormalizedDescription");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Domains_NormalizedName",
+                table: "Domains",
+                column: "NormalizedName");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Menus_DomainId",
                 table: "Menus",
                 column: "DomainId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Menus_NormalizedDescription",
+                table: "Menus",
+                column: "NormalizedDescription");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Menus_NormalizedName",
+                table: "Menus",
+                column: "NormalizedName");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Menus_ParentId",
@@ -547,6 +578,11 @@ namespace HomeControllerHUB.Api.Migrations
 
             migrationBuilder.DropTable(
                 name: "Establishments");
+            
+            migrationBuilder.Sql("DROP SEQUENCE IF EXISTS EstablishmentCodeSequence;");
+            migrationBuilder.Sql("DROP SEQUENCE IF EXISTS CurrencyCodeSequence;");
+            migrationBuilder.Sql("DROP SEQUENCE IF EXISTS GenericCodeSequence;");
+            migrationBuilder.Sql("DROP SEQUENCE IF EXISTS ApplicationUserCodeSequence;");
         }
     }
 }

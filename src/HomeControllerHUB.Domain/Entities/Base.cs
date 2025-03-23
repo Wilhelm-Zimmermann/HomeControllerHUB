@@ -1,6 +1,6 @@
 ﻿namespace HomeControllerHUB.Domain.Entities;
 
-public class Base
+public class Base : IBaseEntity
 {
     public Guid Id { get; set; }
     public DateTime Created { get; set; }

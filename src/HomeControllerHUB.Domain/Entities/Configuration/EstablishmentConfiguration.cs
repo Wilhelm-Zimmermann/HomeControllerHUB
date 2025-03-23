@@ -10,9 +10,9 @@ public class EstablishmentConfiguration : IEntityTypeConfiguration<Establishment
     {
         builder.Property(e => e.Code)
             .IsRequired()
-            .ValueGeneratedOnAdd()
             .HasColumnType("varchar(50)")
-            .HasDefaultValueSql("nextval('EstablishmentCodeSequence')");
+            .HasDefaultValueSql("nextval('EstablishmentCodeSequence')")
+            .ValueGeneratedOnAdd();
 
         builder.Property(x => x.Name)
             .IsRequired()

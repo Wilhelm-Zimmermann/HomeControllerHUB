@@ -31,7 +31,7 @@ public class NormalizedInterceptor : SaveChangesInterceptor
     {
         if (context == null) return;
 
-        foreach (var entry in context.ChangeTracker.Entries<Base>())
+        foreach (var entry in context.ChangeTracker.Entries<IBaseEntity>())
         {
             var type = entry.Entity.GetType();
             var properties = type.GetProperties();

@@ -10,7 +10,6 @@ public class ApplicationUserConfiguration : IEntityTypeConfiguration<Application
     {
         builder.Property(p => p.Code)
             .IsRequired()
-            .ValueGeneratedOnAdd()
             .HasColumnType("varchar(50)")
             .HasDefaultValueSql("nextval('ApplicationUserCodeSequence')");
 
