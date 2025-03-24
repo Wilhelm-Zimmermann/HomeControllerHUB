@@ -28,14 +28,13 @@ public static class ConfigureServices
     {
         services.AddApiVersioning(options =>
         {
-            //url segment => {version}
-            options.AssumeDefaultVersionWhenUnspecified = true; //default => false;
-            options.DefaultApiVersion = new ApiVersion(1, 0); //v1.0 == v1
+            options.AssumeDefaultVersionWhenUnspecified = true;
+            options.DefaultApiVersion = new ApiVersion(1, 0);
             options.ReportApiVersions = true;
             options.ApiVersionReader = new UrlSegmentApiVersionReader();
         }).AddApiExplorer(options =>
         {
-            options.GroupNameFormat = "'v'V"; // Format: "v1"
+            options.GroupNameFormat = "'v'V";
             options.SubstituteApiVersionInUrl = true;
         });
     }

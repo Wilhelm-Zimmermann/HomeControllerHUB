@@ -2,6 +2,7 @@ using System.Text.Json.Serialization;
 using Asp.Versioning;
 using Asp.Versioning.ApiExplorer;
 using HomeControllerHUB.Api;
+using HomeControllerHUB.Api.Middlewares;
 using HomeControllerHUB.Application;
 using HomeControllerHUB.Infra;
 using HomeControllerHUB.Infra.Settings;
@@ -47,6 +48,7 @@ if (app.Environment.IsDevelopment())
     });
 }
 
+app.UseMiddleware<ErrorHandlingMiddleware>();
 app.IntializeDatabase();
 app.UseCors(allowedOrigins);
 app.UseAuthentication();

@@ -36,11 +36,11 @@ public static class ConfigureServices
         services.AddTransient<IDataInitializer, EstablishmentDataInitializer>();
         services.AddTransient<IDataInitializer, ProfileDataInitializer>();
         services.AddTransient<IDataInitializer, UserDataInitializer>();
-        // services.AddTransient<IDataInitializer, DomainDataInitializer>();
-        // services.AddTransient<IDataInitializer, PrivilegeDataInitializer>();
-        // services.AddTransient<IDataInitializer, MenuDataInitializer>();
+        services.AddTransient<IDataInitializer, DomainDataInitializer>();
+        services.AddTransient<IDataInitializer, PrivilegeDataInitializer>();
         // services.AddTransient<IDataInitializer, ProfilePrivilegeDataInitializer>();
         // services.AddTransient<IDataInitializer, GenericDataInitializer>();
+        // services.AddTransient<IDataInitializer, MenuDataInitializer>();
 
         return services;
     }
