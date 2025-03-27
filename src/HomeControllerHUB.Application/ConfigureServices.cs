@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using FluentValidation.AspNetCore;
 using HomeControllerHUB.Domain.Entities;
 using HomeControllerHUB.Infra.Interceptors;
 using MediatR;
@@ -16,6 +17,8 @@ public static class ConfigureServices
         });
         
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(AuthorizationBehaviour<,>));
+        
+        services.AddFluentValidationAutoValidation();
         return services;
     }
 }

@@ -11,10 +11,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="FluentValidation" Version="11.11.0" />
+    <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
     <PackageReference Include="MediatR" Version="12.4.1" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\HomeControllerHUB.Globalization\HomeControllerHUB.Globalization.csproj" />
     <ProjectReference Include="..\HomeControllerHUB.Infra\HomeControllerHUB.Infra.csproj" />
   </ItemGroup>
 

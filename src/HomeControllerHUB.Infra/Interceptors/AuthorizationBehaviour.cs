@@ -22,7 +22,7 @@ public class AuthorizationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRe
     {
         var authorizeAttributes = request.GetType().GetCustomAttributes(typeof(AuthorizeAttribute), false) as AuthorizeAttribute[];
         
-        if(authorizeAttributes.Length == 0) throw new AppError(401, "Unauthorized");
+        if(authorizeAttributes.Length == 0) return await next();;
 
         foreach (var attribute in authorizeAttributes)
         {

@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeControllerHUB.Infra", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeControllerHUB.Shared", "src\HomeControllerHUB.Shared\HomeControllerHUB.Shared.csproj", "{D4EB31A5-AC00-4139-B211-C5C189BF881E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeControllerHUB.Globalization", "HomeControllerHUB.Globalization\HomeControllerHUB.Globalization.csproj", "{929A4688-7598-42EE-94E4-DF9ED0ACB3FE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -85,6 +87,18 @@ Global
 		{D4EB31A5-AC00-4139-B211-C5C189BF881E}.Release|x64.Build.0 = Release|Any CPU
 		{D4EB31A5-AC00-4139-B211-C5C189BF881E}.Release|x86.ActiveCfg = Release|Any CPU
 		{D4EB31A5-AC00-4139-B211-C5C189BF881E}.Release|x86.Build.0 = Release|Any CPU
+		{929A4688-7598-42EE-94E4-DF9ED0ACB3FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{929A4688-7598-42EE-94E4-DF9ED0ACB3FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{929A4688-7598-42EE-94E4-DF9ED0ACB3FE}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{929A4688-7598-42EE-94E4-DF9ED0ACB3FE}.Debug|x64.Build.0 = Debug|Any CPU
+		{929A4688-7598-42EE-94E4-DF9ED0ACB3FE}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{929A4688-7598-42EE-94E4-DF9ED0ACB3FE}.Debug|x86.Build.0 = Debug|Any CPU
+		{929A4688-7598-42EE-94E4-DF9ED0ACB3FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{929A4688-7598-42EE-94E4-DF9ED0ACB3FE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{929A4688-7598-42EE-94E4-DF9ED0ACB3FE}.Release|x64.ActiveCfg = Release|Any CPU
+		{929A4688-7598-42EE-94E4-DF9ED0ACB3FE}.Release|x64.Build.0 = Release|Any CPU
+		{929A4688-7598-42EE-94E4-DF9ED0ACB3FE}.Release|x86.ActiveCfg = Release|Any CPU
+		{929A4688-7598-42EE-94E4-DF9ED0ACB3FE}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -95,5 +109,6 @@ Global
 		{A18F96AE-4F04-4B89-A071-29ABACE4D4F4} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
 		{A910125D-BF1F-46B3-88BA-F036E7C9E4CD} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
 		{D4EB31A5-AC00-4139-B211-C5C189BF881E} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
+		{929A4688-7598-42EE-94E4-DF9ED0ACB3FE} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
 	EndGlobalSection
 EndGlobal

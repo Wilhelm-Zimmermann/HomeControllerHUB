@@ -1,9 +1,11 @@
 using System.Text.Json.Serialization;
 using Asp.Versioning;
 using Asp.Versioning.ApiExplorer;
+using FluentValidation.AspNetCore;
 using HomeControllerHUB.Api;
 using HomeControllerHUB.Api.Middlewares;
 using HomeControllerHUB.Application;
+using HomeControllerHUB.Globalization;
 using HomeControllerHUB.Infra;
 using HomeControllerHUB.Infra.Settings;
 
@@ -13,9 +15,12 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 {
     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
 });
+
+builder.Services.AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Program>());
 builder.Services.AddInfra(builder.Configuration);
 builder.Services.AddApplicationServices();
 builder.Services.ConfigureDatabase(builder.Configuration);
+builder.Services.AddGlobalizationServices();
 
 builder.Services.AddSingleton<ApplicationSettings>(sp =>
 {
@@ -38,6 +43,7 @@ builder.Services.AddCors(options =>
 });
 var app = builder.Build();
 
+app.UseGlobalization();
 app.UseRouting();
 if (app.Environment.IsDevelopment())
 {

@@ -28,6 +28,8 @@ public static class ConfigureServices
         services.AddTransient<ICurrentUserService, CurrentUserService>();
         services.AddJwtAuthentication();
         services.AddInitializers();
+        
+        services.AddLocalization(options => options.ResourcesPath = "Resources");
         return services;
     }
     
