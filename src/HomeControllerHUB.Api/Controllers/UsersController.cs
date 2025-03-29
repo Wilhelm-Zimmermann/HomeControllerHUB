@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace HomeControllerHUB.Api.Controllers;
 
 [ApiVersion(ApiConstants.ApiVersion1)]
-public class UserController : ApiControllerBase
+public class UsersController : ApiControllerBase
 {
     [HttpPost]
     [ProducesResponseType(typeof(BaseEntityResponse), StatusCodes.Status201Created)]
@@ -36,7 +36,7 @@ public class UserController : ApiControllerBase
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
     [AllowAnonymous]
-    public async Task<ActionResult<AccessTokenEntry>> Token([Required, FromBody] AccessTokenUserCommand command, CancellationToken cancellationToken)
+    public async Task<ActionResult<AccessTokenEntry>> Token([Required, FromForm] AccessTokenUserCommand command, CancellationToken cancellationToken)
     {
         return await Mediator.Send(command, cancellationToken);
     }

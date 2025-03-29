@@ -17,7 +17,7 @@ public static class ConfigureServices
         });
         
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(AuthorizationBehaviour<,>));
-        
+        services.AddAutoMapper(typeof(Domain.ConfigureServices).Assembly);
         services.AddFluentValidationAutoValidation();
         return services;
     }

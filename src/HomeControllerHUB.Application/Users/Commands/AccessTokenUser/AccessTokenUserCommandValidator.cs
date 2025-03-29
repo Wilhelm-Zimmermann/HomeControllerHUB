@@ -6,7 +6,7 @@ public class AccessTokenUserCommandValidator : AbstractValidator<AccessTokenUser
 {
     public AccessTokenUserCommandValidator()
     {
-        RuleFor(x => x.Login)
+        RuleFor(x => x.Username)
             .NotEmpty();
         
         RuleFor(x => x.Password)

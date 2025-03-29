@@ -1,56 +1,63 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 using System.Security.Claims;
 using HomeControllerHUB.Domain.Interfaces;
 using Microsoft.AspNetCore.Http;
 
-namespace HomeControllerHUB.Infra.Services;
-
-public class CurrentUserService : ICurrentUserService
+namespace HomeControllerHUB.Infra.Services
 {
-    private readonly IHttpContextAccessor _httpContextAccessor;
+    public class CurrentUserService : ICurrentUserService
+    {
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public CurrentUserService(IHttpContextAccessor httpContextAccessor)
-    {
-        _httpContextAccessor = httpContextAccessor;
-    }
-    
-    public Guid? UserId
-    {
-        get
+        public CurrentUserService(IHttpContextAccessor httpContextAccessor)
         {
-            Guid? userId = null;
-            var id = _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (!string.IsNullOrEmpty(id))
+            _httpContextAccessor = httpContextAccessor;
+        }
+        
+        public Guid? UserId
+        {
+            get
             {
-                userId = new Guid(id);
+                Guid? userId = null;
+                var id = _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier) 
+                      ?? _httpContextAccessor.HttpContext?.User?.FindFirstValue("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier");
+                
+                if (!string.IsNullOrEmpty(id))
+                {
+                    userId = new Guid(id);
+                }
+                return userId;
             }
-            return userId;
         }
-
-    }
-    public string Login
-    {
-        get
+        
+        public string Login
         {
-            var login = _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.Name);
-            if (string.IsNullOrEmpty(login))
+            get
             {
-                login = Assembly.GetEntryAssembly().GetName().Name;
+                var login = _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.Name)
+                         ?? _httpContextAccessor.HttpContext?.User?.FindFirstValue("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name");
+                
+                if (string.IsNullOrEmpty(login))
+                {
+                    login = Assembly.GetEntryAssembly()?.GetName().Name ?? "Unknown";
+                }
+                return login;
             }
-            return login;
         }
 
-    }
-
-    public Guid EstablishmentId
-    {
-        get
+        public Guid EstablishmentId
         {
-            var id = _httpContextAccessor.HttpContext?.User?.FindFirstValue("EstablishmentId");
-            Guid EstablishmentId = new Guid(id!);
-
-            return EstablishmentId;
+            get
+            {
+                var id = _httpContextAccessor.HttpContext?.User?.FindFirstValue("EstablishmentId");
+                if (string.IsNullOrEmpty(id))
+                {
+                    throw new InvalidOperationException("EstablishmentId claim not found");
+                }
+                
+                return new Guid(id);
+            }
         }
-
     }
 }

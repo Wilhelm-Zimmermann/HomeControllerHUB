@@ -11,7 +11,7 @@ namespace HomeControllerHUB.Application.Users.Commands.AccessTokenUser;
 
 public record AccessTokenUserCommand : IRequest<AccessTokenEntry>
 {
-    public string Login { get; init; }
+    public string Username { get; init; }
     public string Password { get; init; }
 }
 
@@ -34,14 +34,14 @@ public class AccessTokenUserCommandHandler : IRequestHandler<AccessTokenUserComm
     {
         var user = await _userManager.Users
             .Include(x => x.Establishment)
-            .FirstOrDefaultAsync(u => u.Login == request.Login, cancellationToken);
+            .FirstOrDefaultAsync(u => u.Login == request.Username, cancellationToken);
 
         if (user is not null && user.EmailConfirmed && await _userManager.CheckPasswordAsync(user, request.Password))
         {
             Establishment establishment = user.Establishment;
 
             var jwt = await _jwtService.GenerateAsync(user, establishment, null);
-            await _userManager.SetAuthenticationTokenAsync(user, _applicationSetting.JwtSettings.AppName, _applicationSetting.JwtSettings.RefreshTokenName, jwt.RefreshToken);
+            // await _userManager.SetAuthenticationTokenAsync(user, _applicationSetting.JwtSettings.AppName, _applicationSetting.JwtSettings.RefreshTokenName, jwt.RefreshToken);
 
             return jwt;
         }

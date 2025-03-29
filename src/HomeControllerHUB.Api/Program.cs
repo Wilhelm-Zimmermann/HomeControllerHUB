@@ -3,11 +3,13 @@ using Asp.Versioning;
 using Asp.Versioning.ApiExplorer;
 using FluentValidation.AspNetCore;
 using HomeControllerHUB.Api;
+using HomeControllerHUB.Api.Controllers;
 using HomeControllerHUB.Api.Middlewares;
 using HomeControllerHUB.Application;
 using HomeControllerHUB.Globalization;
 using HomeControllerHUB.Infra;
 using HomeControllerHUB.Infra.Settings;
+using HomeControllerHUB.Infra.Swagger;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,10 +19,10 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 });
 
 builder.Services.AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Program>());
-builder.Services.AddInfra(builder.Configuration);
 builder.Services.AddApplicationServices();
 builder.Services.ConfigureDatabase(builder.Configuration);
 builder.Services.AddGlobalizationServices();
+builder.Services.AddInfra(builder.Configuration);
 
 builder.Services.AddSingleton<ApplicationSettings>(sp =>
 {
@@ -41,23 +43,22 @@ builder.Services.AddCors(options =>
             .AllowAnyHeader();
     });
 });
+
 var app = builder.Build();
 
 app.UseGlobalization();
 app.UseRouting();
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
-    app.UseSwaggerUI(options =>
-    {
-        options.SwaggerEndpoint("/openapi/v1.json", "v1");
-    });
+    app.UseSwaggerAndUI(ApiVersionListConstants.ApiVersions);
+
 }
 
 app.UseMiddleware<ErrorHandlingMiddleware>();
 app.IntializeDatabase();
 app.UseCors(allowedOrigins);
 app.UseAuthentication();
+app.UseAuthorization();
 app.MapControllers();
 
 app.Run();

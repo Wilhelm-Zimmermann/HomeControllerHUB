@@ -5,6 +5,7 @@ using HomeControllerHUB.Infra.DataInitializers;
 using HomeControllerHUB.Infra.Interceptors;
 using HomeControllerHUB.Infra.Services;
 using HomeControllerHUB.Infra.Settings;
+using HomeControllerHUB.Infra.Swagger;
 using HomeControllerHUB.Shared.Utils;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
@@ -19,16 +20,19 @@ public static class ConfigureServices
     public static IServiceCollection AddInfra(this IServiceCollection services,
         IConfiguration configuration)
     {
+        services.AddHttpContextAccessor();
         services.AddScoped<BaseEntityInterceptor>();
         services.AddScoped<NormalizedInterceptor>();
         services.AddScoped<IJwtTokenService, JwtTokenService>();
         services.AddScoped<ApiUserManager>();
         services.AddScoped<ApplicationSettings>();
         services.AddScoped<SignInManager<ApplicationUser>>();
-        services.AddTransient<ICurrentUserService, CurrentUserService>();
-        services.AddJwtAuthentication();
+        services.AddScoped<ICurrentUserService, CurrentUserService>();
         services.AddInitializers();
         
+        var appSettings = configuration.GetSection(nameof(ApplicationSettings)).Get<ApplicationSettings>();
+        
+        services.AddSwagger(new List<string>() {"1"}, "OAuth2", appSettings);
         services.AddLocalization(options => options.ResourcesPath = "Resources");
         return services;
     }

@@ -12,7 +12,7 @@ public static class OAuth2Constants
     public const string TokenType = "token_type";
     public const string ExpiresIn = "expires_in";
     public const string GrantType = "grant_type";
-    public const string Username = "username";
+    public const string Login = "login";
     public const string Password = "password";
     public const string Scope = "scope";
 

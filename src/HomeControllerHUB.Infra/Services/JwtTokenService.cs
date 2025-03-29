@@ -21,17 +21,13 @@ public class JwtTokenService : IJwtTokenService
         _signInManager = signInManager;
     }
 
-    public async Task<AccessTokenEntry> GenerateAsync(ApplicationUser user, Establishment? establishment,
-        string? refreshToken)
+    public async Task<AccessTokenEntry> GenerateAsync(ApplicationUser user, Establishment? establishment, string? refreshToken)
     {
-        
         var secretKey = Encoding.UTF8.GetBytes(_siteSetting.JwtSettings.SecretKey); // longer that 16 character
-        var signingCredentials =
-            new SigningCredentials(new SymmetricSecurityKey(secretKey), SecurityAlgorithms.HmacSha256Signature);
+        var signingCredentials = new SigningCredentials(new SymmetricSecurityKey(secretKey), SecurityAlgorithms.HmacSha256Signature);
 
         var encryptionkey = Encoding.UTF8.GetBytes(_siteSetting.JwtSettings.EncryptKey); //must be 16 character
-        var encryptingCredentials = new EncryptingCredentials(new SymmetricSecurityKey(encryptionkey),
-            SecurityAlgorithms.Aes128KW, SecurityAlgorithms.Aes128CbcHmacSha256);
+        var encryptingCredentials = new EncryptingCredentials(new SymmetricSecurityKey(encryptionkey), SecurityAlgorithms.Aes128KW, SecurityAlgorithms.Aes128CbcHmacSha256);
 
         var claims = await GetClaimsAsync(user, establishment);
 
@@ -50,8 +46,21 @@ public class JwtTokenService : IJwtTokenService
         var tokenHandler = new JwtSecurityTokenHandler();
 
         var securityToken = tokenHandler.CreateJwtSecurityToken(descriptor);
+        
+        // new 
+        var key = new SymmetricSecurityKey(
+            Encoding.UTF8.GetBytes(_siteSetting.JwtSettings.SecretKey));
+        
+        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-        return new AccessTokenEntry(securityToken, establishment, refreshToken, establishment.Code);
+        var token = new JwtSecurityToken(
+            issuer: _siteSetting.JwtSettings.Issuer,
+            audience: _siteSetting.JwtSettings.Audience,
+            claims: claims,
+            expires: DateTime.Now.AddHours(1),
+            signingCredentials: creds);
+
+        return new AccessTokenEntry(token, establishment, refreshToken, establishment.Code);
     }
 
     private async Task<IEnumerable<Claim>> GetClaimsAsync(ApplicationUser user, Establishment? establishment)
