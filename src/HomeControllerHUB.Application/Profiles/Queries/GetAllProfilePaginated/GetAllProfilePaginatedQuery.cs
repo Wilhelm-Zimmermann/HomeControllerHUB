@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HomeControllerHUB.Application.Profiles.Queries.GetAllProfilePaginated;
 
-[Authorize(Domain = DomainNames.Profile, Action = SecurityActionType.Read)]
+// [Authorize(Domain = DomainNames.Profile, Action = SecurityActionType.Read)]
 public record GetAllProfilePaginatedQuery : PaginatedRequest<GetProfilePaginatedDto>
 {
     

@@ -8,8 +8,6 @@ using Asp.Versioning;
 using HomeControllerHUB.Infra.Settings;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.JsonWebTokens;
 
 namespace HomeControllerHUB.Api;
 
@@ -19,21 +17,22 @@ public static class ConfigureServices
     {
         services.AddDbContext<ApplicationDbContext>(options =>
         {
-            options.UseNpgsql(configuration.GetConnectionString("Npgsql"), x => x.MigrationsAssembly("HomeControllerHUB.Api"));
+            options.UseNpgsql(configuration.GetConnectionString("Npgsql"),
+                x => x.MigrationsAssembly("HomeControllerHUB.Api"));
             options.EnableSensitiveDataLogging();
         });
 
         services.AddIdentity<ApplicationUser, IdentityRole<Guid>>()
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
-        
+
         var appSettings = configuration.GetSection(nameof(ApplicationSettings)).Get<ApplicationSettings>();
 
         services.AddJwtAuthentication(appSettings?.JwtSettings);
         services.AddCustomApiVersioning();
         return services;
     }
-    
+
     public static void AddJwtAuthentication(this IServiceCollection services, JwtSettings? jwtSettings)
     {
         services.AddAuthentication(options =>
@@ -74,7 +73,7 @@ public static class ConfigureServices
             };
         });
     }
-    
+
     public static void AddCustomApiVersioning(this IServiceCollection services)
     {
         services.AddApiVersioning(options =>

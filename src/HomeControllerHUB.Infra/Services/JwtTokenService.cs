@@ -5,6 +5,7 @@ using HomeControllerHUB.Domain.Entities;
 using HomeControllerHUB.Domain.Interfaces;
 using HomeControllerHUB.Domain.Models;
 using HomeControllerHUB.Infra.Settings;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 
@@ -15,7 +16,7 @@ public class JwtTokenService : IJwtTokenService
     private readonly ApplicationSettings _siteSetting;
     private readonly SignInManager<ApplicationUser> _signInManager;
 
-    public JwtTokenService(ApplicationSettings settings, SignInManager<ApplicationUser> signInManager)
+    public JwtTokenService(ApplicationSettings settings, SignInManager<ApplicationUser> signInManager, IHttpContextAccessor httpContextAccessor)
     {
         _siteSetting = settings;
         _signInManager = signInManager;
@@ -23,30 +24,7 @@ public class JwtTokenService : IJwtTokenService
 
     public async Task<AccessTokenEntry> GenerateAsync(ApplicationUser user, Establishment? establishment, string? refreshToken)
     {
-        var secretKey = Encoding.UTF8.GetBytes(_siteSetting.JwtSettings.SecretKey); // longer that 16 character
-        var signingCredentials = new SigningCredentials(new SymmetricSecurityKey(secretKey), SecurityAlgorithms.HmacSha256Signature);
-
-        var encryptionkey = Encoding.UTF8.GetBytes(_siteSetting.JwtSettings.EncryptKey); //must be 16 character
-        var encryptingCredentials = new EncryptingCredentials(new SymmetricSecurityKey(encryptionkey), SecurityAlgorithms.Aes128KW, SecurityAlgorithms.Aes128CbcHmacSha256);
-
         var claims = await GetClaimsAsync(user, establishment);
-
-        var descriptor = new SecurityTokenDescriptor
-        {
-            Issuer = _siteSetting.JwtSettings.Issuer,
-            Audience = _siteSetting.JwtSettings.Audience,
-            IssuedAt = DateTime.UtcNow,
-            NotBefore = DateTime.UtcNow.AddMinutes(_siteSetting.JwtSettings.NotBeforeMinutes),
-            Expires = DateTime.UtcNow.AddMinutes(_siteSetting.JwtSettings.ExpirationMinutes),
-            SigningCredentials = signingCredentials,
-            EncryptingCredentials = encryptingCredentials,
-            Subject = new ClaimsIdentity(claims),
-        };
-
-        var tokenHandler = new JwtSecurityTokenHandler();
-
-        var securityToken = tokenHandler.CreateJwtSecurityToken(descriptor);
-        
         // new 
         var key = new SymmetricSecurityKey(
             Encoding.UTF8.GetBytes(_siteSetting.JwtSettings.SecretKey));
@@ -59,7 +37,7 @@ public class JwtTokenService : IJwtTokenService
             claims: claims,
             expires: DateTime.Now.AddHours(1),
             signingCredentials: creds);
-
+        
         return new AccessTokenEntry(token, establishment, refreshToken, establishment.Code);
     }
 

@@ -20,7 +20,6 @@ public class ProfilesController : ApiControllerBase
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<PaginatedList<GetProfilePaginatedDto>>> GetALlWithPagination([FromQuery] GetAllProfilePaginatedQuery query, CancellationToken cancellationToken)
     {
-        var claims = User.Claims.Select(c => new { c.Type, c.Value });
         return await Mediator.Send(query, cancellationToken);
     }
 }
