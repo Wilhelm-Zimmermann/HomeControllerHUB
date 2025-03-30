@@ -2,12 +2,15 @@
 using AutoMapper.QueryableExtensions;
 using HomeControllerHUB.Domain.Models;
 using HomeControllerHUB.Infra.DatabaseContext;
+using HomeControllerHUB.Shared.Common;
+using HomeControllerHUB.Shared.Common.Constants;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Profile = HomeControllerHUB.Domain.Entities.Profile;
 
 namespace HomeControllerHUB.Application.Profiles.Queries.GetProfileSelector;
 
+[Authorize(Domain = DomainNames.Establishment, Action = SecurityActionType.Read)]
 public record GetProfileSelectorQuery : IRequest<List<ProfileSelectorDto>>
 {
 }

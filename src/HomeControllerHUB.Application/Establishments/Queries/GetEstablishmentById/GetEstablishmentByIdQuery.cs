@@ -6,29 +6,29 @@ using HomeControllerHUB.Shared.Common.Constants;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace HomeControllerHUB.Application.Profiles.Queries.GetProfileById;
+namespace HomeControllerHUB.Application.Establishments.Queries.GetEstablishmentById;
 
 [Authorize(Domain = DomainNames.Establishment, Action = SecurityActionType.Read)]
-public record GetProfileByIdQuery(Guid Id) : IRequest<ProfileDto>
+public record GetEstablishmentByIdQuery(Guid Id) : IRequest<EstablishmentDto>
 {
 }
 
-public class GetProfileByIdQueryHandler : IRequestHandler<GetProfileByIdQuery, ProfileDto>
+public class GetEstablishmentByIdQueryHandler : IRequestHandler<GetEstablishmentByIdQuery, EstablishmentDto>
 {
     private readonly ApplicationDbContext _context;
     private readonly IMapper _mapper;
 
-    public GetProfileByIdQueryHandler(ApplicationDbContext context, IMapper mapper)
+    public GetEstablishmentByIdQueryHandler(ApplicationDbContext context, IMapper mapper)
     {
         _context = context;
         _mapper = mapper;
     }
 
-    public async Task<ProfileDto> Handle(GetProfileByIdQuery request, CancellationToken cancellationToken)
+    public async Task<EstablishmentDto> Handle(GetEstablishmentByIdQuery request, CancellationToken cancellationToken)
     {
-        return await _context.Profiles
+        return await _context.Establishments
             .Where(p => p.Id == request.Id)
-            .ProjectTo<ProfileDto>(_mapper.ConfigurationProvider)
+            .ProjectTo<EstablishmentDto>(_mapper.ConfigurationProvider)
             .FirstOrDefaultAsync(cancellationToken);
     }
 }
