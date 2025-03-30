@@ -1,0 +1,45 @@
+services:
+  home-controller-hub-postgres:
+    container_name: home-controller-hub-postgres
+    image: postgres
+    environment:
+      - POSTGRES_PASSWORD=home-controller-hubp@ss
+      - POSTGRES_USER=user_home-controller-hub
+      - POSTGRES_DB=db_home-controller-hub
+    ports:
+      - 15432:5432
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    networks:
+      - home-controller-hub-network
+
+  # home-controller-hub-redis:
+  #   container_name: home-controller-hub-redis
+  #   image: redis:latest
+  #   command: ["redis-server", "--requirepass", "uTyhskijsuy", "--bind", "0.0.0.0"]
+  #   ports:
+  #     - "6480:6379"
+  #   networks:
+  #     - home-controller-hub-network
+
+  home-controller-hub-api:
+    container_name: home-controller-hub-api
+    depends_on:
+      # - home-controller-hub-redis
+      - home-controller-hub-postgres
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "6001:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Testing
+    networks:
+      - home-controller-hub-network
+
+networks:
+  home-controller-hub-network:
+    external: true
+
+volumes:
+  pg_data:

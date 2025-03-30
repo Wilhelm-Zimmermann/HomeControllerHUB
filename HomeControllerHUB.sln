@@ -15,7 +15,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeControllerHUB.Infra", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeControllerHUB.Shared", "src\HomeControllerHUB.Shared\HomeControllerHUB.Shared.csproj", "{D4EB31A5-AC00-4139-B211-C5C189BF881E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeControllerHUB.Globalization", "HomeControllerHUB.Globalization\HomeControllerHUB.Globalization.csproj", "{929A4688-7598-42EE-94E4-DF9ED0ACB3FE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeControllerHUB.Globalization", "src\HomeControllerHUB.Globalization\HomeControllerHUB.Globalization.csproj", "{929A4688-7598-42EE-94E4-DF9ED0ACB3FE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

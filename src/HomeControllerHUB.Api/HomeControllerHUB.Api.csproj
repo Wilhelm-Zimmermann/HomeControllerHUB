@@ -28,6 +28,7 @@
     <ProjectReference Include="..\..\HomeControllerHUB.Globalization\HomeControllerHUB.Globalization.csproj" />
     <ProjectReference Include="..\HomeControllerHUB.Application\HomeControllerHUB.Application.csproj" />
     <ProjectReference Include="..\HomeControllerHUB.Domain\HomeControllerHUB.Domain.csproj" />
+    <ProjectReference Include="..\HomeControllerHUB.Globalization\HomeControllerHUB.Globalization.csproj" />
     <ProjectReference Include="..\HomeControllerHUB.Infra\HomeControllerHUB.Infra.csproj" />
     <ProjectReference Include="..\HomeControllerHUB.Shared\HomeControllerHUB.Shared.csproj" />
   </ItemGroup>
