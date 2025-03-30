@@ -31,6 +31,7 @@ public class PrivilegeDataInitializer : BaseDataInitializer, IDataInitializer
         CheckAndCreate(DomainNames.Profile, PrivilegeNames.ProfileCreate, "Perfis de usuário - Criar", SecurityActionType.Create);
         CheckAndCreate(DomainNames.Profile, PrivilegeNames.ProfileUpdate, "Perfis de usuário - Alterar", SecurityActionType.Update);
         CheckAndCreate(DomainNames.Profile, PrivilegeNames.ProfileDelete, "Perfis de usuário - Excluir", SecurityActionType.Delete);
+        CheckAndCreate(DomainNames.Privilege, PrivilegeNames.PrivilegeRead, "Privilégio - Ler", SecurityActionType.Read);
     }
     
     private void CheckAndCreate(string domainName, string name, string description, string action)

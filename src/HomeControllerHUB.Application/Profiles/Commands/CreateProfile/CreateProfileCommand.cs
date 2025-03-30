@@ -47,7 +47,7 @@ public class CreateProfileCommandHandler : IRequestHandler<CreateProfileCommand,
         foreach (var privilegeId in request.PrivilegeIds)
         {
             var priv = await _context.Privilege.FindAsync(new object[] { privilegeId }, cancellationToken);
-            if(priv == null) throw new AppError(404, _resource.NotFoundMessage(nameof(Profile)));
+            if(priv == null) throw new AppError(404, _resource.NotFoundMessage(nameof(Privilege)));
 
             var profilePrivilege = new ProfilePrivilege()
             {
@@ -62,7 +62,9 @@ public class CreateProfileCommandHandler : IRequestHandler<CreateProfileCommand,
 
         await _context.SaveChangesAsync(cancellationToken);
 
-        return _mapper.Map<BaseEntityResponse>(profile);
-
+        return new BaseEntityResponse
+        {
+            Id = profile.Id,
+        };
     }
 }

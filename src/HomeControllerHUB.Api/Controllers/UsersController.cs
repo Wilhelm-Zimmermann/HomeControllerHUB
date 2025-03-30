@@ -20,7 +20,6 @@ public class UsersController : ApiControllerBase
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-    [AllowAnonymous]
     public async Task<ActionResult<BaseEntityResponse>> Create([Required, FromBody] CreateUserCommand command, CancellationToken cancellationToken)
     {
         var result = await Mediator.Send(command, cancellationToken);

@@ -21,4 +21,6 @@ public static class PrivilegeNames
     public const string ProfileCreate = "profile-create";
     public const string ProfileUpdate = "profile-update";
     public const string ProfileDelete = "profile-delete";
+    
+    public const string PrivilegeRead = "privilege-read";
 }

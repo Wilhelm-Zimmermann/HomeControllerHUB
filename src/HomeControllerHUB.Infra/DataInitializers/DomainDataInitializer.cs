@@ -19,6 +19,7 @@ public class DomainDataInitializer : BaseDataInitializer, IDataInitializer
         CheckAndCreate(DomainNames.Establishment, "Estabelecimentos");
         CheckAndCreate(DomainNames.User, "Usuários do Sistema");
         CheckAndCreate(DomainNames.Profile, "Perfis de Usuário");
+        CheckAndCreate(DomainNames.Privilege, "Privilégios");
     }
 
     public override void ClearData()

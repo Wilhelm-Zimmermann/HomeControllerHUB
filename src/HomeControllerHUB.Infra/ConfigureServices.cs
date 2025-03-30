@@ -39,14 +39,13 @@ public static class ConfigureServices
     
     private static IServiceCollection AddInitializers(this IServiceCollection services)
     {
-        services.AddTransient<IDataInitializer, EstablishmentDataInitializer>();
-        services.AddTransient<IDataInitializer, ProfileDataInitializer>();
-        services.AddTransient<IDataInitializer, UserDataInitializer>();
-        services.AddTransient<IDataInitializer, DomainDataInitializer>();
-        services.AddTransient<IDataInitializer, PrivilegeDataInitializer>();
-        // services.AddTransient<IDataInitializer, ProfilePrivilegeDataInitializer>();
-        // services.AddTransient<IDataInitializer, GenericDataInitializer>();
-        // services.AddTransient<IDataInitializer, MenuDataInitializer>();
+        services.AddTransient<IDataInitializer, EstablishmentDataInitializer>(); // 1
+        services.AddTransient<IDataInitializer, ProfileDataInitializer>(); // 2
+        services.AddTransient<IDataInitializer, UserDataInitializer>(); // 3
+        services.AddTransient<IDataInitializer, DomainDataInitializer>(); // 4
+        services.AddTransient<IDataInitializer, PrivilegeDataInitializer>(); // 5
+        services.AddTransient<IDataInitializer, GenericDataInitializer>(); // 6
+        services.AddTransient<IDataInitializer, MenuDataInitializer>(); // 7
 
         return services;
     }
