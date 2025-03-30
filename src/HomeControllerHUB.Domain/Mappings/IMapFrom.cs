@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HomeControllerHUB.Domain.Mappings;
 
-public class IMapFrom<T>
+public interface IMapFrom<T>
 {
     public void Mapping(Profile profile)
     {

@@ -1,11 +1,10 @@
 using System.Text.Json.Serialization;
-using Asp.Versioning;
-using Asp.Versioning.ApiExplorer;
 using FluentValidation.AspNetCore;
 using HomeControllerHUB.Api;
 using HomeControllerHUB.Api.Controllers;
 using HomeControllerHUB.Api.Middlewares;
 using HomeControllerHUB.Application;
+using HomeControllerHUB.Domain;
 using HomeControllerHUB.Globalization;
 using HomeControllerHUB.Infra;
 using HomeControllerHUB.Infra.Settings;
@@ -23,6 +22,7 @@ builder.Services.AddApplicationServices();
 builder.Services.ConfigureDatabase(builder.Configuration);
 builder.Services.AddGlobalizationServices();
 builder.Services.AddInfra(builder.Configuration);
+builder.Services.AddDomainServices();
 
 builder.Services.AddSingleton<ApplicationSettings>(sp =>
 {

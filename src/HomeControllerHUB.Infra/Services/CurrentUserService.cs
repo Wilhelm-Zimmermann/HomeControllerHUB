@@ -20,8 +20,7 @@ namespace HomeControllerHUB.Infra.Services
             get
             {
                 Guid? userId = null;
-                var id = _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier) 
-                      ?? _httpContextAccessor.HttpContext?.User?.FindFirstValue("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier");
+                var id = _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier);
                 
                 if (!string.IsNullOrEmpty(id))
                 {
@@ -35,8 +34,7 @@ namespace HomeControllerHUB.Infra.Services
         {
             get
             {
-                var login = _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.Name)
-                         ?? _httpContextAccessor.HttpContext?.User?.FindFirstValue("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name");
+                var login = _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.Name);
                 
                 if (string.IsNullOrEmpty(login))
                 {
