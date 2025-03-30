@@ -41,7 +41,7 @@ public class AccessTokenUserCommandHandler : IRequestHandler<AccessTokenUserComm
             Establishment establishment = user.Establishment;
 
             var jwt = await _jwtService.GenerateAsync(user, establishment, null);
-            // await _userManager.SetAuthenticationTokenAsync(user, _applicationSetting.JwtSettings.AppName, _applicationSetting.JwtSettings.RefreshTokenName, jwt.RefreshToken);
+            await _userManager.SetAuthenticationTokenAsync(user, _applicationSetting.JwtSettings.AppName, _applicationSetting.JwtSettings.RefreshTokenName, jwt.RefreshToken);
 
             return jwt;
         }
