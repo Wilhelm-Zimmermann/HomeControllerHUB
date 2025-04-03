@@ -7,7 +7,7 @@ public class ProfileDataInitializer : BaseDataInitializer, IDataInitializer
 {
     private readonly ApplicationDbContext _context;
     
-    public ProfileDataInitializer(ApplicationDbContext context) : base(2)
+    public ProfileDataInitializer(ApplicationDbContext context) : base(4)
     {
         _context = context;
     }

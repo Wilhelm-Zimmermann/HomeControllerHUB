@@ -8,7 +8,7 @@ public class PrivilegeDataInitializer : BaseDataInitializer, IDataInitializer
 {
     private readonly ApplicationDbContext _context;
 
-    public PrivilegeDataInitializer(ApplicationDbContext context) : base(5)
+    public PrivilegeDataInitializer(ApplicationDbContext context) : base(3)
     {
         _context = context;
     }
@@ -48,9 +48,7 @@ public class PrivilegeDataInitializer : BaseDataInitializer, IDataInitializer
                 EstablishmentId = estalishment.Id,
                 DomainId = domain!.Id,
                 Name = name,
-                NormalizedName = name.ToUpper(),
                 Description = description,
-                NormalizedDescription = description.ToUpper(),
                 Actions = action,
                 Enable = true
             };

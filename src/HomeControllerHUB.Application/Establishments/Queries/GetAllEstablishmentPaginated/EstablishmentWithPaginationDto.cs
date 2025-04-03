@@ -13,8 +13,4 @@ public class EstablishmentWithPaginationDto : IMapFrom<Establishment>, IPaginate
     public string Document { get; set; } = null!;
     public bool Enable { get; set; } = false;
     public bool IsMaster { get; set; } = false;
-    public DateTimeOffset Created { get; set; }
-    public string CreatedByUserName { get; set; }
-    public DateTimeOffset? LastModified { get; set; }
-    public string LastModifiedByUserName { get; set; }
 }

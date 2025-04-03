@@ -13,7 +13,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\HomeControllerHUB.Globalization\HomeControllerHUB.Globalization.csproj" />
     <ProjectReference Include="..\HomeControllerHUB.Globalization\HomeControllerHUB.Globalization.csproj" />
     <ProjectReference Include="..\HomeControllerHUB.Infra\HomeControllerHUB.Infra.csproj" />
   </ItemGroup>

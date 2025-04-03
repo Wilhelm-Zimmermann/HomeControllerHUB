@@ -8,7 +8,7 @@ public class DomainDataInitializer : BaseDataInitializer, IDataInitializer
 {
     private readonly ApplicationDbContext _context;
     
-    public DomainDataInitializer(ApplicationDbContext context) : base(4)
+    public DomainDataInitializer(ApplicationDbContext context) : base(2)
     {
         _context = context;
     }

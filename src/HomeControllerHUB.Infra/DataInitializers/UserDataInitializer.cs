@@ -10,7 +10,7 @@ public class UserDataInitializer : BaseDataInitializer, IDataInitializer
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly ApplicationDbContext _context;
     
-    public UserDataInitializer(UserManager<ApplicationUser> userManager, ApplicationDbContext context) : base(3)
+    public UserDataInitializer(UserManager<ApplicationUser> userManager, ApplicationDbContext context) : base(5)
     {
         _userManager = userManager;
         _context = context;
@@ -50,11 +50,23 @@ public class UserDataInitializer : BaseDataInitializer, IDataInitializer
                 UserName = login,
             };
 
+            var privilege = _context.Privilege.Where(p => p.Name == "platform-all").FirstOrDefault();
+
             var userProfile = new UserProfile()
             {
                 User = user,
                 Profile = profile,
             };
+
+            if (privilege != null)
+            {
+                var profilePrivilege = new ProfilePrivilege()
+                {
+                    ProfileId = profile.Id,
+                    PrivilegeId = privilege.Id,
+                };
+                _context.ProfilePrivileges.Add(profilePrivilege);
+            }
 
             _context.UserProfiles.Add(userProfile);
 

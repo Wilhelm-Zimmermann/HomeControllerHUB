@@ -47,12 +47,12 @@ public class AuthorizationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRe
         {
             return false;
         }
-
+        
         var userHasAuthorization = await _context.UserProfiles
             .Where(x => x.UserId == userId)
             .SelectMany(up => up.Profile.ProfilePrivileges)
             .AnyAsync(pp => (pp.Privilege.DomainId == domainEntity.Id &&
-                             pp.Privilege.Actions == action.ToString()) || pp.Privilege.NormalizedName == "PLATFORMALL");
+                             pp.Privilege.Actions == action) || pp.Privilege.NormalizedName == "PLATFORMALL");
 
         if (userHasAuthorization)
             return true;
