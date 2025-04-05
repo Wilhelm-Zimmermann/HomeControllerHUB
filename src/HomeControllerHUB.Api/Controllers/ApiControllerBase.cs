@@ -6,6 +6,9 @@ namespace HomeControllerHUB.Api.Controllers;
 
 [ApiController]
 [Route("api/v{version:apiVersion}/[controller]")]// api/v1/[controller]
+/// <summary>
+/// Base controller that all API controllers inherit from, providing common functionality
+/// </summary>
 public class ApiControllerBase : ControllerBase
 {
     protected const string InvalidRequestMessage = "Invalid request, the Ids are different.";
