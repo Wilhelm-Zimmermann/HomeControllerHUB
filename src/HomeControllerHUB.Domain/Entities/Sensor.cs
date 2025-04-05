@@ -27,8 +27,8 @@ public class Sensor : Base
     public DateTime LastCommunication { get; set; }
     public double? BatteryLevel { get; set; }
     
-    public virtual IList<SensorReading> Readings { get; private set; } = new List<SensorReading>();
-    public virtual IList<SensorAlert> Alerts { get; private set; } = new List<SensorAlert>();
+    public virtual IList<SensorReading> Readings { get; private set; }
+    public virtual IList<SensorAlert> Alerts { get; private set; }
 }
 
 public enum SensorType

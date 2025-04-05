@@ -3,14 +3,9 @@ using HomeControllerHUB.Domain.Entities;
 using HomeControllerHUB.Domain.Models;
 using HomeControllerHUB.Globalization;
 using HomeControllerHUB.Infra.DatabaseContext;
-using HomeControllerHUB.Shared.Common;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace HomeControllerHUB.Application.Sensors.Commands.SubmitSensorReading;
 

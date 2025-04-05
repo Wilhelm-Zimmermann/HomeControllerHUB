@@ -20,8 +20,8 @@ public class Location : Base
     public Guid? ParentLocationId { get; set; }
     public virtual Location? ParentLocation { get; set; }
     
-    public virtual IList<Location> ChildLocations { get; private set; } = new List<Location>();
-    public virtual IList<Sensor> Sensors { get; private set; } = new List<Sensor>();
+    public virtual IList<Location> ChildLocations { get; private set; }
+    public virtual IList<Sensor> Sensors { get; private set; }
 }
 
 public enum LocationType

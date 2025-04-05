@@ -19,6 +19,8 @@ public static class ConfigureServices
         {
             options.UseNpgsql(configuration.GetConnectionString("Npgsql"),
                 x => x.MigrationsAssembly("HomeControllerHUB.Api"));
+            options.LogTo(Console.WriteLine, LogLevel.Information);
+            options.EnableDetailedErrors();
             options.EnableSensitiveDataLogging();
         });
 

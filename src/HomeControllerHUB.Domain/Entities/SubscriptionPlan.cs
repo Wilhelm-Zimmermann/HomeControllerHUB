@@ -19,5 +19,5 @@ public class SubscriptionPlan : Base
     public bool IncludesReporting { get; set; }
     public bool IncludesApiAccess { get; set; }
     
-    public virtual IList<Establishment> Establishments { get; private set; } = new List<Establishment>();
+    public virtual IList<Establishment> Establishments { get; private set; }
 } 

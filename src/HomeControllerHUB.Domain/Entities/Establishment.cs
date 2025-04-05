@@ -20,8 +20,8 @@ public class Establishment : Base
     public virtual SubscriptionPlan? SubscriptionPlan { get; set; }
     public DateTime? SubscriptionEndDate { get; set; }
     
-    public virtual IList<ApplicationUser> Users { get; private set; } = new List<ApplicationUser>();
-    public virtual IList<UserEstablishment> UserEstablishments { get; private set; } = new List<UserEstablishment>();
-    public virtual IList<Location> Locations { get; private set; } = new List<Location>();
-    public virtual IList<Sensor> Sensors { get; private set; } = new List<Sensor>();
+    public virtual IList<ApplicationUser> Users { get; private set; }
+    public virtual IList<UserEstablishment> UserEstablishments { get; private set; }
+    public virtual IList<Location> Locations { get; private set; }
+    public virtual IList<Sensor> Sensors { get; private set; }
 }
