@@ -21,13 +21,16 @@ public static class ConfigureServices
         IConfiguration configuration)
     {
         services.AddHttpContextAccessor();
+        services.AddHttpClient();
         services.AddScoped<BaseEntityInterceptor>();
         services.AddScoped<NormalizedInterceptor>();
         services.AddScoped<IJwtTokenService, JwtTokenService>();
+        services.AddScoped<IEmailService, EmailService>();
         services.AddScoped<ApiUserManager>();
         services.AddScoped<ApplicationSettings>();
         services.AddScoped<SignInManager<ApplicationUser>>();
-        services.AddSingleton<ICurrentUserService, CurrentUserService>();
+        services.AddScoped<ICurrentUserService, CurrentUserService>();
+        services.AddScoped<MenuInitializer>();
         services.AddInitializers();
         
         var appSettings = configuration.GetSection(nameof(ApplicationSettings)).Get<ApplicationSettings>();

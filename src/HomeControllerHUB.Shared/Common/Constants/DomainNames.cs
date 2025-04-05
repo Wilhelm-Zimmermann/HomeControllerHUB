@@ -2,9 +2,14 @@
 
 public static class DomainNames
 {
-    public const string All = "all";
-    public const string User = "user";
-    public const string Profile = "profile";
-    public const string Privilege = "privilege";
-    public const string Establishment = "establishment";
+    public const string User = "User";
+    public const string Profile = "Profile";
+    public const string Domain = "Domain";
+    public const string Generic = "Generic";
+    public const string Establishment = "Establishment";
+    public const string Privilege = "Privilege";
+    public const string Menu = "Menu";
+    public const string Place = "Place";
+    public const string Sensor = "Sensor";
+    public const string SensorData = "SensorData";
 }
