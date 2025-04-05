@@ -21,16 +21,27 @@ public static class ConfigureServices
         IConfiguration configuration)
     {
         services.AddHttpContextAccessor();
+        services.AddHttpClient();
+        
+        // Named HttpClient for Mailgun
+        services.AddHttpClient("Mailgun");
+        
         services.AddScoped<BaseEntityInterceptor>();
         services.AddScoped<NormalizedInterceptor>();
         services.AddScoped<IJwtTokenService, JwtTokenService>();
+        services.AddScoped<IEmailService, EmailService>();
         services.AddScoped<ApiUserManager>();
         services.AddScoped<ApplicationSettings>();
         services.AddScoped<SignInManager<ApplicationUser>>();
-        services.AddSingleton<ICurrentUserService, CurrentUserService>();
+        services.AddScoped<ICurrentUserService, CurrentUserService>();
         services.AddInitializers();
         
+        // Add configuration settings
         var appSettings = configuration.GetSection(nameof(ApplicationSettings)).Get<ApplicationSettings>();
+        services.Configure<ApplicationSettings>(configuration.GetSection(nameof(ApplicationSettings)));
+        
+        // Configure Email Settings
+        services.Configure<EmailSettings>(configuration.GetSection(nameof(EmailSettings)));
         
         services.AddSwagger(new List<string>() {"1"}, "OAuth2", appSettings);
         services.AddLocalization(options => options.ResourcesPath = "Resources");

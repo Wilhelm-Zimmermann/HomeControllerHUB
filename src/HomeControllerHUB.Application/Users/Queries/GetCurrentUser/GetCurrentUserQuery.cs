@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
-using HomeControllerHUB.Application.Establishments.Queries;
 using HomeControllerHUB.Domain.Entities;
 using HomeControllerHUB.Domain.Interfaces;
 using HomeControllerHUB.Domain.Models;
@@ -42,7 +41,7 @@ public class GetCurrentUserQueryHandler : IRequestHandler<GetCurrentUserQuery, C
         var currentUserId = _currentUserService.UserId;
         if (currentUserId == null) throw new AppError(404, _resource.NotFoundMessage(nameof(ApplicationUser)));
 
-        var user = _context.Users.FirstOrDefault(u => u.Id == currentUserId);
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == currentUserId);
         if (user == null) throw new AppError(404, _resource.NotFoundMessage(nameof(ApplicationUser)));
 
         var record = await _context.Users
@@ -73,22 +72,6 @@ public class GetCurrentUserQueryHandler : IRequestHandler<GetCurrentUserQuery, C
         }
 
         record.Privileges = userPrivileges.Count > 0 ? userPrivileges : new List<string>();
-
-        if (admin)
-        {
-            record.Establishments = _context.Establishments
-                .Where(e => e.Enable == true)
-                .ProjectTo<EstablishmentSelectorDto>(_mapper.ConfigurationProvider)
-                .ToList();
-
-            return record;
-        }
-
-        record.Establishments = _context.Establishments
-            .Where(p => p.UserEstablishments != null && p.UserEstablishments.Any(r => r.UserId == currentUserId))
-            .Where(e => e.Enable == true)
-            .ProjectTo<EstablishmentSelectorDto>(_mapper.ConfigurationProvider)
-            .ToList();
 
         return record;
     }

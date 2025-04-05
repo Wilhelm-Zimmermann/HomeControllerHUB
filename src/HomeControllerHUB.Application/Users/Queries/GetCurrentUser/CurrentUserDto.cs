@@ -1,5 +1,4 @@
-﻿using HomeControllerHUB.Application.Establishments.Queries;
-using HomeControllerHUB.Domain.Entities;
+﻿using HomeControllerHUB.Domain.Entities;
 using HomeControllerHUB.Domain.Interfaces;
 using HomeControllerHUB.Domain.Mappings;
 
@@ -20,7 +19,6 @@ public class CurrentUserDto : IMapFrom<ApplicationUser>, IPaginatedDto
     public bool Enable { get; set; }
     public List<string>? Privileges { get; set; }
     public List<UserProfileDto>? UserProfiles { get; set; }
-    public List<EstablishmentSelectorDto>? Establishments { get; set; }
 }
 
 public class UserProfileDto : IMapFrom<UserProfile>

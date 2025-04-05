@@ -35,7 +35,7 @@ builder.Services.AddSingleton<ApplicationSettings>(sp =>
     return settings;
 });
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddOpenApi();
+builder.Services.AddCustomOpenApi();
 const string allowedOrigins = "AllowAllOrigins";
 
 builder.Services.AddCors(options =>

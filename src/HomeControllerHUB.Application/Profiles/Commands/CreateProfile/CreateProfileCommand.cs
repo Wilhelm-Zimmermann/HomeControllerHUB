@@ -4,11 +4,14 @@ using HomeControllerHUB.Domain.Interfaces;
 using HomeControllerHUB.Domain.Models;
 using HomeControllerHUB.Globalization;
 using HomeControllerHUB.Infra.DatabaseContext;
+using HomeControllerHUB.Shared.Common;
+using HomeControllerHUB.Shared.Common.Constants;
 using MediatR;
 using Profile = HomeControllerHUB.Domain.Entities.Profile;
 
 namespace HomeControllerHUB.Application.Profiles.Commands.CreateProfile;
 
+[Authorize(Domain = DomainNames.Profile, Action = SecurityActionType.Create)]
 public record CreateProfileCommand : IRequest<BaseEntityResponse>
 {
     public string Name { get; set; } = null!;
