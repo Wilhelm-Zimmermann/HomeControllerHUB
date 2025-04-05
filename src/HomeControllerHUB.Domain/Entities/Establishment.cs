@@ -14,6 +14,14 @@ public class Establishment : Base
     public string Document { get; set; } = null!;
     public bool Enable { get; set; } = false;
     public bool IsMaster { get; set; } = false;
+    
+    // Subscription information
+    public Guid? SubscriptionPlanId { get; set; }
+    public virtual SubscriptionPlan? SubscriptionPlan { get; set; }
+    public DateTime? SubscriptionEndDate { get; set; }
+    
     public virtual IList<ApplicationUser> Users { get; private set; } = new List<ApplicationUser>();
     public virtual IList<UserEstablishment> UserEstablishments { get; private set; } = new List<UserEstablishment>();
+    public virtual IList<Location> Locations { get; private set; } = new List<Location>();
+    public virtual IList<Sensor> Sensors { get; private set; } = new List<Sensor>();
 }

@@ -23,4 +23,26 @@ public static class PrivilegeNames
     public const string ProfileDelete = "profile-delete";
     
     public const string PrivilegeRead = "privilege-read";
+    
+    // IoT Related Privileges
+    
+    // Location privileges
+    public const string LocationAll = "location-all";
+    public const string LocationRead = "location-read";
+    public const string LocationCreate = "location-create";
+    public const string LocationUpdate = "location-update";
+    public const string LocationDelete = "location-delete";
+    
+    // Sensor privileges
+    public const string SensorAll = "sensor-all";
+    public const string SensorRead = "sensor-read";
+    public const string SensorCreate = "sensor-create";
+    public const string SensorUpdate = "sensor-update";
+    public const string SensorDelete = "sensor-delete";
+    
+    // Sensor Data privileges
+    public const string SensorDataAll = "sensor-data-all";
+    public const string SensorDataRead = "sensor-data-read";
+    public const string SensorDataCreate = "sensor-data-create";
+    public const string SensorDataDelete = "sensor-data-delete";
 }
