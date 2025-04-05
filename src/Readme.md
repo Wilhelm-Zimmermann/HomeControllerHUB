@@ -1,7 +1,9 @@
 # General Informations
+- Do not ask permition to create new folders, simpy do it all the code written here will be revised and if needs improvement it will be suggested
 - This app uses the "Domain Driven Design" with CQRS and Mediator
 - All the messages that return must be translated using the ISharedResource (this is the globalization)
 - If a new message needs to be created it must be created inside "HomeControllerHub.Globalization/Resources"
+- When you will implement a new entire crud, please take a look on the "Profile" crud it is a good example on how to implement
 - If a new DTO must be created for a entity it must follow this:
     - NameOfDto : IMapFrom<EntityThatNeedsTheMapping>
     - If needs the pagination NameOfDto : IMapFrom<NameOfDto>, IPaginatedDto
@@ -29,6 +31,9 @@
     - GET(nohting more on the name) -> list all entities paginated
     - GET({id}) -> list only one entity by id
 - The controller will never execute the business rules, it will delegate this task for the commands or query
+
+# Commands and Queries General
+- All of the commands and queries must have the Authorzie attribute unless you see that the user does not need the authorization or it is explicity told; not the one that comes from the microsoft "HomeControllerHUB.Shared.Common";
 
 # Commands
 - Commands must be created inside the "HomeControllerHUB.Application"
