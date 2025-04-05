@@ -52,6 +52,11 @@ public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, Unit>
         
         if (user == null)
             throw new AppError(404, _resource.NotFoundMessage(nameof(ApplicationUser)));
+
+        var userWithLoginExists = await _context.Users.FirstOrDefaultAsync(u => u.Login == request.Login && u.Id != request.Id, cancellationToken);
+
+        if (userWithLoginExists != null)
+            throw new AppError(400, _resource.AlreadyExistsMessage(nameof(ApplicationUser)));
         
         user.Name = request.Name;
         user.Email = request.Email;
