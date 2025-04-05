@@ -22,6 +22,10 @@ public static class ConfigureServices
     {
         services.AddHttpContextAccessor();
         services.AddHttpClient();
+        
+        // Named HttpClient for Mailgun
+        services.AddHttpClient("Mailgun");
+        
         services.AddScoped<BaseEntityInterceptor>();
         services.AddScoped<NormalizedInterceptor>();
         services.AddScoped<IJwtTokenService, JwtTokenService>();
@@ -30,10 +34,14 @@ public static class ConfigureServices
         services.AddScoped<ApplicationSettings>();
         services.AddScoped<SignInManager<ApplicationUser>>();
         services.AddScoped<ICurrentUserService, CurrentUserService>();
-        services.AddScoped<MenuInitializer>();
         services.AddInitializers();
         
+        // Add configuration settings
         var appSettings = configuration.GetSection(nameof(ApplicationSettings)).Get<ApplicationSettings>();
+        services.Configure<ApplicationSettings>(configuration.GetSection(nameof(ApplicationSettings)));
+        
+        // Configure Email Settings
+        services.Configure<EmailSettings>(configuration.GetSection(nameof(EmailSettings)));
         
         services.AddSwagger(new List<string>() {"1"}, "OAuth2", appSettings);
         services.AddLocalization(options => options.ResourcesPath = "Resources");

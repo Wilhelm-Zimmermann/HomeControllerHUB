@@ -1,7 +1,6 @@
 ﻿using HomeControllerHUB.Domain.Entities;
 using HomeControllerHUB.Domain.Interfaces;
 using HomeControllerHUB.Domain.Mappings;
-using EstablishmentBasicSelectorDto = HomeControllerHUB.Application.Establishments.Queries.EstablishmentBasicSelectorDto;
 
 namespace HomeControllerHUB.Application.Users.Queries.GetCurrentUser;
 
@@ -20,7 +19,6 @@ public class CurrentUserDto : IMapFrom<ApplicationUser>, IPaginatedDto
     public bool Enable { get; set; }
     public List<string>? Privileges { get; set; }
     public List<UserProfileDto>? UserProfiles { get; set; }
-    public List<EstablishmentBasicSelectorDto>? Establishments { get; set; }
 }
 
 public class UserProfileDto : IMapFrom<UserProfile>

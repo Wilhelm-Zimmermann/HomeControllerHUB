@@ -159,7 +159,53 @@ public static class SwaggerConfigurationExtensions
             //options.AddFluentValidationRules();
 
             #endregion
+
+            // Configure a custom schema ID selector to include namespace for disambiguating types with the same name
+            options.CustomSchemaIds(type =>
+            {
+                // Get full type name including namespace
+                var fullName = type.FullName;
+                if (fullName == null) return type.Name;
+
+                // For nested generic types, extract the base name and parameters
+                if (type.IsGenericType)
+                {
+                    var prefix = fullName.Substring(0, fullName.IndexOf('`'));
+                    var genericArgs = string.Join("And", type.GetGenericArguments().Select(t => t.Name));
+                    return $"{prefix.Replace("+", ".").Replace(".", "_")}_Of_{genericArgs}";
+                }
+                
+                // Replace problematic characters and namespace separators with underscore
+                return fullName.Replace("+", ".").Replace(".", "_");
+            });
         });
+    }
+
+    public static IServiceCollection AddCustomOpenApi(this IServiceCollection services)
+    {
+        services.AddSwaggerGen(options =>
+        {
+            // Configure a custom schema ID selector to include namespace for disambiguating types with the same name
+            options.CustomSchemaIds(type =>
+            {
+                // Get full type name including namespace
+                var fullName = type.FullName;
+                if (fullName == null) return type.Name;
+
+                // For nested generic types, extract the base name and parameters
+                if (type.IsGenericType)
+                {
+                    var prefix = fullName.Substring(0, fullName.IndexOf('`'));
+                    var genericArgs = string.Join("And", type.GetGenericArguments().Select(t => t.Name));
+                    return $"{prefix.Replace("+", ".").Replace(".", "_")}_Of_{genericArgs}";
+                }
+                
+                // Replace problematic characters and namespace separators with underscore
+                return fullName.Replace("+", ".").Replace(".", "_");
+            });
+        });
+        
+        return services;
     }
 
     public static IApplicationBuilder UseSwaggerAndUI(this IApplicationBuilder app, List<string> versions)

@@ -2,6 +2,7 @@
 
 public static class DomainNames
 {
+    public const string All = "All";
     public const string User = "User";
     public const string Profile = "Profile";
     public const string Domain = "Domain";
