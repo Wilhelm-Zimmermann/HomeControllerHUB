@@ -1,6 +1,10 @@
 # General Informations
+- This app uses the "Domain Driven Design" with CQRS and Mediator
 - All the messages that return must be translated using the ISharedResource (this is the globalization)
 - If a new message needs to be created it must be created inside "HomeControllerHub.Globalization/Resources"
+- If a new DTO must be created for a entity it must follow this:
+    - NameOfDto : IMapFrom<EntityThatNeedsTheMapping>
+    - If needs the pagination NameOfDto : IMapFrom<NameOfDto>, IPaginatedDto
 
 # Errors
 - All errors or exceptions must use the AppError for example:
@@ -36,3 +40,16 @@
     - CreateUserCommandValidator
 - For every command created it needs to be create a CommandValidator;
     - The command validator implements an "AbstractValidator<NameOfTheCommand>" and the rules for the creation of that entity must be put there
+
+# Queries
+- Queries must be created inside the "HomeControllerHUB.Application"
+- All of the queries must return a something
+- A folder must be created "NameOfTheEntity" in the plural and inside it will have the "Commands" and "Queries"
+- A subfolder must be created with the name of the action for example "GetUser" and inside the "GetUser"
+    - GetUserQuery
+    - GetUserQueryValidator -> this is not required, you only add this if you need to valid a query parameter for search purposes
+
+
+# Services
+- Services are created inside the "HomeControllerHub.Infra"
+- The services must be created when its logic will be used on a lot of places
