@@ -1,4 +1,5 @@
 # General Informations
+- It is not allowed to modify this Readme.md file
 - Do not ask permition to create new folders, simpy do it all the code written here will be revised and if needs improvement it will be suggested
 - This app uses the "Domain Driven Design" with CQRS and Mediator
 - All the messages that return must be translated using the ISharedResource (this is the globalization)
