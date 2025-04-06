@@ -54,7 +54,7 @@ public static class SwaggerConfigurationExtensions
         //Add services and configuration to use swagger
         _ = services.AddSwaggerGen(options =>
         {
-            var title = "Zanini API Documentation";
+            var title = "Home Controller API Documentation";
             if (appSettings is not null && appSettings.SwaggerSettings is not null &&
                 !string.IsNullOrWhiteSpace(appSettings.SwaggerSettings.Title))
                 title = appSettings.SwaggerSettings.Title.Trim();
@@ -224,7 +224,7 @@ public static class SwaggerConfigurationExtensions
         var conf = app.ApplicationServices.CreateScope().ServiceProvider.GetService<IConfiguration>();
         var appSettings = conf.GetSection(nameof(ApplicationSettings)).Get<ApplicationSettings>();
 
-        var title = "Zanini API Documentation";
+        var title = "Home Controller API Documentation";
         if (appSettings is not null && appSettings.SwaggerSettings is not null &&
             !string.IsNullOrWhiteSpace(appSettings.SwaggerSettings.Title))
             title = appSettings.SwaggerSettings.Title.Trim();

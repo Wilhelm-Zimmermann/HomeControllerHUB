@@ -22,10 +22,7 @@ public class UnauthorizedResponsesOperationFilter : IOperationFilter
         var metadata = context.ApiDescription.ActionDescriptor.EndpointMetadata;
         var hasAnonymous = filters.Any(p => p.Filter is AllowAnonymousFilter) || metadata.Any(p => p is AllowAnonymousAttribute);
         if (hasAnonymous) return;
-
-        //var hasAuthorize = filters.Any(p => p.Filter is AuthorizeFilter) || metadata.Any(p => p is Zanini.Security.AuthorizeAttribute || metadata.Any(p => p is Zanini.Security.AuthorizeAttribute));
-        //if (!hasAuthorize) return;
-
+        
         if (_includeUnauthorizedAndForbiddenResponses)
         {
             operation.Responses.TryAdd("401", new OpenApiResponse { Description = "Unauthorized" });
