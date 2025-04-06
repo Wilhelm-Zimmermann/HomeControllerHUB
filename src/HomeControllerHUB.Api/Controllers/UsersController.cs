@@ -20,8 +20,14 @@ using Microsoft.AspNetCore.Mvc;
 namespace HomeControllerHUB.Api.Controllers;
 
 [ApiVersion(ApiConstants.ApiVersion1)]
+/// <summary>
+/// Manages user accounts, authentication, and authorization
+/// </summary>
 public class UsersController : ApiControllerBase
 {
+    /// <summary>
+    /// Creates a new user account
+    /// </summary>
     [HttpPost]
     [ProducesResponseType(typeof(BaseEntityResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
@@ -36,6 +42,9 @@ public class UsersController : ApiControllerBase
     }
     
     
+    /// <summary>
+    /// Authenticates a user and generates an access token
+    /// </summary>
     [HttpPost("[action]")]
     [ProducesResponseType(typeof(AccessTokenEntry), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
@@ -49,6 +58,9 @@ public class UsersController : ApiControllerBase
         return await Mediator.Send(command, cancellationToken);
     }
 
+    /// <summary>
+    /// Retrieves information about the currently authenticated user
+    /// </summary>
     [HttpGet("current")]
     [ProducesResponseType(typeof(CurrentUserDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
@@ -61,6 +73,9 @@ public class UsersController : ApiControllerBase
         return await Mediator.Send(new GetCurrentUserQuery(), cancellationToken);
     }
 
+    /// <summary>
+    /// Updates an existing user's information
+    /// </summary>
     [HttpPut("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
@@ -77,6 +92,9 @@ public class UsersController : ApiControllerBase
         return NoContent();
     }
 
+    /// <summary>
+    /// Deletes a user account
+    /// </summary>
     [HttpDelete("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
@@ -90,6 +108,9 @@ public class UsersController : ApiControllerBase
         return NoContent();
     }
 
+    /// <summary>
+    /// Refreshes an expired access token using a refresh token
+    /// </summary>
     [HttpPost("refresh-token")]
     [ProducesResponseType(typeof(AccessTokenEntry), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
@@ -102,6 +123,9 @@ public class UsersController : ApiControllerBase
         return await Mediator.Send(command, cancellationToken);
     }
 
+    /// <summary>
+    /// Resets a user's password
+    /// </summary>
     [HttpPost("reset-password")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
@@ -115,18 +139,24 @@ public class UsersController : ApiControllerBase
         return NoContent();
     }
     
+    /// <summary>
+    /// Confirms a user's email address using a verification token
+    /// </summary>
     [HttpGet("confirm-email")]
     [AllowAnonymous]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult> ConfirmEmail([Required] string token, [Required] string email, CancellationToken cancellationToken)
+    public async Task<ActionResult> ConfirmEmail([Required, FromQuery] ConfirmEmailCommand query, CancellationToken cancellationToken)
     {
-        await Mediator.Send(new ConfirmEmailCommand(token, email), cancellationToken);
+        await Mediator.Send(query, cancellationToken);
         return NoContent();
     }
     
+    /// <summary>
+    /// Initiates the password reset process by sending an email with reset instructions
+    /// </summary>
     [HttpPost("forgot-password")]
     [AllowAnonymous]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -139,6 +169,9 @@ public class UsersController : ApiControllerBase
         return NoContent();
     }
     
+    /// <summary>
+    /// Resets a user's password using the token received via email
+    /// </summary>
     [HttpPost("reset-password-with-token")]
     [AllowAnonymous]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -151,6 +184,9 @@ public class UsersController : ApiControllerBase
         return NoContent();
     }
 
+    /// <summary>
+    /// Retrieves a list of users with optional filtering
+    /// </summary>
     [HttpGet("list")]
     [ProducesResponseType(typeof(List<UserListDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]

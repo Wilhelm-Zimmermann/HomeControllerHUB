@@ -34,7 +34,11 @@ public static class ConfigureServices
         services.AddScoped<ApplicationSettings>();
         services.AddScoped<SignInManager<ApplicationUser>>();
         services.AddScoped<ICurrentUserService, CurrentUserService>();
+        services.AddScoped<IDateTime, DateTimeService>();
         services.AddInitializers();
+        
+        // Register background services
+        services.AddHostedService<DataRetentionService>();
         
         // Add configuration settings
         var appSettings = configuration.GetSection(nameof(ApplicationSettings)).Get<ApplicationSettings>();

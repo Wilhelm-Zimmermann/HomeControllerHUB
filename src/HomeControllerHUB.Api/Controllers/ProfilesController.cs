@@ -13,8 +13,14 @@ using Microsoft.AspNetCore.Mvc;
 namespace HomeControllerHUB.Api.Controllers;
 
 [ApiVersion(ApiConstants.ApiVersion1)]
+/// <summary>
+/// Manages user profiles and permission sets in the system
+/// </summary>
 public class ProfilesController : ApiControllerBase
 {
+    /// <summary>
+    /// Creates a new user profile
+    /// </summary>
     [HttpPost]
     [ProducesResponseType(typeof(BaseEntityResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
@@ -27,6 +33,9 @@ public class ProfilesController : ApiControllerBase
         return await Mediator.Send(command, cancellationToken);
     }
     
+    /// <summary>
+    /// Updates an existing user profile
+    /// </summary>
     [HttpPut("{id}")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
@@ -43,6 +52,9 @@ public class ProfilesController : ApiControllerBase
         return Ok();
     }
     
+    /// <summary>
+    /// Deletes a user profile
+    /// </summary>
     [HttpDelete("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
@@ -56,6 +68,9 @@ public class ProfilesController : ApiControllerBase
         return NoContent();
     }
     
+    /// <summary>
+    /// Retrieves a paginated list of user profiles
+    /// </summary>
     [HttpGet]
     [ProducesResponseType(typeof(PaginatedList<GetProfilePaginatedDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
@@ -68,6 +83,9 @@ public class ProfilesController : ApiControllerBase
         return await Mediator.Send(query, cancellationToken);
     }
     
+    /// <summary>
+    /// Retrieves a list of profiles for dropdown selection
+    /// </summary>
     [HttpGet("list")]
     [ProducesResponseType(typeof(List<ProfileSelectorDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
@@ -80,6 +98,9 @@ public class ProfilesController : ApiControllerBase
         return await Mediator.Send(new GetProfileSelectorQuery(), cancellationToken);
     }
         
+    /// <summary>
+    /// Retrieves a specific profile by ID
+    /// </summary>
     [HttpGet("{id}")]
     [ProducesResponseType(typeof(ProfileDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]

@@ -1,5 +1,6 @@
 ﻿using HomeControllerHUB.Domain.Entities;
 using HomeControllerHUB.Infra.DatabaseContext;
+using HomeControllerHUB.Shared.Common.Constants;
 using HomeControllerHUB.Shared.Utils;
 
 namespace HomeControllerHUB.Infra.DataInitializers;
@@ -16,9 +17,24 @@ public class MenuDataInitializer : BaseDataInitializer, IDataInitializer
     public override void InitializeData()
         {
             CheckAndCreate("components.menu.home", "Início", "house", "/", "_self", 1);
+            
             // Cadastros
             // CheckAndCreate("components.menu.register.registers", "Cadastros", "register", "cadastros", "_self", 11);
             // CheckAndCreate("components.menu.register.currency", "Moedas", "currency", "cadastros/moedas", "_self", 11, DomainNames.Currency, "components.menu.register.registers");
+            
+            // IoT Menus
+            CheckAndCreate("components.menu.iot", "IoT", "dashboard", "iot", "_self", 20);
+            
+            // Location menu items
+            CheckAndCreate("components.menu.iot.locations", "Locais", "map", "iot/locations", "_self", 21, DomainNames.Location, "components.menu.iot");
+            
+            // Sensor menu items
+            CheckAndCreate("components.menu.iot.sensors", "Sensores", "thermometer", "iot/sensors", "_self", 22, DomainNames.Sensor, "components.menu.iot");
+            
+            // Sensor Data menu items
+            CheckAndCreate("components.menu.iot.readings", "Leituras", "activity", "iot/readings", "_self", 23, DomainNames.SensorData, "components.menu.iot");
+            CheckAndCreate("components.menu.iot.alerts", "Alertas", "bell", "iot/alerts", "_self", 24, DomainNames.SensorData, "components.menu.iot");
+            CheckAndCreate("components.menu.iot.dashboard", "Dashboard", "grid", "iot/dashboard", "_self", 25, DomainNames.SensorData, "components.menu.iot");
         }
     
     public override void ClearData()

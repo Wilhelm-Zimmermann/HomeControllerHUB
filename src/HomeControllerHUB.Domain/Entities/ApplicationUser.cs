@@ -19,6 +19,6 @@ public class ApplicationUser : IdentityUser<Guid>, IBaseEntity
     public DateTimeOffset Modified { get; set; }
     public string? EmailConfirmationToken { get; set; }
     public string? PasswordConfirmationToken { get; set; }
-    public virtual IList<UserEstablishment> UserEstablishments { get; private set; } = new List<UserEstablishment>();
+    public virtual IList<UserEstablishment> UserEstablishments { get; private set; }
     public virtual IList<UserProfile>? UserProfiles { get; private set; }
 }

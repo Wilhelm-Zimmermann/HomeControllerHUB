@@ -185,6 +185,13 @@ public static class SwaggerConfigurationExtensions
     {
         services.AddSwaggerGen(options =>
         {
+            // Include XML Comments
+            var xmlFiles = Directory.GetFiles(AppContext.BaseDirectory, "*.xml");
+            foreach (var xmlFile in xmlFiles)
+            {
+                options.IncludeXmlComments(xmlFile);
+            }
+            
             // Configure a custom schema ID selector to include namespace for disambiguating types with the same name
             options.CustomSchemaIds(type =>
             {

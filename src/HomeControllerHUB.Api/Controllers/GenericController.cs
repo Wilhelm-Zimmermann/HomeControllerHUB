@@ -6,8 +6,14 @@ using Microsoft.AspNetCore.Mvc;
 namespace HomeControllerHUB.Api.Controllers;
 
 [ApiVersion(ApiConstants.ApiVersion1)]
+/// <summary>
+/// Provides generic data endpoints for system-wide lookup values and enumerations
+/// </summary>
 public class GenericController : ApiControllerBase
 {
+    /// <summary>
+    /// Retrieves a list of generic data items for dropdowns and selections
+    /// </summary>
     [HttpGet("list")]
     [ProducesResponseType(typeof(List<GenericDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]

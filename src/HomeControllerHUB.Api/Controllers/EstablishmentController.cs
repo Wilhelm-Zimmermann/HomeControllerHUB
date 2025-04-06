@@ -14,8 +14,14 @@ using EstablishmentSelectorDto = HomeControllerHUB.Application.Establishments.Qu
 namespace HomeControllerHUB.Api.Controllers;
 
 [ApiVersion(ApiConstants.ApiVersion1)]
+/// <summary>
+/// Manages establishments (e.g., buildings, facilities, campuses) in the system
+/// </summary>
 public class EstablishmentController : ApiControllerBase
 {
+    /// <summary>
+    /// Creates a new establishment
+    /// </summary>
     [HttpPost]
     [ProducesResponseType(typeof(BaseEntityResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
@@ -28,6 +34,9 @@ public class EstablishmentController : ApiControllerBase
         return await Mediator.Send(command, cancellationToken);
     }
     
+    /// <summary>
+    /// Updates an existing establishment
+    /// </summary>
     [HttpPut("{id}")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
@@ -44,6 +53,9 @@ public class EstablishmentController : ApiControllerBase
         return Ok();
     }
     
+    /// <summary>
+    /// Deletes an establishment
+    /// </summary>
     [HttpDelete("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
@@ -57,6 +69,9 @@ public class EstablishmentController : ApiControllerBase
         return NoContent();
     }
     
+    /// <summary>
+    /// Retrieves a paginated list of establishments
+    /// </summary>
     [HttpGet]
     [ProducesResponseType(typeof(PaginatedList<EstablishmentWithPaginationDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
@@ -69,6 +84,9 @@ public class EstablishmentController : ApiControllerBase
         return await Mediator.Send(query, cancellationToken);
     }
     
+    /// <summary>
+    /// Retrieves a list of establishments for dropdown selection
+    /// </summary>
     [HttpGet("list")]
     [ProducesResponseType(typeof(List<EstablishmentSelectorDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
@@ -81,6 +99,9 @@ public class EstablishmentController : ApiControllerBase
         return await Mediator.Send(new GetEstablishmentSelectorQuery(), cancellationToken);
     }
         
+    /// <summary>
+    /// Retrieves a specific establishment by ID
+    /// </summary>
     [HttpGet("{id}")]
     [ProducesResponseType(typeof(EstablishmentDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
