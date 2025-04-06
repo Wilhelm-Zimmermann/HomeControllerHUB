@@ -60,8 +60,8 @@ public class CreateSensorCommandHandler : IRequestHandler<CreateSensorCommand, G
                 _sharedResource.Message("TheRequestedLocationDoesNotBelongToTheEstablishment"));
         }
         
-        // Generate a unique API key for the sensor
-        var apiKey = GenerateApiKey();
+        // Generate a unique API key for the sensor with deviceId claim
+        var apiKey = GenerateApiKey(request.DeviceId);
         
         // Create the sensor
         var sensor = new Sensor
@@ -86,7 +86,7 @@ public class CreateSensorCommandHandler : IRequestHandler<CreateSensorCommand, G
         return sensor.Id;
     }
     
-    private string GenerateApiKey()
+    private string GenerateApiKey(string deviceId)
     {
         var key = new byte[32];
         using (var generator = RandomNumberGenerator.Create())
