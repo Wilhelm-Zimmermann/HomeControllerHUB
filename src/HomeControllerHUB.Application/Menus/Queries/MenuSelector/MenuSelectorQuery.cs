@@ -38,17 +38,19 @@ public class MenuSelectorQueryHandler : IRequestHandler<MenuSelectorQuery, List<
 
     public async Task<List<MenuDto>> Handle(MenuSelectorQuery request, CancellationToken cancellationToken)
     {
-        var user = _context.Users.FirstOrDefault(u => u.Id == _currentUserService.UserId);
+        var user = _context.Users
+            .Include(x => x.UserProfiles)
+            .FirstOrDefault(u => u.Id == _currentUserService.UserId);
         if (user == null) throw new AppError(404, _resource.NotFoundMessage(nameof(ApplicationUser)));
         
-        var privileges = GetPrivileges(user!);
+        var privileges = await GetPrivileges(user.Id);
 
         var query = _context.Menus
             .IgnoreQueryFilters();
 
         if (!privileges.admin)
         {
-            query = query.Where(m => privileges.domains.Contains(m.DomainId) || m.DomainId == null);
+            query = query.Where(m => (m.DomainId.HasValue && privileges.domains.Contains(m.DomainId.Value)) || m.DomainId == null);
         }
 
         if (!string.IsNullOrEmpty(request.SearchBy) && request.SearchBy.Length > 0)
@@ -79,29 +81,20 @@ public class MenuSelectorQueryHandler : IRequestHandler<MenuSelectorQuery, List<
         return menus;
     }
     
-    private (List<Guid?> domains, bool admin) GetPrivileges(ApplicationUser user)
+    private async Task<(List<Guid> domains, bool admin)> GetPrivileges(Guid userId)
     {
-        bool admin = false;
-        List<Guid?> userPrivileges = new();
+        var admin = await _context.UserProfiles
+            .Where(x => x.UserId == userId)
+            .SelectMany(up => up.Profile.ProfilePrivileges)
+            .AnyAsync(pp => pp.Privilege.NormalizedName == "PLATFORMALL");
 
-        if (user!.UserProfiles != null)
-        {
-            foreach (var userProfile in user.UserProfiles)
-            {
-                var profilePrivileges = _context.ProfilePrivileges.Where(c => c.ProfileId == userProfile.Profile.Id).ToList();
+        List<Guid> domains = await _context.UserProfiles
+            .Where(x => x.UserId == userId)
+            .SelectMany(up => up.Profile.ProfilePrivileges)
+            .Select(x => x.Privilege.DomainId)
+            .Distinct()
+            .ToListAsync();
 
-                foreach (var profilePrivilege in profilePrivileges)
-                {
-                    if (!userPrivileges.Contains(profilePrivilege.Privilege.Domain.Id))
-                    {
-                        userPrivileges.Add(profilePrivilege.Privilege.Domain.Id);
-
-                        if (profilePrivilege.Privilege.Name == "platform-all") admin = true;
-                    }
-                }
-            }
-        }
-
-        return (userPrivileges, admin);
+        return (domains, admin);
     }
 }

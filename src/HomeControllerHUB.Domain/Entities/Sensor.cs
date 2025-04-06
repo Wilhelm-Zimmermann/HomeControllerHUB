@@ -14,14 +14,14 @@ public class Sensor : Base
     [Normalized(nameof(Name))]
     public string? NormalizedName { get; set; }
     
-    public string DeviceId { get; set; } = null!; // Unique identifier for the physical device
+    public string DeviceId { get; set; } = null!;
     public SensorType Type { get; set; }
     public string Model { get; set; } = null!;
     public string? FirmwareVersion { get; set; }
-    public string? ApiKey { get; set; } // API key for sensor authentication
+    public string? ApiKey { get; set; }
     
-    public double? MinThreshold { get; set; } // Minimum value for alerts
-    public double? MaxThreshold { get; set; } // Maximum value for alerts
+    public double? MinThreshold { get; set; }
+    public double? MaxThreshold { get; set; }
     
     public bool IsActive { get; set; } = true;
     public DateTime LastCommunication { get; set; }
