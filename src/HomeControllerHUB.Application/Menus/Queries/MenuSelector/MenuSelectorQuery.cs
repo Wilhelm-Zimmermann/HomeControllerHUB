@@ -88,7 +88,7 @@ public class MenuSelectorQueryHandler : IRequestHandler<MenuSelectorQuery, List<
             .SelectMany(up => up.Profile.ProfilePrivileges)
             .AnyAsync(pp => pp.Privilege.NormalizedName == "PLATFORMALL");
 
-        List<Guid> domains = await _context.UserProfiles
+        var domains = await _context.UserProfiles
             .Where(x => x.UserId == userId)
             .SelectMany(up => up.Profile.ProfilePrivileges)
             .Select(x => x.Privilege.DomainId)

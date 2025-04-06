@@ -56,7 +56,7 @@ public class DataRetentionService : BackgroundService
             if (establishment.SubscriptionPlan == null)
             {
                 // Use default retention if no subscription plan
-                await DeleteOldReadings(dbContext, establishment.Id, 30, dateTime.Now, stoppingToken);
+                await DeleteOldReadings(dbContext, establishment.Id, 30, dateTime.UtcNow, stoppingToken);
             }
             else
             {
@@ -64,7 +64,7 @@ public class DataRetentionService : BackgroundService
                     dbContext, 
                     establishment.Id, 
                     establishment.SubscriptionPlan.DataRetentionDays, 
-                    dateTime.Now, 
+                    dateTime.UtcNow, 
                     stoppingToken);
             }
         }
