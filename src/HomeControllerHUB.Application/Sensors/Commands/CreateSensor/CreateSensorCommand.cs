@@ -61,7 +61,7 @@ public class CreateSensorCommandHandler : IRequestHandler<CreateSensorCommand, G
         }
         
         // Generate a unique API key for the sensor with deviceId claim
-        var apiKey = GenerateApiKey(request.DeviceId);
+        var apiKey = GenerateApiKey();
         
         // Create the sensor
         var sensor = new Sensor
@@ -86,7 +86,7 @@ public class CreateSensorCommandHandler : IRequestHandler<CreateSensorCommand, G
         return sensor.Id;
     }
     
-    private string GenerateApiKey(string deviceId)
+    private string GenerateApiKey()
     {
         var key = new byte[32];
         using (var generator = RandomNumberGenerator.Create())
