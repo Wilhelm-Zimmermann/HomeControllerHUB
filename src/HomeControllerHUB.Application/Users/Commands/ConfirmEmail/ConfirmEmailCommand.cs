@@ -4,6 +4,7 @@ using HomeControllerHUB.Domain.Entities;
 using HomeControllerHUB.Domain.Interfaces;
 using HomeControllerHUB.Domain.Models;
 using HomeControllerHUB.Globalization;
+using HomeControllerHUB.Infra.DatabaseContext;
 using HomeControllerHUB.Infra.Services;
 using HomeControllerHUB.Shared.Common;
 using MediatR;
@@ -12,24 +13,26 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HomeControllerHUB.Application.Users.Commands.ConfirmEmail;
 
-public record ConfirmEmailCommand(string Token, string Email) : IRequest<Unit>;
+public record ConfirmEmailCommand(string Token) : IRequest<Unit>;
 
 public class ConfirmEmailCommandHandler : IRequestHandler<ConfirmEmailCommand, Unit>
 {
     private readonly ApiUserManager _userManager;
+    private readonly ApplicationDbContext _context;
     private readonly ISharedResource _resource;
     
     public ConfirmEmailCommandHandler(
         ApiUserManager userManager,
-        ISharedResource resource)
+        ISharedResource resource, ApplicationDbContext context)
     {
         _userManager = userManager;
         _resource = resource;
+        _context = context;
     }
     
     public async Task<Unit> Handle(ConfirmEmailCommand request, CancellationToken cancellationToken)
     {
-        var user = await _userManager.FindByEmailAsync(request.Email);
+        var user = await _context.Users.FirstOrDefaultAsync(x => x.EmailConfirmationToken == request.Token);
         
         if (user == null)
             throw new AppError(404, _resource.NotFoundMessage(nameof(ApplicationUser)));

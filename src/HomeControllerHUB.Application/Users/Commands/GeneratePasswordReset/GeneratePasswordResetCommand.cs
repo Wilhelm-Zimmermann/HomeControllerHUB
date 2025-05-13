@@ -7,15 +7,17 @@ using HomeControllerHUB.Domain.Entities;
 using HomeControllerHUB.Domain.Interfaces;
 using HomeControllerHUB.Domain.Models;
 using HomeControllerHUB.Globalization;
+using HomeControllerHUB.Infra.DatabaseContext;
 using HomeControllerHUB.Infra.Services;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace HomeControllerHUB.Application.Users.Commands.GeneratePasswordReset;
 
 public record GeneratePasswordResetCommand : IRequest<Unit>
 {
-    public string Email { get; init; } = string.Empty;
+    public string Login { get; init; } = string.Empty;
 }
 
 public class GeneratePasswordResetCommandHandler : IRequestHandler<GeneratePasswordResetCommand, Unit>
@@ -23,20 +25,22 @@ public class GeneratePasswordResetCommandHandler : IRequestHandler<GeneratePassw
     private readonly ApiUserManager _userManager;
     private readonly IEmailService _emailService;
     private readonly ISharedResource _resource;
+    private readonly ApplicationDbContext _context;
     
     public GeneratePasswordResetCommandHandler(
         ApiUserManager userManager,
         IEmailService emailService,
-        ISharedResource resource)
+        ISharedResource resource, ApplicationDbContext context)
     {
         _userManager = userManager;
         _emailService = emailService;
         _resource = resource;
+        _context = context;
     }
     
     public async Task<Unit> Handle(GeneratePasswordResetCommand request, CancellationToken cancellationToken)
     {
-        var user = await _userManager.FindByEmailAsync(request.Email);
+        var user = await _context.Users.FirstOrDefaultAsync(x => x.Login == request.Login, cancellationToken);
         
         if (user == null)
             throw new AppError(404, _resource.NotFoundMessage(nameof(ApplicationUser)));

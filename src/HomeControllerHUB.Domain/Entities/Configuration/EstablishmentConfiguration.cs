@@ -39,5 +39,14 @@ public class EstablishmentConfiguration : IEntityTypeConfiguration<Establishment
         builder.Property(x => x.NormalizedSiteName)
             .IsRequired()
             .HasMaxLength(Constants.LongTextSize);
+        
+        // SubscriptionPlan relationship
+        builder.Property(x => x.SubscriptionEndDate);
+        
+        builder.HasOne(x => x.SubscriptionPlan)
+            .WithMany(x => x.Establishments)
+            .HasForeignKey(x => x.SubscriptionPlanId)
+            .OnDelete(DeleteBehavior.SetNull)
+            .IsRequired(false);
     }
 }

@@ -1,4 +1,11 @@
-﻿namespace HomeControllerHUB.Domain.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace HomeControllerHUB.Domain.Models;
 
 public class PaginatedList<T>
 {
@@ -27,5 +34,16 @@ public class PaginatedList<T>
     public static PaginatedList<TItem> Empty<TItem>(int pageNumber, int pageSize)
     {
         return new PaginatedList<TItem>(new List<TItem>(), 0, pageNumber, pageSize);
+    }
+    
+    public static async Task<PaginatedList<TDestination>> CreateAsync<TDestination>(
+        IQueryable<TDestination> source, 
+        int pageNumber, 
+        int pageSize,
+        CancellationToken cancellationToken = default)
+    {
+        var count = await source.CountAsync(cancellationToken);
+        var items = await source.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync(cancellationToken);
+        return new PaginatedList<TDestination>(items, count, pageNumber, pageSize);
     }
 }

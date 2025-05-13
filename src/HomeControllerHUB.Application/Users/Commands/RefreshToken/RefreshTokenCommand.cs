@@ -17,6 +17,7 @@ namespace HomeControllerHUB.Application.Users.Commands.RefreshToken;
 
 public record RefreshTokenCommand : IRequest<AccessTokenEntry>
 {
+    public string Login { get; init; } = string.Empty;
     public string RefreshToken { get; init; } = string.Empty;
 }
 
@@ -44,15 +45,22 @@ public class RefreshTokenCommandHandler : IRequestHandler<RefreshTokenCommand, A
     
     public async Task<AccessTokenEntry> Handle(RefreshTokenCommand request, CancellationToken cancellationToken)
     {
-        // Find the user with the refresh token
-        var user = await _userManager.Users
+        // Find user by login first (username or email)
+        var user = await _context.Users
             .Include(x => x.Establishment)
-            .FirstOrDefaultAsync(u => 
-                _userManager.GetAuthenticationTokenAsync(u, _applicationSettings.JwtSettings.AppName, 
-                    _applicationSettings.JwtSettings.RefreshTokenName).Result == request.RefreshToken, 
-                cancellationToken);
+            .FirstOrDefaultAsync(u => u.Login == request.Login, cancellationToken);
         
-        if (user == null || !user.EmailConfirmed || !user.Enable)
+        if (user == null)
+            throw new AppError(400, _resource.Message("InvalidLogin"));
+            
+            
+        // Verify refresh token
+        var storedRefreshToken = await _userManager.GetAuthenticationTokenAsync(
+            user,
+            _applicationSettings.JwtSettings.AppName,
+            _applicationSettings.JwtSettings.RefreshTokenName);
+            
+        if (storedRefreshToken != request.RefreshToken || !user.EmailConfirmed || !user.Enable)
             throw new AppError(400, _resource.Message("InvalidRefreshToken"));
         
         // Generate new tokens

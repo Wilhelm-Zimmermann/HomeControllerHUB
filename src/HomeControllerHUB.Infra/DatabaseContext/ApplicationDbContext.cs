@@ -31,6 +31,14 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityR
     public DbSet<UserEstablishment> UserEstablishments => Set<UserEstablishment>();
     public DbSet<UserProfile> UserProfiles => Set<UserProfile>();
     
+    // IoT related entities
+    public DbSet<Location> Locations => Set<Location>();
+    public DbSet<Sensor> Sensors => Set<Sensor>();
+    public DbSet<SensorReading> SensorReadings => Set<SensorReading>();
+    public DbSet<SensorAlert> SensorAlerts => Set<SensorAlert>();
+    public DbSet<SensorStatusUpdate> SensorStatusUpdates => Set<SensorStatusUpdate>();
+    public DbSet<SubscriptionPlan> SubscriptionPlans => Set<SubscriptionPlan>();
+    
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -41,6 +49,14 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityR
         modelBuilder.ApplyConfiguration(new GenericConfiguration());
         modelBuilder.ApplyConfiguration(new PrivilegeConfiguration());
         modelBuilder.ApplyConfiguration(new ProfileConfiguration());
+        
+        // IoT related configurations
+        modelBuilder.ApplyConfiguration(new LocationConfiguration());
+        modelBuilder.ApplyConfiguration(new SensorConfiguration());
+        modelBuilder.ApplyConfiguration(new SensorReadingConfiguration());
+        modelBuilder.ApplyConfiguration(new SensorAlertConfiguration());
+        modelBuilder.ApplyConfiguration(new SensorStatusUpdateConfiguration());
+        modelBuilder.ApplyConfiguration(new SubscriptionPlanConfiguration());
     }
     
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

@@ -20,6 +20,12 @@ public class DomainDataInitializer : BaseDataInitializer, IDataInitializer
         CheckAndCreate(DomainNames.User, "Usuários do Sistema");
         CheckAndCreate(DomainNames.Profile, "Perfis de Usuário");
         CheckAndCreate(DomainNames.Privilege, "Privilégios");
+        
+        // IoT Domains
+        CheckAndCreate(DomainNames.Location, "Locais");
+        CheckAndCreate(DomainNames.Sensor, "Sensores");
+        CheckAndCreate(DomainNames.SensorData, "Dados de Sensores");
+        CheckAndCreate(DomainNames.IoT, "Iot Logica");
     }
 
     public override void ClearData()

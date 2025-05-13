@@ -12,6 +12,6 @@ public class Profile : Base
     [Normalized(nameof(Description))]
     public string? NormalizedDescription { get; set; }
     public bool Enable { get; set; }
-    public virtual IList<UserProfile> UserProfiles { get; private set; } = new List<UserProfile>();
-    public virtual IList<ProfilePrivilege> ProfilePrivileges { get; private set; } = new List<ProfilePrivilege>();
+    public virtual IList<UserProfile> UserProfiles { get; private set; }
+    public virtual IList<ProfilePrivilege> ProfilePrivileges { get; private set; }
 }

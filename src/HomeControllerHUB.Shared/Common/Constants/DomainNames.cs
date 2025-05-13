@@ -11,6 +11,8 @@ public static class DomainNames
     public const string Privilege = "Privilege";
     public const string Menu = "Menu";
     public const string Place = "Place";
+    public const string Location = "Location";
     public const string Sensor = "Sensor";
     public const string SensorData = "SensorData";
+    public const string IoT = "IoT";
 }

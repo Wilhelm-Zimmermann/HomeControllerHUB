@@ -6,15 +6,16 @@ using HomeControllerHUB.Domain.Entities;
 using HomeControllerHUB.Domain.Interfaces;
 using HomeControllerHUB.Domain.Models;
 using HomeControllerHUB.Globalization;
+using HomeControllerHUB.Infra.DatabaseContext;
 using HomeControllerHUB.Infra.Services;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace HomeControllerHUB.Application.Users.Commands.ResetPasswordWithToken;
 
 public record ResetPasswordWithTokenCommand : IRequest<Unit>
 {
-    public string Email { get; init; } = string.Empty;
     public string Token { get; init; } = string.Empty;
     public string NewPassword { get; init; } = string.Empty;
 }
@@ -22,19 +23,22 @@ public record ResetPasswordWithTokenCommand : IRequest<Unit>
 public class ResetPasswordWithTokenCommandHandler : IRequestHandler<ResetPasswordWithTokenCommand, Unit>
 {
     private readonly ApiUserManager _userManager;
+    private readonly ApplicationDbContext _context;
     private readonly ISharedResource _resource;
     
     public ResetPasswordWithTokenCommandHandler(
         ApiUserManager userManager,
-        ISharedResource resource)
+        ISharedResource resource,
+        ApplicationDbContext context)
     {
         _userManager = userManager;
         _resource = resource;
+        _context = context;
     }
     
     public async Task<Unit> Handle(ResetPasswordWithTokenCommand request, CancellationToken cancellationToken)
     {
-        var user = await _userManager.FindByEmailAsync(request.Email);
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.PasswordConfirmationToken == request.Token, cancellationToken);
         
         if (user == null)
             throw new AppError(404, _resource.NotFoundMessage(nameof(ApplicationUser)));

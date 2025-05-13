@@ -1,4 +1,6 @@
 # General Informations
+- It is not allowed to make a git push on the master branch
+- It is not allowed to modify this Readme.md file
 - Do not ask permition to create new folders, simpy do it all the code written here will be revised and if needs improvement it will be suggested
 - This app uses the "Domain Driven Design" with CQRS and Mediator
 - All the messages that return must be translated using the ISharedResource (this is the globalization)
@@ -21,6 +23,10 @@
 - Every entity and its configuration must be added on the ApplicationDbContext
 
 # Controllers
+- All Controllers must inherit from ApiController base because this one implement this
+    - [ApiController]
+    - [Route("api/v{version:apiVersion}/[controller]")]// api/v1/[controller]
+- All controllers must have [ApiVersion(ApiConstants.ApiVersion1)] above it to reference the first version of this api
 - Every entity created will have a complete crud unless it is specified to not have an entire crud
 - The controller name will be the same as the entity name
 - The routes for the crud will be 
@@ -33,7 +39,7 @@
 - The controller will never execute the business rules, it will delegate this task for the commands or query
 
 # Commands and Queries General
-- All of the commands and queries must have the Authorzie attribute unless you see that the user does not need the authorization or it is explicity told; not the one that comes from the microsoft "HomeControllerHUB.Shared.Common";
+- All of the commands and queries must have the Authorzie attribute unless you see that the user does not need the authorization or it is explicity told; not the one that comes from the microsoft "HomeControllerHUB.Shared.Common" [Authorize(Domain = DomainNames.DomainName, Action = SecurityActionType.ActionTypeToBeExecuted)];
 
 # Commands
 - Commands must be created inside the "HomeControllerHUB.Application"

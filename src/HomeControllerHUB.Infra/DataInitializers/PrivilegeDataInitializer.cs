@@ -32,6 +32,26 @@ public class PrivilegeDataInitializer : BaseDataInitializer, IDataInitializer
         CheckAndCreate(DomainNames.Profile, PrivilegeNames.ProfileUpdate, "Perfis de usuário - Alterar", SecurityActionType.Update);
         CheckAndCreate(DomainNames.Profile, PrivilegeNames.ProfileDelete, "Perfis de usuário - Excluir", SecurityActionType.Delete);
         CheckAndCreate(DomainNames.Privilege, PrivilegeNames.PrivilegeRead, "Privilégio - Ler", SecurityActionType.Read);
+        
+        // Location privileges
+        CheckAndCreate(DomainNames.Location, PrivilegeNames.LocationAll, "Locais - Tudo", SecurityActionType.All);
+        CheckAndCreate(DomainNames.Location, PrivilegeNames.LocationRead, "Locais - Ver", SecurityActionType.Read);
+        CheckAndCreate(DomainNames.Location, PrivilegeNames.LocationCreate, "Locais - Criar", SecurityActionType.Create);
+        CheckAndCreate(DomainNames.Location, PrivilegeNames.LocationUpdate, "Locais - Alterar", SecurityActionType.Update);
+        CheckAndCreate(DomainNames.Location, PrivilegeNames.LocationDelete, "Locais - Excluir", SecurityActionType.Delete);
+        
+        // Sensor privileges
+        CheckAndCreate(DomainNames.Sensor, PrivilegeNames.SensorAll, "Sensores - Tudo", SecurityActionType.All);
+        CheckAndCreate(DomainNames.Sensor, PrivilegeNames.SensorRead, "Sensores - Ver", SecurityActionType.Read);
+        CheckAndCreate(DomainNames.Sensor, PrivilegeNames.SensorCreate, "Sensores - Criar", SecurityActionType.Create);
+        CheckAndCreate(DomainNames.Sensor, PrivilegeNames.SensorUpdate, "Sensores - Alterar", SecurityActionType.Update);
+        CheckAndCreate(DomainNames.Sensor, PrivilegeNames.SensorDelete, "Sensores - Excluir", SecurityActionType.Delete);
+        
+        // Sensor Data privileges
+        CheckAndCreate(DomainNames.SensorData, PrivilegeNames.SensorDataAll, "Dados dos Sensores - Tudo", SecurityActionType.All);
+        CheckAndCreate(DomainNames.SensorData, PrivilegeNames.SensorDataRead, "Dados dos Sensores - Ver", SecurityActionType.Read);
+        CheckAndCreate(DomainNames.SensorData, PrivilegeNames.SensorDataCreate, "Dados dos Sensores - Criar", SecurityActionType.Create);
+        CheckAndCreate(DomainNames.SensorData, PrivilegeNames.SensorDataDelete, "Dados dos Sensores - Excluir", SecurityActionType.Delete);
     }
     
     private void CheckAndCreate(string domainName, string name, string description, string action)
