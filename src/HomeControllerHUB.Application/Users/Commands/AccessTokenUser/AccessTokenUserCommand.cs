@@ -11,8 +11,8 @@ namespace HomeControllerHUB.Application.Users.Commands.AccessTokenUser;
 
 public record AccessTokenUserCommand : IRequest<AccessTokenEntry>
 {
-    public string Username { get; init; }
-    public string Password { get; init; }
+    public string? Username { get; set; }
+    public string? Password { get; set; }
 }
 
 public class AccessTokenUserCommandHandler : IRequestHandler<AccessTokenUserCommand, AccessTokenEntry>

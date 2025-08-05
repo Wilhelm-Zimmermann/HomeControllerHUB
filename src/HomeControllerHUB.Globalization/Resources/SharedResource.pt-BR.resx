@@ -21,4 +21,85 @@
     <data name="LoginInvalid" xml:space="preserve">
         <value>Nome do usuário/Senha estão incorretos</value>
     </data>
+    <data name="TheRequestedLocationCouldNotBeFound" xml:space="preserve">
+        <value>Localização não encontrada</value>
+    </data>
+    <data name="LocationHasChildren" xml:space="preserve">
+        <value>Essa localização possui dependências</value>
+    </data>
+    <data name="DeleteAllChildLocationsFirst" xml:space="preserve">
+        <value>Apague todas as dependencias dessa localização primeiro</value>
+    </data>
+    <data name="LocationHasSensors" xml:space="preserve">
+        <value>Essa localização possui sensores</value>
+    </data>
+    <data name="MoveSensorsBeforeDeleting" xml:space="preserve">
+        <value>Mova os sensores antes de deletá-la</value>
+    </data>
+    <data name="InvalidParentLocation" xml:space="preserve">
+        <value>Localização inválida</value>
+    </data>
+    <data name="LocationCannotBeItsOwnParent" xml:space="preserve">
+        <value>Localização não pode depender dela mesma</value>
+    </data>
+    <data name="DeviceIdAlreadyInUse" xml:space="preserve">
+        <value>Id do dispositivo já está em uso</value>
+    </data>
+    <data name="SensorDeviceIdMustBeUnique" xml:space="preserve">
+        <value>Id do sensor do dispositivo deve ser único</value>
+    </data>
+    <data name="TheRequestedLocationDoesNotBelongToTheEstablishment" xml:space="preserve">
+        <value>A localização requisitada não pertence a esse estabelecimento</value>
+    </data>
+    <data name="SensorNotFound" xml:space="preserve">
+        <value>Sensor não encontrado</value>
+    </data>
+    <data name="DeleteFailed" xml:space="preserve">
+        <value>Falha na deleção</value>
+    </data>
+    <data name="SensorHasReadingsCannotBeDeleted" xml:space="preserve">
+        <value>Esse sensor possui leituras e não pode ser deletado.</value>
+    </data>
+    <data name="SensorHasAlertsCannotBeDeleted" xml:space="preserve">
+        <value>Esse sensor possui alertas e não pode ser excluído</value>
+    </data>
+    <data name="AuthenticationFailed" xml:space="preserve">
+        <value>Falha na autenticação</value>
+    </data>
+    <data name="InvalidApiKey" xml:space="preserve">
+        <value>Chave da API inválida</value>
+    </data>
+    <data name="SensorValueBelowThreshold" xml:space="preserve">
+        <value>Valor do sensor está abaixo do limite</value>
+    </data>
+    <data name="SensorValueAboveThreshold" xml:space="preserve">
+        <value>Valor do sensor está acima do limite</value>
+    </data>
+    <data name="ValidationFailed" xml:space="preserve">
+        <value>Falha na validação</value>
+    </data>
+    <data name="EstablishmentNotFound" xml:space="preserve">
+        <value>Estabelecimento não encontrado</value>
+    </data>
+    <data name="LocationNotFound" xml:space="preserve">
+        <value>Localização não encontrada</value>
+    </data>
+    <data name="SensorLowBattery" xml:space="preserve">
+        <value>Sensor está com a bateria baixa</value>
+    </data>
+    <data name="InvalidLogin" xml:space="preserve">
+        <value>Login inválido</value>
+    </data>
+    <data name="InvalidRefreshToken" xml:space="preserve">
+        <value>"Refresh token" inválido</value>
+    </data>
+    <data name="InvalidPassword" xml:space="preserve">
+        <value>Senha inválida</value>
+    </data>
+    <data name="Unauthorized" xml:space="preserve">
+        <value>Não autorizado</value>
+    </data>
+    <data name="InvalidToken" xml:space="preserve">
+        <value>Token inválido</value>
+    </data>
 </root>
