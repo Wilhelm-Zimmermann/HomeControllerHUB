@@ -60,11 +60,254 @@ namespace HomeControllerHUB.Globalization.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Falha na autenticação.
+        /// </summary>
+        internal static string AuthenticationFailed {
+            get {
+                return ResourceManager.GetString("AuthenticationFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Apague todas as dependencias dessa localização primeiro.
+        /// </summary>
+        internal static string DeleteAllChildLocationsFirst {
+            get {
+                return ResourceManager.GetString("DeleteAllChildLocationsFirst", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Falha na deleção.
+        /// </summary>
+        internal static string DeleteFailed {
+            get {
+                return ResourceManager.GetString("DeleteFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Id do dispositivo já está em uso.
+        /// </summary>
+        internal static string DeviceIdAlreadyInUse {
+            get {
+                return ResourceManager.GetString("DeviceIdAlreadyInUse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Estabelecimento não encontrado.
+        /// </summary>
+        internal static string EstablishmentNotFound {
+            get {
+                return ResourceManager.GetString("EstablishmentNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Chave da API inválida.
+        /// </summary>
+        internal static string InvalidApiKey {
+            get {
+                return ResourceManager.GetString("InvalidApiKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Login inválido.
+        /// </summary>
+        internal static string InvalidLogin {
+            get {
+                return ResourceManager.GetString("InvalidLogin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Localização inválida.
+        /// </summary>
+        internal static string InvalidParentLocation {
+            get {
+                return ResourceManager.GetString("InvalidParentLocation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Senha inválida.
+        /// </summary>
+        internal static string InvalidPassword {
+            get {
+                return ResourceManager.GetString("InvalidPassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &quot;Refresh token&quot; inválido.
+        /// </summary>
+        internal static string InvalidRefreshToken {
+            get {
+                return ResourceManager.GetString("InvalidRefreshToken", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Token inválido.
+        /// </summary>
+        internal static string InvalidToken {
+            get {
+                return ResourceManager.GetString("InvalidToken", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Localização não pode depender dela mesma.
+        /// </summary>
+        internal static string LocationCannotBeItsOwnParent {
+            get {
+                return ResourceManager.GetString("LocationCannotBeItsOwnParent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Essa localização possui dependências.
+        /// </summary>
+        internal static string LocationHasChildren {
+            get {
+                return ResourceManager.GetString("LocationHasChildren", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Essa localização possui sensores.
+        /// </summary>
+        internal static string LocationHasSensors {
+            get {
+                return ResourceManager.GetString("LocationHasSensors", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Localização não encontrada.
+        /// </summary>
+        internal static string LocationNotFound {
+            get {
+                return ResourceManager.GetString("LocationNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Nome do usuário/Senha estão incorretos.
         /// </summary>
         internal static string LoginInvalid {
             get {
                 return ResourceManager.GetString("LoginInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mova os sensores antes de deletá-la.
+        /// </summary>
+        internal static string MoveSensorsBeforeDeleting {
+            get {
+                return ResourceManager.GetString("MoveSensorsBeforeDeleting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Id do sensor do dispositivo deve ser único.
+        /// </summary>
+        internal static string SensorDeviceIdMustBeUnique {
+            get {
+                return ResourceManager.GetString("SensorDeviceIdMustBeUnique", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Esse sensor possui alertas e não pode ser excluído.
+        /// </summary>
+        internal static string SensorHasAlertsCannotBeDeleted {
+            get {
+                return ResourceManager.GetString("SensorHasAlertsCannotBeDeleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Esse sensor possui leituras e não pode ser deletado..
+        /// </summary>
+        internal static string SensorHasReadingsCannotBeDeleted {
+            get {
+                return ResourceManager.GetString("SensorHasReadingsCannotBeDeleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sensor está com a bateria baixa.
+        /// </summary>
+        internal static string SensorLowBattery {
+            get {
+                return ResourceManager.GetString("SensorLowBattery", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sensor não encontrado.
+        /// </summary>
+        internal static string SensorNotFound {
+            get {
+                return ResourceManager.GetString("SensorNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Valor do sensor está acima do limite.
+        /// </summary>
+        internal static string SensorValueAboveThreshold {
+            get {
+                return ResourceManager.GetString("SensorValueAboveThreshold", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Valor do sensor está abaixo do limite.
+        /// </summary>
+        internal static string SensorValueBelowThreshold {
+            get {
+                return ResourceManager.GetString("SensorValueBelowThreshold", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Localização não encontrada.
+        /// </summary>
+        internal static string TheRequestedLocationCouldNotBeFound {
+            get {
+                return ResourceManager.GetString("TheRequestedLocationCouldNotBeFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A localização requisitada não pertence a esse estabelecimento.
+        /// </summary>
+        internal static string TheRequestedLocationDoesNotBelongToTheEstablishment {
+            get {
+                return ResourceManager.GetString("TheRequestedLocationDoesNotBelongToTheEstablishment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Não autorizado.
+        /// </summary>
+        internal static string Unauthorized {
+            get {
+                return ResourceManager.GetString("Unauthorized", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Falha na validação.
+        /// </summary>
+        internal static string ValidationFailed {
+            get {
+                return ResourceManager.GetString("ValidationFailed", resourceCulture);
             }
         }
     }
