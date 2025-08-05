@@ -1,4 +1,5 @@
 using FluentValidation;
+using HomeControllerHUB.Domain.Entities;
 using HomeControllerHUB.Domain.Models;
 using HomeControllerHUB.Globalization;
 using HomeControllerHUB.Infra.DatabaseContext;
@@ -46,7 +47,7 @@ public class DeleteSensorCommandHandler : IRequestHandler<DeleteSensorCommand>
         {
             throw new AppError(
                 StatusCodes.Status404NotFound,
-                _sharedResource.NotFoundMessage("Sensor"),
+                _sharedResource.NotFoundMessage(nameof(Sensor)),
                 _sharedResource.Message("SensorNotFound"));
         }
 
