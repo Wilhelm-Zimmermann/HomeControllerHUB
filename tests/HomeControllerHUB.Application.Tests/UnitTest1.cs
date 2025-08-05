@@ -1,9 +1,10 @@
-namespace HomeСontrollerHUB.Api.IntegrationTests;
+﻿namespace HomeControllerHUB.Application.Tests;
 
 public class UnitTest1
 {
     [Fact]
     public void Test1()
     {
+
     }
 }
