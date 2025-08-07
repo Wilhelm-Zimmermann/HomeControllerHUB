@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -8,22 +9,26 @@ public class SensorStatusUpdateConfiguration : IEntityTypeConfiguration<SensorSt
     public void Configure(EntityTypeBuilder<SensorStatusUpdate> builder)
     {
         builder.ToTable("SensorStatusUpdates");
-        
+
         builder.HasKey(x => x.Id);
-        
+
         builder.HasOne(x => x.Sensor)
             .WithMany()
             .HasForeignKey(x => x.SensorId)
             .OnDelete(DeleteBehavior.Cascade);
-            
+
         builder.Property(x => x.Status)
             .HasMaxLength(100);
-            
+
         builder.Property(x => x.SignalStrength)
             .HasMaxLength(20);
-            
+
         // Metadata is stored as JSON
         builder.Property(x => x.Metadata)
+            .HasConversion(
+                v => JsonSerializer.Serialize(v, (JsonSerializerOptions)null),
+                v => JsonSerializer.Deserialize<Dictionary<string, string>>(v, (JsonSerializerOptions)null)
+            )
             .HasColumnType("jsonb");
     }
-} 
+}

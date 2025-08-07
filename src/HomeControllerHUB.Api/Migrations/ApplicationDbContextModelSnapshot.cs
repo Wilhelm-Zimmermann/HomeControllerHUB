@@ -53,7 +53,7 @@ namespace HomeControllerHUB.Api.Migrations
 
                     b.HasIndex("NormalizedName");
 
-                    b.ToTable("Domains");
+                    b.ToTable("Domains", (string)null);
                 });
 
             modelBuilder.Entity("HomeControllerHUB.Domain.Entities.ApplicationMenu", b =>
@@ -113,7 +113,7 @@ namespace HomeControllerHUB.Api.Migrations
 
                     b.HasIndex("ParentId");
 
-                    b.ToTable("Menus");
+                    b.ToTable("Menus", (string)null);
                 });
 
             modelBuilder.Entity("HomeControllerHUB.Domain.Entities.ApplicationUser", b =>
@@ -291,7 +291,7 @@ namespace HomeControllerHUB.Api.Migrations
 
                     b.HasIndex("SubscriptionPlanId");
 
-                    b.ToTable("Establishments");
+                    b.ToTable("Establishments", (string)null);
                 });
 
             modelBuilder.Entity("HomeControllerHUB.Domain.Entities.Generic", b =>
@@ -335,7 +335,7 @@ namespace HomeControllerHUB.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Generics");
+                    b.ToTable("Generics", (string)null);
                 });
 
             modelBuilder.Entity("HomeControllerHUB.Domain.Entities.Location", b =>
@@ -437,7 +437,7 @@ namespace HomeControllerHUB.Api.Migrations
 
                     b.HasIndex("EstablishmentId");
 
-                    b.ToTable("Privilege");
+                    b.ToTable("Privilege", (string)null);
                 });
 
             modelBuilder.Entity("HomeControllerHUB.Domain.Entities.Profile", b =>
@@ -474,7 +474,7 @@ namespace HomeControllerHUB.Api.Migrations
 
                     b.HasIndex("EstablishmentId");
 
-                    b.ToTable("Profiles");
+                    b.ToTable("Profiles", (string)null);
                 });
 
             modelBuilder.Entity("HomeControllerHUB.Domain.Entities.ProfilePrivilege", b =>
@@ -501,7 +501,7 @@ namespace HomeControllerHUB.Api.Migrations
 
                     b.HasIndex("ProfileId");
 
-                    b.ToTable("ProfilePrivileges");
+                    b.ToTable("ProfilePrivileges", (string)null);
                 });
 
             modelBuilder.Entity("HomeControllerHUB.Domain.Entities.Sensor", b =>
@@ -793,7 +793,7 @@ namespace HomeControllerHUB.Api.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserEstablishments");
+                    b.ToTable("UserEstablishments", (string)null);
                 });
 
             modelBuilder.Entity("HomeControllerHUB.Domain.Entities.UserProfile", b =>
@@ -820,7 +820,7 @@ namespace HomeControllerHUB.Api.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserProfiles");
+                    b.ToTable("UserProfiles", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", b =>

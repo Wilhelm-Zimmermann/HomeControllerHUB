@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -15,8 +16,11 @@ public class SensorReadingConfiguration : IEntityTypeConfiguration<SensorReading
         builder.Property(x => x.Unit).HasMaxLength(20);
         builder.Property(x => x.RawData).HasMaxLength(1000);
         
-        // Metadata is stored as JSON
         builder.Property(x => x.Metadata)
+            .HasConversion(
+                v => JsonSerializer.Serialize(v, (JsonSerializerOptions)null),
+                v => JsonSerializer.Deserialize<Dictionary<string, string>>(v, (JsonSerializerOptions)null)
+            )
             .HasColumnType("jsonb");
         
         builder.HasIndex(x => x.SensorId);
