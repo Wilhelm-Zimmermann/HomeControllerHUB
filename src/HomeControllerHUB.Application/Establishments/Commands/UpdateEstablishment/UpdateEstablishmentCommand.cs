@@ -25,14 +25,14 @@ public record UpdateEstablishmentCommand : IRequest
     public List<Guid>? UserIds { get; set; } = new List<Guid>();
 }
 
-public class UpdateProfilesCommandHandler : IRequestHandler<UpdateEstablishmentCommand>
+public class UpdateEstablishmentCommandHandler : IRequestHandler<UpdateEstablishmentCommand>
 {
     private readonly ApplicationDbContext _context;
     private readonly ISharedResource _resource;
     private readonly IMapper _mapper;
     private readonly ICurrentUserService _currentUserService;
 
-    public UpdateProfilesCommandHandler(ApplicationDbContext context, ISharedResource resource, IMapper mapper, ICurrentUserService currentUserService)
+    public UpdateEstablishmentCommandHandler(ApplicationDbContext context, ISharedResource resource, IMapper mapper, ICurrentUserService currentUserService)
     {
         _context = context;
         _resource = resource;
