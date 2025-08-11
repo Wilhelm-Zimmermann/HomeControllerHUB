@@ -7,7 +7,7 @@ public class UpdateEstablishmentCommandValidator : AbstractValidator<UpdateEstab
     public UpdateEstablishmentCommandValidator() : base()
     {
         RuleFor(c => c.Id)
-            .NotNull();
+            .NotEmpty();
 
         RuleFor(c => c.Document)
             .NotNull();

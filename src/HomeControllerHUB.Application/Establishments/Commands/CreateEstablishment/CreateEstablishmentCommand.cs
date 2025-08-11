@@ -21,14 +21,14 @@ public record CreateEstablishmentCommand : IRequest<BaseEntityResponse>
     public List<Guid>? UserIds { get; set; } = new List<Guid>();
 }
 
-public class CreateProfileCommandHandler : IRequestHandler<CreateEstablishmentCommand, BaseEntityResponse>
+public class CreateEstablishmentCommandHandler : IRequestHandler<CreateEstablishmentCommand, BaseEntityResponse>
 {
     private readonly ApplicationDbContext _context;
     private readonly IMapper _mapper;
     private readonly ISharedResource _resource;
     private readonly ICurrentUserService _currentUserService;
 
-    public CreateProfileCommandHandler(ApplicationDbContext context, IMapper mapper, ISharedResource resource, ICurrentUserService currentUserService)
+    public CreateEstablishmentCommandHandler(ApplicationDbContext context, IMapper mapper, ISharedResource resource, ICurrentUserService currentUserService)
     {
         _context = context;
         _mapper = mapper;
