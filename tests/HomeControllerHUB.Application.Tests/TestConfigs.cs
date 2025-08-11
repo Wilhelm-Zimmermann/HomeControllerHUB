@@ -1,4 +1,5 @@
-﻿using HomeControllerHUB.Domain.Interfaces;
+﻿using HomeControllerHUB.Domain.Entities;
+using HomeControllerHUB.Domain.Interfaces;
 using HomeControllerHUB.Infra.DatabaseContext;
 using HomeControllerHUB.Infra.Interceptors;
 using Microsoft.EntityFrameworkCore;
@@ -40,5 +41,23 @@ public class TestConfigs : IAsyncLifetime
     public async Task DisposeAsync()
     {
         await _dbContainer.StopAsync();
+    }
+
+    public async Task<Establishment> CreateEstablishment()
+    {
+        var newEstablishment = new Establishment
+        {
+            Id = Guid.NewGuid(),
+            Name = "Estabelecimento teste",
+            SiteName = "Estabelecimento local",
+            Document  = "10923812129038",
+            Enable = true,
+            IsMaster = true,
+        };
+        
+        _context.Establishments.Add(newEstablishment);
+        await _context.SaveChangesAsync();
+        
+        return newEstablishment;
     }
 }
