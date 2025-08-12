@@ -15,17 +15,15 @@ public record DeleteEstablishmentCommand(Guid Id) : IRequest
 {
 }
 
-public class DeleteProfilesCommandHandler : IRequestHandler<DeleteEstablishmentCommand>
+public class DeleteEstablishmentCommandHandler : IRequestHandler<DeleteEstablishmentCommand>
 {
     private readonly ApplicationDbContext _context;
     private readonly ISharedResource _resource;
-    private readonly IMediator _mediator;
 
-    public DeleteProfilesCommandHandler(ApplicationDbContext context, ISharedResource resource, IMediator mediator)
+    public DeleteEstablishmentCommandHandler(ApplicationDbContext context, ISharedResource resource)
     {
         _context = context;
         _resource = resource;
-        _mediator = mediator;
     }
 
     public async Task Handle(DeleteEstablishmentCommand request, CancellationToken cancellationToken)

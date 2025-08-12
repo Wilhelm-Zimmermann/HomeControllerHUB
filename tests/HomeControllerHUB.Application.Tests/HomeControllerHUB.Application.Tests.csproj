@@ -24,10 +24,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Establishments\Queries\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\src\HomeControllerHUB.Api\HomeControllerHUB.Api.csproj" />
     <ProjectReference Include="..\..\src\HomeControllerHUB.Application\HomeControllerHUB.Application.csproj" />
     <ProjectReference Include="..\..\src\HomeControllerHUB.Globalization\HomeControllerHUB.Globalization.csproj" />
