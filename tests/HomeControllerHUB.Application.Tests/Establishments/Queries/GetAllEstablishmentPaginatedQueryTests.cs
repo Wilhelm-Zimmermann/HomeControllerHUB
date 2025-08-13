@@ -25,8 +25,7 @@ public class GetAllEstablishmentPaginatedQueryTests : TestConfigs
         
         _mapper = mapperConfig.CreateMapper();
     }
-
-
+    
     [Fact]
     public async Task Get_Should_Return_All_Establishments()
     {
@@ -42,5 +41,26 @@ public class GetAllEstablishmentPaginatedQueryTests : TestConfigs
         result.Items.Should().HaveCount(1);
         result.Items[0].Id.Should().Be(newEstablishment.Id);
         result.Items[0].Name.Should().Be(newEstablishment.Name);
+    }
+    
+    
+    [Fact]
+    public async Task Get_Should_Return_All_Establishments_MatchingSearch()
+    {
+        // ARRANGE
+        await CreateEstablishment();
+        var novoEstab = await CreateEstablishment("NovoNome");
+        
+        var query = new GetAllEstablishmentPaginatedQuery()
+        {
+            SearchBy = "Novo"
+        };
+        var handler = new GetAllEstablishmentPaginatedQueryHandler(_context, _currentUserServiceMock.Object, _mapper);
+        // ACT
+        var result = await handler.Handle(query, CancellationToken.None);
+        
+        // ASSERT
+        result.Items.Should().HaveCount(1);
+        result.Items[0].Name.Should().Be(novoEstab.Name);
     }
 }

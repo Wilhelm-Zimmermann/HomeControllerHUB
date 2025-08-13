@@ -43,12 +43,12 @@ public class TestConfigs : IAsyncLifetime
         await _dbContainer.StopAsync();
     }
 
-    public async Task<Establishment> CreateEstablishment()
+    public async Task<Establishment> CreateEstablishment(string? name = "Estabelecimento teste")
     {
         var newEstablishment = new Establishment
         {
             Id = Guid.NewGuid(),
-            Name = "Estabelecimento teste",
+            Name = name,
             SiteName = "Estabelecimento local",
             Document  = "10923812129038",
             Enable = true,
