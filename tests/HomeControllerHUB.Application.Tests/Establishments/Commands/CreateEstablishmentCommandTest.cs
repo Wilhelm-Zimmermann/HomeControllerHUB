@@ -58,7 +58,6 @@ public class CreateEstablishmentCommandTest : TestConfigs
 
         // ASSERT
         var establishmentInDb = await _context.Establishments.FindAsync(result.Id);
-        
         establishmentInDb.Should().NotBeNull();
         establishmentInDb.Name.Should().Be(command.Name);
     }
