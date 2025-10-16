@@ -20,6 +20,7 @@ public class SubmitSensorReadingBatchCommandTest : TestConfigs
     {
         // ARRANGE
         var establishment = await CreateEstablishment();
+        _resourceMock.Setup(r => r.Message(It.IsAny<string>())).Returns("Error message");
         var location = new Location { EstablishmentId = establishment.Id, Name = "L" };
         var sensor = new Sensor 
         { 
