@@ -1,10 +1,12 @@
 ﻿using FluentAssertions;
+using System.IdentityModel.Tokens.Jwt;
 using HomeControllerHUB.Application.Users.Commands.AccessTokenUser;
 using HomeControllerHUB.Domain.Entities;
 using HomeControllerHUB.Domain.Interfaces;
 using HomeControllerHUB.Domain.Models;
 using HomeControllerHUB.Globalization;
 using HomeControllerHUB.Infra.Services;
+using HomeControllerHUB.Infra.DatabaseContext;
 using HomeControllerHUB.Infra.Settings;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -27,9 +29,20 @@ public class AccessTokenUserCommandTest : TestConfigs
         _appSettings = new ApplicationSettings { JwtSettings = new JwtSettings { AppName = "TestApp", RefreshTokenName = "TestToken" } };
     }
 
+    private static AccessTokenEntry CreateAccessTokenEntry()
+    {
+        var token = new JwtSecurityToken(expires: DateTime.UtcNow.AddMinutes(5));
+
+        return new AccessTokenEntry(token, null, "new_refresh_token", null)
+        {
+            AccessToken = "new_access_token",
+            RefreshToken = "new_refresh_token"
+        };
+    }
+
     private ApiUserManager CreateUserManager()
     {
-        var store = new UserStore(_context);
+        var store = new UserStore<ApplicationUser, IdentityRole<Guid>, ApplicationDbContext, Guid>(_context);
         var options = new Mock<IOptions<IdentityOptions>>();
         var idOptions = new IdentityOptions();
         idOptions.Lockout.AllowedForNewUsers = false;
@@ -42,17 +55,37 @@ public class AccessTokenUserCommandTest : TestConfigs
             new UpperInvariantLookupNormalizer(), new IdentityErrorDescriber(), new Mock<IServiceProvider>().Object,
             new Mock<ILogger<UserManager<ApplicationUser>>>().Object);
     }
+
+    private async Task<ApplicationUser> CreateUserAsync(ApiUserManager userManager)
+    {
+        var establishment = await CreateEstablishment();
+        var user = new ApplicationUser
+        {
+            UserName = "test",
+            Login = "test",
+            Email = "t@t.com",
+            Name = "Test",
+            EmailConfirmed = true,
+            EstablishmentId = establishment.Id,
+            Establishment = establishment,
+            Enable = true
+        };
+
+        var result = await userManager.CreateAsync(user, "Password123!");
+        result.Succeeded.Should().BeTrue(string.Join(", ", result.Errors.Select(error => error.Description)));
+
+        return user;
+    }
     
     [Fact]
     public async Task AccessToken_Should_ReturnTokens_WhenCredentialsAreValid()
     {
         // ARRANGE
         var userManager = CreateUserManager();
-        var user = new ApplicationUser { UserName = "test", Login = "test", Email = "t@t.com", Name="Test", EmailConfirmed = true, Establishment = await CreateEstablishment() };
-        await userManager.CreateAsync(user, "Password123!");
+        await CreateUserAsync(userManager);
 
         _jwtServiceMock.Setup(s => s.GenerateAsync(It.IsAny<ApplicationUser>(), It.IsAny<Establishment>(), null))
-            .ReturnsAsync(new AccessTokenEntry { AccessToken = "new_access_token", RefreshToken = "new_refresh_token" });
+            .ReturnsAsync(CreateAccessTokenEntry());
 
         var command = new AccessTokenUserCommand { Username = "test", Password = "Password123!" };
         var handler = new AccessTokenUserCommandHandler(_jwtServiceMock.Object, userManager, _appSettings, _resourceMock.Object);
@@ -70,8 +103,7 @@ public class AccessTokenUserCommandTest : TestConfigs
     {
         // ARRANGE
         var userManager = CreateUserManager();
-        var user = new ApplicationUser { UserName = "test", Login = "test", Email = "t@t.com", Name="Test", EmailConfirmed = true, Establishment = await CreateEstablishment() };
-        await userManager.CreateAsync(user, "Password123!");
+        await CreateUserAsync(userManager);
 
         var command = new AccessTokenUserCommand { Username = "test", Password = "WrongPassword!" };
         var handler = new AccessTokenUserCommandHandler(_jwtServiceMock.Object, userManager, _appSettings, _resourceMock.Object);
