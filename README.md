@@ -1,6 +1,26 @@
-# HomeControllerHUB
+<h1 align="center">HomeControllerHUB</h1>
 
-API backend para gerenciamento de ambientes, sensores IoT, usuários, estabelecimentos e dados de monitoramento operacional.
+<p align="center">
+  API backend para automação residencial, gerenciamento de ambientes, sensores IoT e dados de monitoramento.
+</p>
+
+<p align="center">
+  <img alt=".NET 9" src="https://img.shields.io/badge/.NET-9.0-512BD4?style=for-the-badge&logo=dotnet&logoColor=white">
+  <img alt="ASP.NET Core" src="https://img.shields.io/badge/ASP.NET%20Core-Web%20API-512BD4?style=for-the-badge&logo=dotnet&logoColor=white">
+  <img alt="PostgreSQL" src="https://img.shields.io/badge/PostgreSQL-Database-4169E1?style=for-the-badge&logo=postgresql&logoColor=white">
+  <img alt="Docker" src="https://img.shields.io/badge/Docker-Compose-2496ED?style=for-the-badge&logo=docker&logoColor=white">
+  <img alt="Swagger" src="https://img.shields.io/badge/Swagger-OpenAPI-85EA2D?style=for-the-badge&logo=swagger&logoColor=black">
+  <img alt="xUnit" src="https://img.shields.io/badge/Tests-xUnit-5E5E5E?style=for-the-badge">
+</p>
+
+<p align="center">
+  <a href="#visão-geral">Visão geral</a> •
+  <a href="#tecnologias-utilizadas">Tecnologias</a> •
+  <a href="#arquitetura">Arquitetura</a> •
+  <a href="#como-executar">Como executar</a> •
+  <a href="#testes">Testes</a> •
+  <a href="#documentação-complementar">Documentação</a>
+</p>
 
 ## Visão geral
 
@@ -64,18 +84,18 @@ Camadas principais:
 
 ```text
 .
-|-- src/
-|   |-- HomeControllerHUB.Api/
-|   |-- HomeControllerHUB.Application/
-|   |-- HomeControllerHUB.Domain/
-|   |-- HomeControllerHUB.Globalization/
-|   |-- HomeControllerHUB.Infra/
-|   `-- HomeControllerHUB.Shared/
-|-- tests/
-|-- docs/
-|-- Dockerfile
-|-- docker-compose.yml
-`-- HomeControllerHUB.sln
+├── src/
+│   ├── HomeControllerHUB.Api/
+│   ├── HomeControllerHUB.Application/
+│   ├── HomeControllerHUB.Domain/
+│   ├── HomeControllerHUB.Globalization/
+│   ├── HomeControllerHUB.Infra/
+│   └── HomeControllerHUB.Shared/
+├── tests/
+├── docs/
+├── Dockerfile
+├── docker-compose.yml
+└── HomeControllerHUB.sln
 ```
 
 ## Pré-requisitos
