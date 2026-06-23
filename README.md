@@ -1,86 +1,88 @@
 <h1 align="center">HomeControllerHUB</h1>
 
 <p align="center">
-  API backend para automação residencial, gerenciamento de ambientes, sensores IoT e dados de monitoramento.
+  Backend API for home automation, environment management, IoT sensors, users, establishments, and monitoring data.
 </p>
 
 <p align="center">
-  <img alt=".NET 9" src="https://img.shields.io/badge/.NET-9.0-512BD4?style=for-the-badge&logo=dotnet&logoColor=white">
-  <img alt="ASP.NET Core" src="https://img.shields.io/badge/ASP.NET%20Core-Web%20API-512BD4?style=for-the-badge&logo=dotnet&logoColor=white">
-  <img alt="PostgreSQL" src="https://img.shields.io/badge/PostgreSQL-Database-4169E1?style=for-the-badge&logo=postgresql&logoColor=white">
-  <img alt="Docker" src="https://img.shields.io/badge/Docker-Compose-2496ED?style=for-the-badge&logo=docker&logoColor=white">
-  <img alt="Swagger" src="https://img.shields.io/badge/Swagger-OpenAPI-85EA2D?style=for-the-badge&logo=swagger&logoColor=black">
-  <img alt="xUnit" src="https://img.shields.io/badge/Tests-xUnit-5E5E5E?style=for-the-badge">
+  <img src="https://img.shields.io/badge/.NET-9.0-512BD4?style=for-the-badge&logo=dotnet&logoColor=white" alt=".NET" />
+  <img src="https://img.shields.io/badge/ASP.NET%20Core-Web%20API-512BD4?style=for-the-badge&logo=dotnet&logoColor=white" alt="ASP.NET Core" />
+  <img src="https://img.shields.io/badge/PostgreSQL-Database-4169E1?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL" />
+  <img src="https://img.shields.io/badge/Docker-Compose-2496ED?style=for-the-badge&logo=docker&logoColor=white" alt="Docker" />
+  <img src="https://img.shields.io/badge/Swagger-OpenAPI-85EA2D?style=for-the-badge&logo=swagger&logoColor=black" alt="Swagger" />
+  <img src="https://img.shields.io/badge/Status-In%20Development-yellow?style=for-the-badge" alt="Status" />
 </p>
 
 <p align="center">
-  <a href="#visão-geral">Visão geral</a> •
-  <a href="#tecnologias-utilizadas">Tecnologias</a> •
-  <a href="#arquitetura">Arquitetura</a> •
-  <a href="#como-executar">Como executar</a> •
-  <a href="#testes">Testes</a> •
-  <a href="#documentação-complementar">Documentação</a>
+  <a href="#overview">Overview</a> •
+  <a href="#main-features">Features</a> •
+  <a href="#tech-stack">Tech stack</a> •
+  <a href="#architecture">Architecture</a> •
+  <a href="#running-the-project">Running</a> •
+  <a href="#tests">Tests</a>
 </p>
 
-## Visão geral
+---
 
-O **HomeControllerHUB** é uma API REST desenvolvida em .NET para apoiar a administração de uma plataforma de automação residencial e monitoramento IoT.
+## Overview
 
-O projeto combina recursos administrativos, como gestão de usuários, perfis, privilégios e estabelecimentos, com funcionalidades voltadas ao contexto IoT, incluindo cadastro de locais, sensores, ingestão de leituras, atualização de status e suporte a alertas.
+**HomeControllerHUB** is a REST API built with .NET to support the administration of a home automation and IoT monitoring platform.
 
-Este repositório contém apenas o backend da solução. A API foi estruturada para ser consumida por aplicações frontend, sistemas administrativos e dispositivos IoT.
+The project combines administrative features, such as user, profile, privilege, and establishment management, with IoT-related capabilities, including location registration, sensor registration, reading ingestion, status updates, and alert support.
 
-## Principais recursos
+This repository contains only the backend of the solution. The API was designed to be consumed by frontend applications, administrative systems, and IoT devices.
 
-- Autenticação com ASP.NET Core Identity e JWT.
-- Controle de acesso baseado em perfis, privilégios, domínios e ações.
-- Gestão de usuários, perfis e estabelecimentos.
-- Cadastro de locais hierárquicos e sensores IoT.
-- Ingestão de leituras individuais e em lote.
-- Registro de atualizações de status dos sensores.
-- Suporte à geração de alertas por thresholds e bateria baixa.
-- Persistência em PostgreSQL com Entity Framework Core.
-- Documentação de API via Swagger/OpenAPI.
-- Suporte a globalização de mensagens.
-- Testes automatizados com xUnit e Testcontainers.
-- Suporte a Docker Compose para ambiente local.
+## Main features
 
-## Tecnologias utilizadas
+* Authentication with ASP.NET Core Identity and JWT.
+* Access control based on profiles, privileges, domains, and actions.
+* User, profile, and establishment management.
+* Hierarchical location and IoT sensor registration.
+* Individual and batch sensor reading ingestion.
+* Sensor status update registration.
+* Support for alerts based on thresholds and low battery.
+* PostgreSQL persistence with Entity Framework Core.
+* API documentation with Swagger/OpenAPI.
+* Message globalization support.
+* Automated tests with xUnit and Testcontainers.
+* Docker Compose support for local development.
 
-| Categoria | Tecnologias |
-| --- | --- |
-| Backend | .NET 9, ASP.NET Core Web API |
-| Banco de dados | PostgreSQL, Entity Framework Core, Npgsql |
-| Autenticação | ASP.NET Core Identity, JWT Bearer |
-| Arquitetura | MediatR, CQRS, FluentValidation, AutoMapper |
-| Documentação | Swagger / OpenAPI |
-| Testes | xUnit, Moq, FluentAssertions, Testcontainers |
-| Infraestrutura | Docker, Docker Compose |
-| Integrações | Mailgun via HttpClient |
+## Tech stack
 
-## Arquitetura
+| Category       | Technologies                                 |
+| -------------- | -------------------------------------------- |
+| Backend        | .NET 9, ASP.NET Core Web API                 |
+| Database       | PostgreSQL, Entity Framework Core, Npgsql    |
+| Authentication | ASP.NET Core Identity, JWT Bearer            |
+| Architecture   | MediatR, CQRS, FluentValidation, AutoMapper  |
+| Documentation  | Swagger / OpenAPI                            |
+| Tests          | xUnit, Moq, FluentAssertions, Testcontainers |
+| Infrastructure | Docker, Docker Compose                       |
+| Integrations   | Mailgun via HttpClient                       |
 
-O projeto segue uma organização em camadas, separando responsabilidades de entrada HTTP, casos de uso, domínio, infraestrutura e recursos compartilhados.
+## Architecture
 
-Fluxo principal:
+The project follows a layered architecture, separating HTTP entry points, use cases, domain rules, infrastructure concerns, and shared resources.
+
+Main flow:
 
 ```text
 Controller -> Command/Query -> Handler -> Services/DbContext -> PostgreSQL
 ```
 
-Camadas principais:
+Main layers:
 
-| Projeto | Responsabilidade |
-| --- | --- |
-| `HomeControllerHUB.Api` | Camada de entrada da API, com controllers, middlewares, Swagger, versionamento e inicialização. |
-| `HomeControllerHUB.Application` | Casos de uso organizados em commands, queries, handlers, DTOs e validações. |
-| `HomeControllerHUB.Domain` | Entidades, modelos, interfaces, mapeamentos e configurações do domínio. |
-| `HomeControllerHUB.Infra` | Persistência, serviços, interceptors, inicializadores de dados e integrações externas. |
-| `HomeControllerHUB.Shared` | Constantes, atributos e utilitários compartilhados. |
-| `HomeControllerHUB.Globalization` | Recursos e serviços de localização. |
-| `tests` | Projetos de testes automatizados. |
+| Project                           | Responsibility                                                                               |
+| --------------------------------- | -------------------------------------------------------------------------------------------- |
+| `HomeControllerHUB.Api`           | API entry point, controllers, middlewares, Swagger, API versioning, and application startup. |
+| `HomeControllerHUB.Application`   | Use cases organized into commands, queries, handlers, DTOs, and validations.                 |
+| `HomeControllerHUB.Domain`        | Entities, models, interfaces, mappings, and domain configurations.                           |
+| `HomeControllerHUB.Infra`         | Persistence, services, interceptors, data initializers, and external integrations.           |
+| `HomeControllerHUB.Shared`        | Shared constants, attributes, utilities, and helpers.                                        |
+| `HomeControllerHUB.Globalization` | Localization resources and services.                                                         |
+| `tests`                           | Automated test projects.                                                                     |
 
-## Estrutura do repositório
+## Repository structure
 
 ```text
 .
@@ -98,22 +100,22 @@ Camadas principais:
 └── HomeControllerHUB.sln
 ```
 
-## Pré-requisitos
+## Prerequisites
 
-- .NET SDK 9.0.
-- Docker Desktop ou Docker Engine.
-- PostgreSQL local ou PostgreSQL via Docker Compose.
-- `dotnet-ef`, caso queira gerenciar migrations manualmente.
+* .NET SDK 9.0.
+* Docker Desktop or Docker Engine.
+* Local PostgreSQL or PostgreSQL through Docker Compose.
+* `dotnet-ef`, if you want to manage migrations manually.
 
-Instalação opcional do Entity Framework CLI:
+Optional Entity Framework CLI installation:
 
 ```bash
 dotnet tool install --global dotnet-ef
 ```
 
-## Configuração local
+## Local configuration
 
-As principais configurações da aplicação ficam em:
+The main application settings are located in:
 
 ```text
 src/HomeControllerHUB.Api/appsettings.json
@@ -121,101 +123,101 @@ src/HomeControllerHUB.Api/appsettings.Development.json
 src/HomeControllerHUB.Api/appsettings.Testing.json
 ```
 
-Para desenvolvimento local, o projeto utiliza PostgreSQL na porta `15432`, conforme definido no `docker-compose.yml`.
+For local development, the project uses PostgreSQL on port `15432`, as defined in `docker-compose.yml`.
 
-Como o compose usa uma rede externa, crie a rede antes da primeira execução:
+Because the compose file uses an external network, create it before the first execution:
 
 ```bash
 docker network create home-controller-hub-network
 ```
 
-Em ambientes reais, utilize variáveis de ambiente, Secret Manager ou outro mecanismo seguro para connection strings, chaves JWT, credenciais de banco e configurações de e-mail.
+For real environments, use environment variables, Secret Manager, or another secure mechanism for connection strings, JWT keys, database credentials, and email settings.
 
-## Como executar
+## Running the project
 
-Suba o PostgreSQL com Docker Compose:
+Start PostgreSQL with Docker Compose:
 
 ```bash
 docker compose up -d home-controller-hub-postgres
 ```
 
-Restaure as dependências:
+Restore dependencies:
 
 ```bash
 dotnet restore HomeControllerHUB.sln
 ```
 
-Compile a solução:
+Build the solution:
 
 ```bash
 dotnet build HomeControllerHUB.sln
 ```
 
-Execute a API:
+Run the API:
 
 ```bash
 dotnet run --project src/HomeControllerHUB.Api/HomeControllerHUB.Api.csproj --launch-profile http
 ```
 
-Por padrão, o launch profile `http` executa a API em:
+By default, the `http` launch profile runs the API at:
 
 ```text
 http://localhost:6001
 ```
 
-## Banco de dados e migrations
+## Database and migrations
 
-O projeto usa Entity Framework Core Migrations. As migrations ficam no projeto `HomeControllerHUB.Api` e o `ApplicationDbContext` está na camada `HomeControllerHUB.Infra`.
+The project uses Entity Framework Core Migrations. The migrations are located in the `HomeControllerHUB.Api` project, while the `ApplicationDbContext` is part of the `HomeControllerHUB.Infra` layer.
 
-Durante a inicialização da aplicação, o projeto aplica migrations automaticamente conforme a configuração atual:
+During application startup, migrations are applied automatically according to the current configuration:
 
 ```csharp
 dbContext.Database.Migrate();
 ```
 
-Para aplicar migrations manualmente:
+To apply migrations manually:
 
 ```bash
 dotnet ef database update --project src/HomeControllerHUB.Api/HomeControllerHUB.Api.csproj --startup-project src/HomeControllerHUB.Api/HomeControllerHUB.Api.csproj --context ApplicationDbContext
 ```
 
-O projeto também possui inicialização de dados de desenvolvimento quando a configuração `ApplicationSettings:InitializeDataBase` está habilitada.
+The project also includes development data initialization when the `ApplicationSettings:InitializeDataBase` configuration is enabled.
 
-## Testes
+## Tests
 
-Execute todos os testes:
+Run all tests:
 
 ```bash
 dotnet test HomeControllerHUB.sln
 ```
 
-Alguns testes utilizam Testcontainers com PostgreSQL. Para executar essa suíte, o Docker precisa estar ativo e acessível no ambiente local.
+Some tests use Testcontainers with PostgreSQL. To run this test suite, Docker must be running and accessible in the local environment.
 
-## Documentação da API
+## API documentation
 
-Com a API em execução nos ambientes `Development` ou `Testing`, a documentação Swagger fica disponível em:
+When the API is running in the `Development` or `Testing` environments, Swagger documentation is available at:
 
 ```text
 http://localhost:6001/swagger
 ```
 
-O README mantém apenas uma visão geral do projeto. Detalhes de endpoints, contratos e integração ficam nos documentos complementares.
+This README provides only a high-level overview of the project. Endpoint details, contracts, and integration guidance are available in the complementary documentation.
 
-## Documentação complementar
+## Complementary documentation
 
-A pasta `docs/` contém materiais mais detalhados sobre o projeto:
+The `docs/` folder contains more detailed project materials:
 
-- `docs/Frontend_API_Documentation.md`: guia de integração para frontend.
-- `docs/IoT_Implementation_Guide.md`: guia relacionado ao domínio IoT.
-- `docs/ProjectReport.md`: relatório geral do projeto.
-- `docs/ProjDoc.md`: documentação de arquitetura, entidades e execução.
-- `docs/PROJECT_REPORT.md`: análise detalhada da estrutura, fluxos e pontos técnicos.
+* `docs/Frontend_API_Documentation.md`: frontend integration guide.
+* `docs/IoT_Implementation_Guide.md`: IoT domain guide.
+* `docs/ProjectReport.md`: general project report.
+* `docs/ProjDoc.md`: architecture, entities, and execution documentation.
+* `docs/PROJECT_REPORT.md`: detailed analysis of the structure, flows, and technical points.
 
-## Status do projeto
+## Project status
 
-Projeto em evolução, utilizado para estudos e desenvolvimento de uma solução backend para automação residencial, administração de ambientes e monitoramento IoT.
+Project in progress, developed for studying and building a backend solution focused on home automation, environment administration, and IoT monitoring.
 
-## Autor
+## Author
 
 **Wilhelm Henrique Zimmermann**
 
