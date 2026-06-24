@@ -1,4 +1,5 @@
 using AutoMapper;
+using HomeControllerHUB.Domain.Entities;
 using HomeControllerHUB.Application.Locations.Queries;
 using HomeControllerHUB.Domain.Models;
 using HomeControllerHUB.Infra.DatabaseContext;
@@ -16,6 +17,7 @@ public class GetLocationsQuery : IRequest<PaginatedList<LocationDto>>
     public int PageSize { get; set; } = 10;
     public Guid? EstablishmentId { get; set; }
     public Guid? ParentLocationId { get; set; }
+    public bool RootOnly { get; set; }
     public string? SearchString { get; set; }
 }
 
@@ -48,18 +50,22 @@ public class GetLocationsQueryHandler : IRequestHandler<GetLocationsQuery, Pagin
         {
             query = query.Where(l => l.ParentLocationId == request.ParentLocationId.Value);
         }
-        else
+        else if (request.RootOnly)
         {
-            // If no parent is specified, show root locations (those without a parent)
             query = query.Where(l => l.ParentLocationId == null);
         }
         
         // Filter by search string if provided
-        if (!string.IsNullOrEmpty(request.SearchString))
+        if (!string.IsNullOrWhiteSpace(request.SearchString))
         {
-            var normalizedSearchString = request.SearchString.ToUpper();
+            var searchString = request.SearchString.Trim();
+            var normalizedSearchString = searchString.ToUpper();
+            var hasLocationTypeFilter = Enum.TryParse<LocationType>(searchString, true, out var locationType);
             query = query.Where(l => l.NormalizedName!.Contains(normalizedSearchString) || 
-                                     (l.NormalizedDescription != null && l.NormalizedDescription.Contains(normalizedSearchString)));
+                                     (l.NormalizedDescription != null && l.NormalizedDescription.Contains(normalizedSearchString)) ||
+                                     (l.ParentLocation != null && l.ParentLocation.NormalizedName != null && l.ParentLocation.NormalizedName.Contains(normalizedSearchString)) ||
+                                     (l.Establishment.NormalizedName != null && l.Establishment.NormalizedName.Contains(normalizedSearchString)) ||
+                                     (hasLocationTypeFilter && l.Type == locationType));
         }
         
         // Order by name

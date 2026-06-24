@@ -83,6 +83,11 @@ public class UpdateSensorStatusCommandHandler : IRequestHandler<UpdateSensorStat
         {
             sensor.FirmwareVersion = request.FirmwareVersion;
         }
+
+        if (request.BatteryLevel.HasValue)
+        {
+            sensor.BatteryLevel = request.BatteryLevel;
+        }
         
         // Create a status update record with additional details
         var statusUpdate = new SensorStatusUpdate

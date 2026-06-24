@@ -19,7 +19,7 @@ public class GetLocationsQueryTest : TestConfigs
     }
 
     [Fact]
-    public async Task Get_Should_ReturnPaginatedRootLocations()
+    public async Task Get_Should_ReturnPaginatedAllLocations()
     {
         // ARRANGE
         var establishment = await CreateEstablishment();
@@ -27,6 +27,17 @@ public class GetLocationsQueryTest : TestConfigs
         {
             _context.Locations.Add(new Location { EstablishmentId = establishment.Id, Name = $"Root {i + 1}" });
         }
+
+        var parentLocation = new Location { EstablishmentId = establishment.Id, Name = "Parent" };
+        _context.Locations.Add(parentLocation);
+        await _context.SaveChangesAsync();
+
+        _context.Locations.Add(new Location
+        {
+            EstablishmentId = establishment.Id,
+            Name = "Child",
+            ParentLocationId = parentLocation.Id,
+        });
         await _context.SaveChangesAsync();
         
         _mapperMock.Setup(m => m.Map<List<LocationDto>>(It.IsAny<List<Location>>()))
@@ -40,11 +51,120 @@ public class GetLocationsQueryTest : TestConfigs
 
         // ASSERT
         result.Should().NotBeNull();
-        result.Items.Should().HaveCount(5);
-        result.TotalCount.Should().Be(15);
+        result.Items.Should().HaveCount(7);
+        result.TotalCount.Should().Be(17);
         result.PageNumber.Should().Be(2);
         result.HasNextPage.Should().BeFalse();
         result.HasPreviousPage.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task Get_Should_ReturnOnlyRootLocations_WhenRootOnlyIsTrue()
+    {
+        // ARRANGE
+        var establishment = await CreateEstablishment();
+        var parentLocation = new Location { EstablishmentId = establishment.Id, Name = "Parent" };
+        _context.Locations.Add(parentLocation);
+        await _context.SaveChangesAsync();
+
+        _context.Locations.Add(new Location
+        {
+            EstablishmentId = establishment.Id,
+            Name = "Child",
+            ParentLocationId = parentLocation.Id,
+        });
+        await _context.SaveChangesAsync();
+
+        _mapperMock.Setup(m => m.Map<List<LocationDto>>(It.IsAny<List<Location>>()))
+            .Returns<List<Location>>(locs => locs.Select(l => new LocationDto { Id = l.Id }).ToList());
+
+        var query = new GetLocationsQuery { EstablishmentId = establishment.Id, RootOnly = true };
+        var handler = new GetLocationsQueryHandler(_context, _mapperMock.Object);
+
+        // ACT
+        var result = await handler.Handle(query, CancellationToken.None);
+
+        // ASSERT
+        result.Items.Should().ContainSingle();
+        result.Items.Single().Id.Should().Be(parentLocation.Id);
+        result.TotalCount.Should().Be(1);
+    }
+
+    [Fact]
+    public async Task Get_Should_ReturnOnlyChildren_WhenParentLocationIdIsProvided()
+    {
+        // ARRANGE
+        var establishment = await CreateEstablishment();
+        var parentLocation = new Location { EstablishmentId = establishment.Id, Name = "Parent" };
+        var otherParentLocation = new Location { EstablishmentId = establishment.Id, Name = "Other Parent" };
+        _context.Locations.AddRange(parentLocation, otherParentLocation);
+        await _context.SaveChangesAsync();
+
+        var childLocation = new Location
+        {
+            EstablishmentId = establishment.Id,
+            Name = "Child",
+            ParentLocationId = parentLocation.Id,
+        };
+        _context.Locations.AddRange(
+            childLocation,
+            new Location
+            {
+                EstablishmentId = establishment.Id,
+                Name = "Other Child",
+                ParentLocationId = otherParentLocation.Id,
+            });
+        await _context.SaveChangesAsync();
+
+        _mapperMock.Setup(m => m.Map<List<LocationDto>>(It.IsAny<List<Location>>()))
+            .Returns<List<Location>>(locs => locs.Select(l => new LocationDto { Id = l.Id }).ToList());
+
+        var query = new GetLocationsQuery
+        {
+            EstablishmentId = establishment.Id,
+            ParentLocationId = parentLocation.Id,
+        };
+        var handler = new GetLocationsQueryHandler(_context, _mapperMock.Object);
+
+        // ACT
+        var result = await handler.Handle(query, CancellationToken.None);
+
+        // ASSERT
+        result.Items.Should().ContainSingle();
+        result.Items.Single().Id.Should().Be(childLocation.Id);
+        result.TotalCount.Should().Be(1);
+    }
+
+    [Fact]
+    public async Task Get_Should_FillParentLocationName_ForChildLocations()
+    {
+        // ARRANGE
+        var establishment = await CreateEstablishment();
+        var parentLocation = new Location { EstablishmentId = establishment.Id, Name = "Parent" };
+        _context.Locations.Add(parentLocation);
+        await _context.SaveChangesAsync();
+
+        var childLocation = new Location
+        {
+            EstablishmentId = establishment.Id,
+            Name = "Child",
+            ParentLocationId = parentLocation.Id,
+        };
+        _context.Locations.Add(childLocation);
+        await _context.SaveChangesAsync();
+
+        _mapperMock.Setup(m => m.Map<List<LocationDto>>(It.IsAny<List<Location>>()))
+            .Returns<List<Location>>(locs => locs.Select(l => new LocationDto { Id = l.Id }).ToList());
+
+        var query = new GetLocationsQuery { EstablishmentId = establishment.Id };
+        var handler = new GetLocationsQueryHandler(_context, _mapperMock.Object);
+
+        // ACT
+        var result = await handler.Handle(query, CancellationToken.None);
+
+        // ASSERT
+        var childDto = result.Items.Single(location => location.Id == childLocation.Id);
+        childDto.ParentLocationName.Should().Be(parentLocation.Name);
     }
 
     [Fact]

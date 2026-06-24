@@ -45,6 +45,7 @@ public class UpdateSensorStatusCommandTest : TestConfigs
         var sensorInDb = await _context.Sensors.FindAsync(sensor.Id);
         sensorInDb!.IsActive.Should().BeFalse();
         sensorInDb.FirmwareVersion.Should().Be("1.1");
+        sensorInDb.BatteryLevel.Should().Be(80);
         sensorInDb.LastCommunication.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(5));
         
         var statusUpdateInDb = _context.SensorStatusUpdates.FirstOrDefault(su => su.SensorId == sensor.Id);
