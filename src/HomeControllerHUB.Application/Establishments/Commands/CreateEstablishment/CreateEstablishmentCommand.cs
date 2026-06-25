@@ -18,7 +18,7 @@ public record CreateEstablishmentCommand : IRequest<BaseEntityResponse>
     public string Document { get; set; } = null!;
     public bool Enable { get; set; } = false;
     public bool IsMaster { get; set; } = false;
-    public List<Guid>? UserIds { get; set; } = new List<Guid>();
+    public List<Guid>? UserIds { get; set; }
 }
 
 public class CreateEstablishmentCommandHandler : IRequestHandler<CreateEstablishmentCommand, BaseEntityResponse>

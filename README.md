@@ -183,6 +183,28 @@ dotnet ef database update --project src/HomeControllerHUB.Api/HomeControllerHUB.
 
 The project also includes development data initialization when the `ApplicationSettings:InitializeDataBase` configuration is enabled.
 
+### Development demo data
+
+When `ASPNETCORE_ENVIRONMENT=Development` and `ApplicationSettings:InitializeDataBase` is enabled, the API also runs `DevelopmentDataInitializer`.
+
+The initializer is idempotent: if any sensor with a `demo-` device id already exists, it skips demo data creation. It prefers the existing `WillHome` establishment, then the first active non-master establishment, and only creates `WillHome Demo` if no suitable establishment exists.
+
+Demo data includes:
+
+* A location hierarchy with `Casa`, floors, rooms, garage, external area, and garden.
+* 8 sensors with device ids such as `demo-temp-living-room`, `demo-smoke-kitchen`, and `demo-water-garden`.
+* Recent and older sensor readings for dashboard and detail screens.
+* Sensor status updates with battery, firmware, and signal metadata.
+* Pending and acknowledged alerts, including low battery, threshold, smoke, gas, humidity, and offline scenarios.
+
+To populate a local database, start PostgreSQL and run the API in Development:
+
+```bash
+dotnet run --project src/HomeControllerHUB.Api/HomeControllerHUB.Api.csproj --launch-profile http
+```
+
+To recreate the demo data, remove the demo sensors whose `DeviceId` starts with `demo-` and restart the API. Related readings, status updates, and alerts are removed through sensor cascades or can be cleared explicitly from their tables.
+
 ## Tests
 
 Run all tests:

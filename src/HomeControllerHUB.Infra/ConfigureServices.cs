@@ -61,6 +61,7 @@ public static class ConfigureServices
         services.AddTransient<IDataInitializer, PrivilegeDataInitializer>(); // 5
         services.AddTransient<IDataInitializer, GenericDataInitializer>(); // 6
         services.AddTransient<IDataInitializer, MenuDataInitializer>(); // 7
+        services.AddTransient<IDataInitializer, DevelopmentDataInitializer>(); // 8
 
         return services;
     }

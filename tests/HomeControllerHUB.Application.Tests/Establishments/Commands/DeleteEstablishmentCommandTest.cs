@@ -7,7 +7,9 @@ using FluentAssertions;
 using FluentValidation.TestHelper;
 using HomeControllerHUB.Application.Establishments.Commands.DeleteEstablishment;
 using HomeControllerHUB.Application.Tests.Utils;
+using HomeControllerHUB.Domain.Entities;
 using HomeControllerHUB.Domain.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace HomeControllerHUB.Application.Tests.Establishments.Commands;
 
@@ -38,6 +40,11 @@ public class DeleteEstablishmentCommandTest : TestConfigs
         user.EstablishmentId = newEstablishment.Id;
         
         _context.Users.Add(user);
+        _context.UserEstablishments.Add(new UserEstablishment
+        {
+            EstablishmentId = newEstablishment.Id,
+            User = user
+        });
         await _context.SaveChangesAsync();
 
         var command = new DeleteEstablishmentCommand(newEstablishment.Id);
@@ -51,6 +58,9 @@ public class DeleteEstablishmentCommandTest : TestConfigs
         var establishmentInDb = await _context.Establishments.FindAsync(newEstablishment.Id);
         
         establishmentInDb.Enable.Should().BeFalse();
+        var linksCount = await _context.UserEstablishments
+            .CountAsync(userEstablishment => userEstablishment.EstablishmentId == newEstablishment.Id);
+        linksCount.Should().Be(0);
     }
     
     [Fact]

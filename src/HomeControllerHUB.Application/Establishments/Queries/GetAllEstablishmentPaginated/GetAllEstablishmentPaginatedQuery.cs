@@ -14,7 +14,7 @@ namespace HomeControllerHUB.Application.Establishments.Queries.GetAllEstablishme
 [Authorize(Domain = DomainNames.Establishment, Action = SecurityActionType.Read)]
 public record GetAllEstablishmentPaginatedQuery : PaginatedRequest<EstablishmentWithPaginationDto>
 {
-    
+    public bool? Enable { get; init; }
 }
 
 public class GetAllEstablishmentPaginatedQueryHandler : IRequestHandler<GetAllEstablishmentPaginatedQuery, PaginatedList<EstablishmentWithPaginationDto>>
@@ -34,6 +34,11 @@ public class GetAllEstablishmentPaginatedQueryHandler : IRequestHandler<GetAllEs
     {
         var query = _context.Establishments
             .IgnoreQueryFilters();
+
+        if (request.Enable.HasValue)
+        {
+            query = query.Where(e => e.Enable == request.Enable.Value);
+        }
 
         if (!string.IsNullOrEmpty(request.SearchBy) && request.SearchBy.Length > 0)
         {

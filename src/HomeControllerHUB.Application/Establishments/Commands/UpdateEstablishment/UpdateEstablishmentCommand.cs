@@ -22,7 +22,7 @@ public record UpdateEstablishmentCommand : IRequest
     public string Document { get; set; } = null!;
     public bool Enable { get; set; } = false;
     public bool IsMaster { get; set; } = false;
-    public List<Guid>? UserIds { get; set; } = new List<Guid>();
+    public List<Guid>? UserIds { get; set; }
 }
 
 public class UpdateEstablishmentCommandHandler : IRequestHandler<UpdateEstablishmentCommand>
@@ -53,28 +53,30 @@ public class UpdateEstablishmentCommandHandler : IRequestHandler<UpdateEstablish
         establishment.SiteName = request.SiteName;
         establishment.Name = request.Name;
 
-        var usersToDelete = _context.UserEstablishments.Where(c => c.EstablishmentId == establishment.Id).ToList();
-        _context.UserEstablishments.RemoveRange(usersToDelete);
-
-        request.UserIds ??= new List<Guid>();
-        var authUserId = new Guid(_currentUserService.UserId.ToString()!);
-        if (!request.UserIds.Contains(authUserId))
+        if (request.UserIds != null)
         {
-            request.UserIds.Add(authUserId);
-        }
+            var usersToDelete = _context.UserEstablishments.Where(c => c.EstablishmentId == establishment.Id).ToList();
+            _context.UserEstablishments.RemoveRange(usersToDelete);
 
-        foreach (var userId in request.UserIds)
-        {
-            var user = await _context.Users.FindAsync(new object[] { userId }, cancellationToken);
-            if (user == null) throw new AppError(404, _resource.NotFoundMessage(nameof(ApplicationMenu)));
-
-            var userEstablishment = new UserEstablishment()
+            var authUserId = new Guid(_currentUserService.UserId.ToString()!);
+            if (!request.UserIds.Contains(authUserId))
             {
-                Establishment = establishment,
-                User = user,
-            };
+                request.UserIds.Add(authUserId);
+            }
 
-            _context.UserEstablishments.Add(userEstablishment);
+            foreach (var userId in request.UserIds)
+            {
+                var user = await _context.Users.FindAsync(new object[] { userId }, cancellationToken);
+                if (user == null) throw new AppError(404, _resource.NotFoundMessage(nameof(ApplicationMenu)));
+
+                var userEstablishment = new UserEstablishment()
+                {
+                    Establishment = establishment,
+                    User = user,
+                };
+
+                _context.UserEstablishments.Add(userEstablishment);
+            }
         }
 
         await _context.SaveChangesAsync(cancellationToken);

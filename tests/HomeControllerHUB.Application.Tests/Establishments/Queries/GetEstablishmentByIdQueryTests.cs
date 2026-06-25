@@ -5,6 +5,7 @@ using HomeControllerHUB.Domain.Entities;
 using HomeControllerHUB.Domain.Interfaces;
 using HomeControllerHUB.Domain.Mappings;
 using HomeControllerHUB.Globalization;
+using HomeControllerHUB.Application.Tests.Utils;
 using Moq;
 
 namespace HomeControllerHUB.Application.Tests.Establishments.Queries;
@@ -44,6 +45,20 @@ public class GetEstablishmentByIdQueryTests : TestConfigs
         };
         
         _context.Establishments.Add(newEstablishment);
+
+        var user = UserHelpers.GetApplicationUser();
+        user.Id = Guid.NewGuid();
+        user.EstablishmentId = id;
+        user.Name = "Linked User";
+        user.Login = "linked.user";
+        user.Email = "linked@test.com";
+        _context.Users.Add(user);
+        _context.UserEstablishments.Add(new UserEstablishment
+        {
+            Establishment = newEstablishment,
+            User = user
+        });
+
         await _context.SaveChangesAsync();
         
         var query = new GetEstablishmentByIdQuery(id);
@@ -53,5 +68,11 @@ public class GetEstablishmentByIdQueryTests : TestConfigs
         
         // ASSERT
         result.Id.Should().Be(id);
+        result.UserIds.Should().ContainSingle().Which.Should().Be(user.Id);
+        result.Users.Should().ContainSingle();
+        result.Users[0].UserId.Should().Be(user.Id);
+        result.Users[0].Name.Should().Be(user.Name);
+        result.Users[0].Login.Should().Be(user.Login);
+        result.Users[0].Email.Should().Be(user.Email);
     }
 }
