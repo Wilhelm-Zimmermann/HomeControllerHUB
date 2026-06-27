@@ -1,5 +1,6 @@
 ﻿using HomeControllerHUB.Domain.Entities;
 using HomeControllerHUB.Domain.Interfaces;
+using HomeControllerHUB.Infra.Constants;
 using HomeControllerHUB.Infra.DatabaseContext;
 using HomeControllerHUB.Infra.DataInitializers;
 using HomeControllerHUB.Infra.Interceptors;
@@ -51,6 +52,17 @@ public static class ConfigureServices
         services.AddSwagger(new List<string>() { "1" }, "OAuth2", appSettings);
         services.AddLocalization(options => options.ResourcesPath = "Resources");
         ConfigureRateLimiter(services);
+
+        services.AddCors(options =>
+        {
+            options.AddPolicy(name: GeneralConfigs.CORS,
+                              policy =>
+                              {
+                                  policy.WithOrigins("http://localhost:5174")
+                                    .AllowAnyHeader()
+                                    .AllowAnyMethod();
+                              });
+        });
         return services;
     }
 

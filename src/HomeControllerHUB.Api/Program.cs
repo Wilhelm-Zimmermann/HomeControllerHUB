@@ -7,6 +7,7 @@ using HomeControllerHUB.Application;
 using HomeControllerHUB.Domain;
 using HomeControllerHUB.Globalization;
 using HomeControllerHUB.Infra;
+using HomeControllerHUB.Infra.Constants;
 using HomeControllerHUB.Infra.DatabaseContext;
 using HomeControllerHUB.Infra.Settings;
 using HomeControllerHUB.Infra.Swagger;
@@ -62,6 +63,7 @@ if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("Testing"))
 
 }
 
+app.UseCors(GeneralConfigs.CORS);
 app.UseMiddleware<ErrorHandlingMiddleware>();
 app.UseRateLimiter();
 app.IntializeDatabase();
