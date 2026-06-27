@@ -63,6 +63,7 @@ if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("Testing"))
 }
 
 app.UseMiddleware<ErrorHandlingMiddleware>();
+app.UseRateLimiter();
 app.IntializeDatabase();
 app.UseCors(allowedOrigins);
 app.UseAuthentication();

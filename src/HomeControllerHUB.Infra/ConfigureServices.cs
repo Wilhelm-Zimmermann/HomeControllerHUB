@@ -8,24 +8,25 @@ using HomeControllerHUB.Infra.Settings;
 using HomeControllerHUB.Infra.Swagger;
 using HomeControllerHUB.Shared.Utils;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System.Threading.RateLimiting;
 
 namespace HomeControllerHUB.Infra;
 
 public static class ConfigureServices
 {
-    public static IServiceCollection AddInfra(this IServiceCollection services,
-        IConfiguration configuration)
+    public static IServiceCollection AddInfra(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddHttpContextAccessor();
         services.AddHttpClient();
-        
+
         // Named HttpClient for Mailgun
         services.AddHttpClient("Mailgun");
-        
+
         services.AddScoped<BaseEntityInterceptor>();
         services.AddScoped<NormalizedInterceptor>();
         services.AddScoped<IJwtTokenService, JwtTokenService>();
@@ -36,22 +37,23 @@ public static class ConfigureServices
         services.AddScoped<ICurrentUserService, CurrentUserService>();
         services.AddScoped<IDateTime, DateTimeService>();
         services.AddInitializers();
-        
+
         // Register background services
         services.AddHostedService<DataRetentionService>();
-        
+
         // Add configuration settings
         var appSettings = configuration.GetSection(nameof(ApplicationSettings)).Get<ApplicationSettings>();
         services.Configure<ApplicationSettings>(configuration.GetSection(nameof(ApplicationSettings)));
-        
+
         // Configure Email Settings
         services.Configure<EmailSettings>(configuration.GetSection(nameof(EmailSettings)));
-        
-        services.AddSwagger(new List<string>() {"1"}, "OAuth2", appSettings);
+
+        services.AddSwagger(new List<string>() { "1" }, "OAuth2", appSettings);
         services.AddLocalization(options => options.ResourcesPath = "Resources");
+        ConfigureRateLimiter(services);
         return services;
     }
-    
+
     private static IServiceCollection AddInitializers(this IServiceCollection services)
     {
         services.AddTransient<IDataInitializer, EstablishmentDataInitializer>(); // 1
@@ -65,7 +67,7 @@ public static class ConfigureServices
 
         return services;
     }
-    
+
     public static IApplicationBuilder IntializeDatabase(this IApplicationBuilder app)
     {
         using var scope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope();
@@ -86,5 +88,22 @@ public static class ConfigureServices
         }
 
         return app;
+    }
+
+    private static void ConfigureRateLimiter(IServiceCollection services)
+    {
+        services.AddRateLimiter(options =>
+        {
+            options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(httpContext =>
+                RateLimitPartition.GetFixedWindowLimiter(
+                    partitionKey: httpContext.User.Identity?.Name ?? httpContext.Request.Headers.Host.ToString(),
+                    factory: partition => new FixedWindowRateLimiterOptions
+                    {
+                        AutoReplenishment = true,
+                        PermitLimit = 10,
+                        QueueLimit = 0,
+                        Window = TimeSpan.FromMinutes(1)
+                    }));
+        });
     }
 }

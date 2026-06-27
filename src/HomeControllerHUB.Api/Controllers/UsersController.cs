@@ -17,6 +17,7 @@ using HomeControllerHUB.Domain.Models;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace HomeControllerHUB.Api.Controllers;
 
@@ -36,6 +37,8 @@ public class UsersController : ApiControllerBase
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+    // Esse atributo abaixo possibilita setar a policy para o rate limiting, isso é cadastrado na configuração dos serviços, posso ter rotas mais fechadas para evitar muitas requests
+    [EnableRateLimiting("teste")]
     public async Task<ActionResult<BaseEntityResponse>> Create([Required, FromBody] CreateUserCommand command, CancellationToken cancellationToken)
     {
         var result = await Mediator.Send(command, cancellationToken);
