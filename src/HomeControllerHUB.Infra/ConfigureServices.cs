@@ -112,7 +112,7 @@ public static class ConfigureServices
                     factory: partition => new FixedWindowRateLimiterOptions
                     {
                         AutoReplenishment = true,
-                        PermitLimit = 10,
+                        PermitLimit = 1000,
                         QueueLimit = 0,
                         Window = TimeSpan.FromMinutes(1)
                     }));

@@ -119,7 +119,10 @@ public class UpdateSensorCommandHandler : IRequestHandler<UpdateSensorCommand>
         sensor.Type = request.Type;
         sensor.Model = request.Model;
         sensor.FirmwareVersion = request.FirmwareVersion;
-        sensor.ApiKey = request.ApiKey;
+        if (!string.IsNullOrWhiteSpace(request.ApiKey))
+        {
+            sensor.ApiKey = request.ApiKey;
+        }
         sensor.MinThreshold = request.MinThreshold;
         sensor.MaxThreshold = request.MaxThreshold;
         sensor.IsActive = request.IsActive;

@@ -44,6 +44,7 @@ public class GetSensorQueryTest : TestConfigs
         result.Should().NotBeNull();
         result.Id.Should().Be(sensor.Id);
         result.Name.Should().Be(sensor.Name);
+        typeof(SensorDto).GetProperty("ApiKey").Should().BeNull();
     }
 
     [Fact]
