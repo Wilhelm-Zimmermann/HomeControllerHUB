@@ -10,6 +10,7 @@ using HomeControllerHUB.Application.Users.Commands.ConfirmEmail;
 using HomeControllerHUB.Application.Users.Commands.GeneratePasswordReset;
 using HomeControllerHUB.Application.Users.Commands.ResetPasswordWithToken;
 using HomeControllerHUB.Application.Users.Queries.GetCurrentUser;
+using HomeControllerHUB.Application.Users.Queries.GetUserById;
 using HomeControllerHUB.Application.Users.Queries.GetUserList;
 using HomeControllerHUB.Domain.Entities;
 using HomeControllerHUB.Domain.Models;
@@ -71,6 +72,21 @@ public class UsersController : ApiControllerBase
     public async Task<ActionResult<CurrentUserDto>> GetCurrentUser(CancellationToken cancellationToken)
     {
         return await Mediator.Send(new GetCurrentUserQuery(), cancellationToken);
+    }
+
+    /// <summary>
+    /// Retrieves a specific user by ID for administrative editing
+    /// </summary>
+    [HttpGet("{id}")]
+    [ProducesResponseType(typeof(UserDetailDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<UserDetailDto>> GetById([Required] Guid id, CancellationToken cancellationToken)
+    {
+        return await Mediator.Send(new GetUserByIdQuery(id), cancellationToken);
     }
 
     /// <summary>
@@ -185,17 +201,17 @@ public class UsersController : ApiControllerBase
     }
 
     /// <summary>
-    /// Retrieves a list of users with optional filtering
+    /// Retrieves a paginated list of users with optional filtering
     /// </summary>
     [HttpGet("list")]
-    [ProducesResponseType(typeof(List<UserListDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(PaginatedList<UserListDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<List<UserListDto>>> GetUserList([FromQuery] string? searchBy, CancellationToken cancellationToken)
+    public async Task<ActionResult<PaginatedList<UserListDto>>> GetUserList([FromQuery] GetUserListQuery query, CancellationToken cancellationToken)
     {
-        return await Mediator.Send(new GetUserListQuery { SearchBy = searchBy }, cancellationToken);
+        return await Mediator.Send(query, cancellationToken);
     }
 }

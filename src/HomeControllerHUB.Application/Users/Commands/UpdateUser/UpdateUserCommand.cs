@@ -25,6 +25,8 @@ public record UpdateUserCommand : IRequest<Unit>
     public string Login { get; init; } = string.Empty;
     public string Document { get; init; } = string.Empty;
     public Guid EstablishmentId { get; init; }
+    public IList<Guid>? EstablishmentIds { get; init; }
+    public IList<Guid>? ProfileIds { get; init; }
     public IList<Guid>? UserEstablishmentsIds { get; init; }
     public IList<Guid>? UserProfilesIds { get; init; }
     public bool Enable { get; init; }
@@ -74,8 +76,11 @@ public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, Unit>
             throw new AppError(400, errorMessage);
         }
         
-        // Update UserProfiles if provided
-        if (request.UserProfilesIds != null)
+        var profileIds = request.ProfileIds ?? request.UserProfilesIds;
+        var establishmentIds = request.EstablishmentIds ?? request.UserEstablishmentsIds;
+
+        // Update UserProfiles only when the request explicitly provides profile IDs.
+        if (profileIds != null)
         {
             // Remove existing profiles
             var existingProfiles = await _context.UserProfiles
@@ -85,7 +90,7 @@ public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, Unit>
             _context.UserProfiles.RemoveRange(existingProfiles);
             
             // Add new profiles
-            foreach (var profileId in request.UserProfilesIds)
+            foreach (var profileId in profileIds.Distinct())
             {
                 var userProfile = new UserProfile
                 {
@@ -98,8 +103,8 @@ public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, Unit>
             }
         }
         
-        // Update UserEstablishments if provided
-        if (request.UserEstablishmentsIds != null)
+        // Update UserEstablishments only when the request explicitly provides establishment IDs.
+        if (establishmentIds != null)
         {
             // Remove existing establishments
             var existingEstablishments = await _context.UserEstablishments
@@ -109,7 +114,7 @@ public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, Unit>
             _context.UserEstablishments.RemoveRange(existingEstablishments);
             
             // Add new establishments
-            foreach (var establishmentId in request.UserEstablishmentsIds)
+            foreach (var establishmentId in establishmentIds.Distinct())
             {
                 var userEstablishment = new UserEstablishment
                 {

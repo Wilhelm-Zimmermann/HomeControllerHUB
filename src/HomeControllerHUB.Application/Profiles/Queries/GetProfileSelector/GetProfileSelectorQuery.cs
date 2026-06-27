@@ -10,7 +10,7 @@ using Profile = HomeControllerHUB.Domain.Entities.Profile;
 
 namespace HomeControllerHUB.Application.Profiles.Queries.GetProfileSelector;
 
-[Authorize(Domain = DomainNames.Establishment, Action = SecurityActionType.Read)]
+[Authorize(Domain = DomainNames.Profile, Action = SecurityActionType.Read)]
 public record GetProfileSelectorQuery : IRequest<List<ProfileSelectorDto>>
 {
 }

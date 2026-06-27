@@ -24,6 +24,9 @@ public record CreateUserCommand : IRequest<BaseEntityResponse>
     public string Name { get; init; } = string.Empty;
     public string Document { get; init; } = string.Empty;
     public Guid EstablishmentId { get; init; }
+    public bool? Enable { get; init; }
+    public IList<Guid>? EstablishmentIds { get; init; }
+    public IList<Guid>? ProfileIds { get; init; }
     public IList<Guid>? UserEstablishmentsIds { get; init; }
     public IList<Guid> UserProfilesIds { get; init; } = new List<Guid>();
 };
@@ -59,10 +62,13 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, BaseE
             EstablishmentId = request.EstablishmentId,
             EmailConfirmed = false,
             EmailConfirmationToken = emailConfirmationToken,
-            Enable = true
+            Enable = request.Enable ?? true
         };
 
-        foreach (var profileId in request.UserProfilesIds)
+        var profileIds = request.ProfileIds ?? request.UserProfilesIds;
+        var establishmentIds = request.EstablishmentIds ?? request.UserEstablishmentsIds;
+
+        foreach (var profileId in profileIds.Distinct())
         {
             var userProfile = new UserProfile
             {
@@ -74,9 +80,9 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, BaseE
             _context.UserProfiles.Add(userProfile);
         }
 
-        if (request.UserEstablishmentsIds?.Count > 0)
+        if (establishmentIds?.Count > 0)
         {
-            foreach (var establishmentId in request.UserEstablishmentsIds)
+            foreach (var establishmentId in establishmentIds.Distinct())
             {
                 var userEstablishment = new UserEstablishment
                 {
