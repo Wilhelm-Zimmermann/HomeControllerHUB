@@ -14,7 +14,7 @@ namespace HomeControllerHUB.Application.Profiles.Queries.GetAllProfilePaginated;
 [Authorize(Domain = DomainNames.Profile, Action = SecurityActionType.Read)]
 public record GetAllProfilePaginatedQuery : PaginatedRequest<GetProfilePaginatedDto>
 {
-    
+    public bool? Enable { get; init; }
 }
 
 public class GetAllProfilePaginatedQueryHandler : IRequestHandler<GetAllProfilePaginatedQuery, PaginatedList<GetProfilePaginatedDto>>
@@ -38,7 +38,14 @@ public class GetAllProfilePaginatedQueryHandler : IRequestHandler<GetAllProfileP
         if (!string.IsNullOrEmpty(request.SearchBy))
         {
             var normalizedSearch = StringExtensions.Normalize(request.SearchBy);
-            query = query.Where(x => EF.Functions.Like(x.NormalizedName, $"%{normalizedSearch}%"));
+            query = query.Where(x =>
+                EF.Functions.Like(x.NormalizedName, $"%{normalizedSearch}%") ||
+                EF.Functions.Like(x.NormalizedDescription, $"%{normalizedSearch}%"));
+        }
+
+        if (request.Enable.HasValue)
+        {
+            query = query.Where(x => x.Enable == request.Enable.Value);
         }
 
         return await query

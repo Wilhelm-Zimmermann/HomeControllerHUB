@@ -25,16 +25,15 @@ public class CreateProfileCommandTest : TestConfigs
         _validator = new CreateProfileCommandValidator();
     }
 
-    private async Task<List<Privilege>> SeedPrivileges()
+    private async Task<List<Privilege>> SeedPrivileges(Guid establishmentId)
     {
-        var establishment = await CreateEstablishment();
         var domain = new ApplicationDomain { Name = "Test Domain" };
         _context.Domains.Add(domain);
 
         var privileges = new List<Privilege>
         {
-            new() { Name = "priv-1", Description = "Privilege 1", EstablishmentId = establishment.Id, Domain = domain, Actions = "Read" },
-            new() { Name = "priv-2", Description = "Privilege 2", EstablishmentId = establishment.Id, Domain = domain, Actions = "Write" }
+            new() { Name = "priv-1", Description = "Privilege 1", EstablishmentId = establishmentId, Domain = domain, Actions = "Read" },
+            new() { Name = "priv-2", Description = "Privilege 2", EstablishmentId = establishmentId, Domain = domain, Actions = "Write" }
         };
         _context.Privilege.AddRange(privileges);
         await _context.SaveChangesAsync();
@@ -48,7 +47,7 @@ public class CreateProfileCommandTest : TestConfigs
         var establishment = await CreateEstablishment();
         _currentUserServiceMock.Setup(s => s.EstablishmentId).Returns(establishment.Id);
 
-        var privileges = await SeedPrivileges();
+        var privileges = await SeedPrivileges(establishment.Id);
         var command = new CreateProfileCommand
         {
             Name = "Admin Profile",

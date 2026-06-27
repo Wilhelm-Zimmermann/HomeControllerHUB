@@ -7,10 +7,10 @@ public class UpdateProfileCommandValidator : AbstractValidator<UpdateProfileComm
     public UpdateProfileCommandValidator() : base()
     {
         RuleFor(c => c.Id)
-           .NotNull();
+           .NotEmpty();
 
         RuleFor(c => c.Name)
-            .NotNull();
+            .NotEmpty();
 
         RuleFor(c => c.Description)
             .NotNull();
@@ -18,7 +18,8 @@ public class UpdateProfileCommandValidator : AbstractValidator<UpdateProfileComm
         RuleFor(v => v.Enable)
             .NotNull();
 
-        RuleFor(c => c.PrivilegeIds)
-            .NotEmpty();
+        RuleForEach(c => c.PrivilegeIds)
+            .NotEmpty()
+            .When(c => c.PrivilegeIds != null);
     }
 }

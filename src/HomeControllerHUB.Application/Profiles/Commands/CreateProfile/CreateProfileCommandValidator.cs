@@ -1,5 +1,4 @@
 ﻿using FluentValidation;
-using FluentValidation.AspNetCore;
 
 namespace HomeControllerHUB.Application.Profiles.Commands.CreateProfile;
 
@@ -13,7 +12,8 @@ public class CreateProfileCommandValidator : AbstractValidator<CreateProfileComm
         RuleFor(x => x.Enable)
             .NotNull();
 
-        RuleFor(x => x.PrivilegeIds)
-            .NotNull();
+        RuleForEach(x => x.PrivilegeIds)
+            .NotEmpty()
+            .When(x => x.PrivilegeIds != null);
     }
 }

@@ -7,6 +7,7 @@ using HomeControllerHUB.Infra.DatabaseContext;
 using HomeControllerHUB.Shared.Common;
 using HomeControllerHUB.Shared.Common.Constants;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Profile = HomeControllerHUB.Domain.Entities.Profile;
 
 namespace HomeControllerHUB.Application.Profiles.Commands.CreateProfile;
@@ -17,7 +18,7 @@ public record CreateProfileCommand : IRequest<BaseEntityResponse>
     public string Name { get; set; } = null!;
     public string Description { get; set; } = null!;
     public bool Enable { get; set; }
-    public List<Guid> PrivilegeIds { get; set; } = new List<Guid>();
+    public List<Guid>? PrivilegeIds { get; set; }
 }
 
 public class CreateProfileCommandHandler : IRequestHandler<CreateProfileCommand, BaseEntityResponse>
@@ -47,9 +48,9 @@ public class CreateProfileCommandHandler : IRequestHandler<CreateProfileCommand,
             Enable = request.Enable,
         };
 
-        foreach (var privilegeId in request.PrivilegeIds)
+        foreach (var privilegeId in request.PrivilegeIds?.Distinct() ?? Enumerable.Empty<Guid>())
         {
-            var priv = await _context.Privilege.FindAsync(new object[] { privilegeId }, cancellationToken);
+            var priv = await _context.Privilege.FirstOrDefaultAsync(p => p.Id == privilegeId && p.EstablishmentId == establishmentId, cancellationToken);
             if(priv == null) throw new AppError(404, _resource.NotFoundMessage(nameof(Privilege)));
 
             var profilePrivilege = new ProfilePrivilege()

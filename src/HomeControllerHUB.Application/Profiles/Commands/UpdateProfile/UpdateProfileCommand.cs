@@ -1,5 +1,6 @@
 ﻿
 using HomeControllerHUB.Domain.Entities;
+using HomeControllerHUB.Domain.Interfaces;
 using HomeControllerHUB.Domain.Models;
 using HomeControllerHUB.Globalization;
 using HomeControllerHUB.Infra.DatabaseContext;
@@ -7,7 +8,7 @@ using HomeControllerHUB.Shared.Common;
 using HomeControllerHUB.Shared.Common.Constants;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Profile = AutoMapper.Profile;
+using Profile = HomeControllerHUB.Domain.Entities.Profile;
 
 namespace HomeControllerHUB.Application.Profiles.Commands.UpdateProfile;
 
@@ -18,25 +19,27 @@ public record UpdateProfileCommand : IRequest
     public string Name { get; set; } = null!;
     public string Description { get; set; } = null!;
     public bool Enable { get; set; }
-    public List<Guid> PrivilegeIds { get; set; } = new List<Guid>();
+    public List<Guid>? PrivilegeIds { get; set; }
 }
 
 public class UpdateProfilesCommandHandler : IRequestHandler<UpdateProfileCommand>
 {
     private readonly ApplicationDbContext _context;
     private readonly ISharedResource _resource;
+    private readonly ICurrentUserService _currentUserService;
 
-    public UpdateProfilesCommandHandler(ApplicationDbContext context, ISharedResource resource)
+    public UpdateProfilesCommandHandler(ApplicationDbContext context, ISharedResource resource, ICurrentUserService currentUserService)
     {
         _context = context;
         _resource = resource;
+        _currentUserService = currentUserService;
     }
 
     public async Task Handle(UpdateProfileCommand request, CancellationToken cancellationToken)
     {
         var profile = await _context.Profiles
             .IgnoreQueryFilters()
-            .FirstOrDefaultAsync(r => r.Id == request.Id, cancellationToken);
+            .FirstOrDefaultAsync(r => r.Id == request.Id && r.EstablishmentId == _currentUserService.EstablishmentId, cancellationToken);
         if(profile == null) throw new AppError(404, _resource.NotFoundMessage(nameof(Profile)));
 
 
@@ -44,13 +47,21 @@ public class UpdateProfilesCommandHandler : IRequestHandler<UpdateProfileCommand
         profile.Description = request.Description;
         profile.Enable = request.Enable;
 
-        var privilegesToDelete = _context.ProfilePrivileges.Where(c => c.ProfileId == profile.Id).ToList();
+        if (request.PrivilegeIds == null)
+        {
+            await _context.SaveChangesAsync(cancellationToken);
+            return;
+        }
+
+        var privilegesToDelete = await _context.ProfilePrivileges
+            .Where(c => c.ProfileId == profile.Id)
+            .ToListAsync(cancellationToken);
 
         _context.ProfilePrivileges.RemoveRange(privilegesToDelete);
 
-        foreach (var privilegeId in request.PrivilegeIds)
+        foreach (var privilegeId in request.PrivilegeIds.Distinct())
         {
-            var privilege = await _context.Privilege.FindAsync(new object[] { privilegeId }, cancellationToken);
+            var privilege = await _context.Privilege.FirstOrDefaultAsync(p => p.Id == privilegeId && p.EstablishmentId == profile.EstablishmentId, cancellationToken);
             if(privilege == null) throw new AppError(404, _resource.NotFoundMessage(nameof(Privilege)));
 
             var profilePrivilege = new ProfilePrivilege()

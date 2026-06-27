@@ -39,8 +39,10 @@ public class PrivilegeSelectorQueryHandler : IRequestHandler<PrivilegeSelectorQu
 
     public async Task<List<PrivilegeSelectorDto>> Handle(PrivilegeSelectorQuery request, CancellationToken cancellationToken)
     {
+        var establishmentId = _currentUserService.EstablishmentId;
         var entity = _context.Privilege
-            .IgnoreQueryFilters();
+            .IgnoreQueryFilters()
+            .Where(p => p.EstablishmentId == establishmentId);
 
         var query = new GetCurrentUserQuery();
         var currentUser = await _mediator.Send(query);

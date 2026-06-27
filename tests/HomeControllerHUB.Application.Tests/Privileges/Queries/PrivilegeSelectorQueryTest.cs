@@ -6,6 +6,7 @@ using HomeControllerHUB.Application.Privileges.Queries.PrivilegeSelector;
 using HomeControllerHUB.Application.Users.Queries.GetCurrentUser;
 using HomeControllerHUB.Domain.Entities;
 using HomeControllerHUB.Domain.Interfaces;
+using HomeControllerHUB.Domain.Mappings;
 using HomeControllerHUB.Globalization;
 using HomeControllerHUB.Infra.Services;
 using MediatR;
@@ -29,8 +30,7 @@ public class PrivilegeSelectorQueryTest : TestConfigs
     {
         var config = new MapperConfiguration(cfg =>
         {
-            cfg.CreateMap<Privilege, PrivilegeSelectorDto>()
-                .ForMember(dest => dest.Code, opt => opt.MapFrom(src => src.Description));
+            cfg.AddProfile(new MappingProfile(typeof(PrivilegeSelectorDto).Assembly));
         });
         _mapper = config.CreateMapper();
         
@@ -51,10 +51,10 @@ public class PrivilegeSelectorQueryTest : TestConfigs
             new Mock<IServiceProvider>().Object, new Mock<ILogger<UserManager<ApplicationUser>>>().Object);
     }
 
-    private async Task SeedPrivileges()
+    private async Task<Establishment> SeedPrivileges()
     {
         var establishment = await CreateEstablishment();
-        var domain = new ApplicationDomain { Name = "Test Domain" };
+        var domain = new ApplicationDomain { Name = "Test Domain", Description = "Domain display" };
         _context.Domains.Add(domain);
 
         _context.Privilege.AddRange(
@@ -63,13 +63,15 @@ public class PrivilegeSelectorQueryTest : TestConfigs
             new Privilege { Name = "sensors-read", Description = "Read Sensors", EstablishmentId = establishment.Id, Domain = domain, Actions = "Read" }
         );
         await _context.SaveChangesAsync();
+        return establishment;
     }
 
     [Fact]
     public async Task Get_Should_ReturnAllPrivileges_ForPlatformAdmin()
     {
         // ARRANGE
-        await SeedPrivileges();
+        var establishment = await SeedPrivileges();
+        _currentUserServiceMock.Setup(s => s.EstablishmentId).Returns(establishment.Id);
         var userDto = new CurrentUserDto { Privileges = new List<string> { "platform-all" } };
         _mediatorMock.Setup(m => m.Send(It.IsAny<GetCurrentUserQuery>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(userDto);
@@ -88,7 +90,8 @@ public class PrivilegeSelectorQueryTest : TestConfigs
     public async Task Get_Should_ReturnSpecificPrivileges_ForGroupAdmin()
     {
         // ARRANGE
-        await SeedPrivileges();
+        var establishment = await SeedPrivileges();
+        _currentUserServiceMock.Setup(s => s.EstablishmentId).Returns(establishment.Id);
         var userDto = new CurrentUserDto { Privileges = new List<string> { "locations-all" } };
         _mediatorMock.Setup(m => m.Send(It.IsAny<GetCurrentUserQuery>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(userDto);
@@ -109,7 +112,8 @@ public class PrivilegeSelectorQueryTest : TestConfigs
     public async Task Get_Should_FilterBySearch()
     {
         // ARRANGE
-        await SeedPrivileges();
+        var establishment = await SeedPrivileges();
+        _currentUserServiceMock.Setup(s => s.EstablishmentId).Returns(establishment.Id);
         var userDto = new CurrentUserDto { Privileges = new List<string> { "platform-all" } };
         _mediatorMock.Setup(m => m.Send(It.IsAny<GetCurrentUserQuery>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(userDto);
@@ -123,6 +127,31 @@ public class PrivilegeSelectorQueryTest : TestConfigs
         // ASSERT
         result.Should().HaveCount(1);
         result.First().Name.Should().Be("sensors-read");
+    }
+
+    [Fact]
+    public async Task Get_Should_ReturnDomainAndActionFields()
+    {
+        // ARRANGE
+        var establishment = await SeedPrivileges();
+        _currentUserServiceMock.Setup(s => s.EstablishmentId).Returns(establishment.Id);
+        var userDto = new CurrentUserDto { Privileges = new List<string> { "platform-all" } };
+        _mediatorMock.Setup(m => m.Send(It.IsAny<GetCurrentUserQuery>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(userDto);
+
+        var query = new PrivilegeSelectorQuery(null);
+        var handler = new PrivilegeSelectorQueryHandler(_context, _mapper, _currentUserServiceMock.Object, _userManagerMock.Object, _resourceMock.Object, _mediatorMock.Object);
+
+        // ACT
+        var result = await handler.Handle(query, CancellationToken.None);
+
+        // ASSERT
+        var privilege = result.First(p => p.Name == "locations-read");
+        privilege.Domain.Should().Be("Test Domain");
+        privilege.DomainDisplayName.Should().Be("Domain display");
+        privilege.Action.Should().Be("Read");
+        privilege.ActionDisplayName.Should().Be("Read");
+        privilege.Description.Should().Be("Read Locations");
     }
 
     [Theory]
