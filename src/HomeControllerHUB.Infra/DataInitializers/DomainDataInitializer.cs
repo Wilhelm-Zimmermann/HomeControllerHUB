@@ -26,6 +26,7 @@ public class DomainDataInitializer : BaseDataInitializer, IDataInitializer
         CheckAndCreate(DomainNames.Sensor, "Sensores");
         CheckAndCreate(DomainNames.SensorData, "Dados de Sensores");
         CheckAndCreate(DomainNames.IoT, "Iot Logica");
+        CheckAndCreate(DomainNames.AuditLog, "Logs de Auditoria");
     }
 
     public override void ClearData()

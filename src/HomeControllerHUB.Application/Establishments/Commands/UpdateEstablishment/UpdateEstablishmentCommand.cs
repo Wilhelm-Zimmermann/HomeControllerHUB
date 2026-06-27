@@ -14,7 +14,7 @@ using Profile = AutoMapper.Profile;
 namespace HomeControllerHUB.Application.Establishments.Commands.UpdateEstablishment;
 
 [Authorize(Domain = DomainNames.Establishment, Action = SecurityActionType.Update)]
-public record UpdateEstablishmentCommand : IRequest
+public record UpdateEstablishmentCommand : IRequest, IAuditableCommand
 {
     public Guid Id { get; init; }
     public string? Name { get; set; }
@@ -23,6 +23,15 @@ public record UpdateEstablishmentCommand : IRequest
     public bool Enable { get; set; } = false;
     public bool IsMaster { get; set; } = false;
     public List<Guid>? UserIds { get; set; }
+    public string AuditAction { get; set; } = "Establishment-Update";
+
+    public string AuditEntityName { get; set; } = "Establishment-Update";
+
+    public string? AuditEntityId { get; set; } = "Establishment-Update";
+
+    public string? AuditEntityDisplayName { get; set; } = "Establishment-Update";
+
+    public string? AuditDescription { get; set; } = "Establishment-Update";
 }
 
 public class UpdateEstablishmentCommandHandler : IRequestHandler<UpdateEstablishmentCommand>

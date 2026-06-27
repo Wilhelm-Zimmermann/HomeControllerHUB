@@ -24,6 +24,7 @@ public static class ConfigureServices
         services.AddAutoMapper(typeof(Domain.ConfigureServices).Assembly);
         
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(AuthorizationBehaviour<,>));
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(AuditLogBehaviour<,>));
         services.AddAutoMapper(typeof(Domain.ConfigureServices).Assembly);
         services.AddFluentValidationAutoValidation();
         return services;

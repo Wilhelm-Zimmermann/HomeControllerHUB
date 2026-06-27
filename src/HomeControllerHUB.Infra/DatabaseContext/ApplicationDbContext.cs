@@ -30,6 +30,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityR
     public DbSet<ProfilePrivilege> ProfilePrivileges => Set<ProfilePrivilege>();
     public DbSet<UserEstablishment> UserEstablishments => Set<UserEstablishment>();
     public DbSet<UserProfile> UserProfiles => Set<UserProfile>();
+    public DbSet<AuditLog> AuditLogs => Set<AuditLog>();
     
     // IoT related entities
     public DbSet<Location> Locations => Set<Location>();
@@ -45,6 +46,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityR
         modelBuilder.ApplyConfiguration(new ApplicationUserConfiguration());
         modelBuilder.ApplyConfiguration(new ApplicationDomainConfiguration());
         modelBuilder.ApplyConfiguration(new ApplicationMenuConfiguration());
+        modelBuilder.ApplyConfiguration(new AuditLogConfiguration());
         modelBuilder.ApplyConfiguration(new EstablishmentConfiguration());
         modelBuilder.ApplyConfiguration(new GenericConfiguration());
         modelBuilder.ApplyConfiguration(new PrivilegeConfiguration());

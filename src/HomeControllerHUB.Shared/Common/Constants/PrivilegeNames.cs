@@ -45,4 +45,7 @@ public static class PrivilegeNames
     public const string SensorDataRead = "sensor-data-read";
     public const string SensorDataCreate = "sensor-data-create";
     public const string SensorDataDelete = "sensor-data-delete";
+
+    public const string AuditLogAll = "audit-log-all";
+    public const string AuditLogRead = "audit-log-read";
 }

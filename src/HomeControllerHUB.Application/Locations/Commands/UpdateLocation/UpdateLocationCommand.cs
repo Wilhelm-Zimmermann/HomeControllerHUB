@@ -1,4 +1,5 @@
 using HomeControllerHUB.Domain.Entities;
+using HomeControllerHUB.Domain.Interfaces;
 using HomeControllerHUB.Domain.Models;
 using HomeControllerHUB.Globalization;
 using HomeControllerHUB.Infra.DatabaseContext;
@@ -11,13 +12,23 @@ using Microsoft.EntityFrameworkCore;
 namespace HomeControllerHUB.Application.Locations.Commands.UpdateLocation;
 
 [Authorize(Domain = DomainNames.Location, Action = SecurityActionType.Update)]
-public class UpdateLocationCommand : IRequest
+public class UpdateLocationCommand : IRequest, IAuditableCommand
 {
     public Guid Id { get; set; }
     public string Name { get; set; } = null!;
     public string? Description { get; set; }
     public LocationType Type { get; set; }
     public Guid? ParentLocationId { get; set; }
+
+    public string AuditAction { get; set; } = "Location-Update";
+
+    public string AuditEntityName {get;set;} = "Location-Update";
+
+    public string? AuditEntityId {get;set;} = "Location-Update";
+
+    public string? AuditEntityDisplayName {get;set;} = "Location-Update";
+
+    public string? AuditDescription {get;set;} = "Location-Update";
 }
 
 public class UpdateLocationCommandHandler : IRequestHandler<UpdateLocationCommand>

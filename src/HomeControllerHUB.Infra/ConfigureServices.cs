@@ -37,6 +37,8 @@ public static class ConfigureServices
         services.AddScoped<SignInManager<ApplicationUser>>();
         services.AddScoped<ICurrentUserService, CurrentUserService>();
         services.AddScoped<IDateTime, DateTimeService>();
+        services.AddScoped<IAuditLogService, AuditLogService>();
+        services.AddScoped<IAuditMetadataSanitizer, AuditMetadataSanitizer>();
         services.AddInitializers();
 
         // Register background services

@@ -52,6 +52,9 @@ public class PrivilegeDataInitializer : BaseDataInitializer, IDataInitializer
         CheckAndCreate(DomainNames.SensorData, PrivilegeNames.SensorDataRead, "Dados dos Sensores - Ver", SecurityActionType.Read);
         CheckAndCreate(DomainNames.SensorData, PrivilegeNames.SensorDataCreate, "Dados dos Sensores - Criar", SecurityActionType.Create);
         CheckAndCreate(DomainNames.SensorData, PrivilegeNames.SensorDataDelete, "Dados dos Sensores - Excluir", SecurityActionType.Delete);
+
+        CheckAndCreate(DomainNames.AuditLog, PrivilegeNames.AuditLogAll, "Logs de Auditoria - Tudo", SecurityActionType.All);
+        CheckAndCreate(DomainNames.AuditLog, PrivilegeNames.AuditLogRead, "Logs de Auditoria - Ver", SecurityActionType.Read);
     }
     
     private void CheckAndCreate(string domainName, string name, string description, string action)

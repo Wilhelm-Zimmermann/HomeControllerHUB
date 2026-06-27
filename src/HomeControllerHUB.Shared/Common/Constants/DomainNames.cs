@@ -15,4 +15,5 @@ public static class DomainNames
     public const string Sensor = "Sensor";
     public const string SensorData = "SensorData";
     public const string IoT = "IoT";
+    public const string AuditLog = "AuditLog";
 }
