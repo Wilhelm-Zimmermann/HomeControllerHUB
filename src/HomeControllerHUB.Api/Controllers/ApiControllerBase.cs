@@ -1,11 +1,14 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
+using HomeControllerHUB.Api.Extensions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace HomeControllerHUB.Api.Controllers;
 
 [ApiController]
 [Route("api/v{version:apiVersion}/[controller]")]// api/v1/[controller]
+[EnableRateLimiting(RateLimitingExtensions.AuthenticatedPolicy)]
 /// <summary>
 /// Base controller that all API controllers inherit from, providing common functionality
 /// </summary>

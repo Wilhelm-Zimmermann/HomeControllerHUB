@@ -2,6 +2,7 @@ using System.Text.Json.Serialization;
 using FluentValidation.AspNetCore;
 using HomeControllerHUB.Api;
 using HomeControllerHUB.Api.Controllers;
+using HomeControllerHUB.Api.Extensions;
 using HomeControllerHUB.Api.HealthChecks;
 using HomeControllerHUB.Api.Middlewares;
 using HomeControllerHUB.Application;
@@ -32,6 +33,7 @@ builder.Services.AddDomainServices();
 builder.Services.AddHealthChecks()
     .AddCheck("application", () => Microsoft.Extensions.Diagnostics.HealthChecks.HealthCheckResult.Healthy("Application is running"), tags: new[] { "live", "ready" })
     .AddCheck<ApplicationDbContextHealthCheck>("database", tags: new[] { "ready" });
+builder.Services.AddHomeControllerHubRateLimiting();
 
 builder.Services.AddSingleton<ApplicationSettings>(sp =>
 {
@@ -73,10 +75,10 @@ if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("Testing"))
 
 app.UseCors(GeneralConfigs.CORS);
 app.UseMiddleware<ErrorHandlingMiddleware>();
-app.UseRateLimiter();
 app.IntializeDatabase();
 app.UseCors(allowedOrigins);
 app.UseAuthentication();
+app.UseRateLimiter();
 app.UseAuthorization();
 app.MapHealthChecks("/health", HealthCheckResponseWriter.ForTags());
 app.MapHealthChecks("/health/live", HealthCheckResponseWriter.ForTags("live"));

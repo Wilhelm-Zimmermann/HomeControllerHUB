@@ -1,5 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using Asp.Versioning;
+using HomeControllerHUB.Api.Extensions;
 using HomeControllerHUB.Application.Establishments.Commands.CreateEstablishment;
 using HomeControllerHUB.Application.Establishments.Commands.DeleteEstablishment;
 using HomeControllerHUB.Application.Establishments.Commands.UpdateEstablishment;
@@ -9,6 +10,7 @@ using HomeControllerHUB.Application.Establishments.Queries.GetEstablishmentById;
 using HomeControllerHUB.Application.Establishments.Queries.GetEstablishmentSelector;
 using HomeControllerHUB.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using EstablishmentSelectorDto = HomeControllerHUB.Application.Establishments.Queries.GetEstablishmentSelector.EstablishmentSelectorDto;
 
 namespace HomeControllerHUB.Api.Controllers;
@@ -63,6 +65,7 @@ public class EstablishmentController : ApiControllerBase
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+    [EnableRateLimiting(RateLimitingExtensions.SensitivePolicy)]
     public async Task<ActionResult> Delete([Required] Guid id, CancellationToken cancellationToken)
     {
         await Mediator.Send(new DeleteEstablishmentCommand(id), cancellationToken);

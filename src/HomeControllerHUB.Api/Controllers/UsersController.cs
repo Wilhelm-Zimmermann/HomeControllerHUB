@@ -1,5 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using Asp.Versioning;
+using HomeControllerHUB.Api.Extensions;
 using HomeControllerHUB.Application.Users.Commands.AccessTokenUser;
 using HomeControllerHUB.Application.Users.Commands.CreateUser;
 using HomeControllerHUB.Application.Users.Commands.UpdateUser;
@@ -37,8 +38,6 @@ public class UsersController : ApiControllerBase
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-    // Esse atributo abaixo possibilita setar a policy para o rate limiting, isso é cadastrado na configuração dos serviços, posso ter rotas mais fechadas para evitar muitas requests
-    [EnableRateLimiting("teste")]
     public async Task<ActionResult<BaseEntityResponse>> Create([Required, FromBody] CreateUserCommand command, CancellationToken cancellationToken)
     {
         var result = await Mediator.Send(command, cancellationToken);
@@ -57,6 +56,7 @@ public class UsersController : ApiControllerBase
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
     [AllowAnonymous]
+    [EnableRateLimiting(RateLimitingExtensions.AuthPolicy)]
     public async Task<ActionResult<AccessTokenEntry>> Token([Required, FromForm] AccessTokenUserCommand command, CancellationToken cancellationToken)
     {
         return await Mediator.Send(command, cancellationToken);
@@ -121,6 +121,7 @@ public class UsersController : ApiControllerBase
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+    [EnableRateLimiting(RateLimitingExtensions.SensitivePolicy)]
     public async Task<ActionResult> Delete([Required] Guid id, CancellationToken cancellationToken)
     {
         await Mediator.Send(new DeleteUserCommand(id), cancellationToken);
@@ -137,6 +138,7 @@ public class UsersController : ApiControllerBase
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+    [EnableRateLimiting(RateLimitingExtensions.AuthPolicy)]
     public async Task<ActionResult<AccessTokenEntry>> RefreshToken([Required, FromBody] RefreshTokenCommand command, CancellationToken cancellationToken)
     {
         return await Mediator.Send(command, cancellationToken);
@@ -152,6 +154,7 @@ public class UsersController : ApiControllerBase
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+    [EnableRateLimiting(RateLimitingExtensions.SensitivePolicy)]
     public async Task<ActionResult> ResetPassword([Required, FromBody] ResetPasswordCommand command, CancellationToken cancellationToken)
     {
         await Mediator.Send(command, cancellationToken);
@@ -182,6 +185,7 @@ public class UsersController : ApiControllerBase
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+    [EnableRateLimiting(RateLimitingExtensions.AuthPolicy)]
     public async Task<ActionResult> GeneratePasswordReset([Required, FromBody] GeneratePasswordResetCommand command, CancellationToken cancellationToken)
     {
         await Mediator.Send(command, cancellationToken);
@@ -197,6 +201,7 @@ public class UsersController : ApiControllerBase
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+    [EnableRateLimiting(RateLimitingExtensions.AuthPolicy)]
     public async Task<ActionResult> ResetPasswordWithToken([Required, FromBody] ResetPasswordWithTokenCommand command, CancellationToken cancellationToken)
     {
         await Mediator.Send(command, cancellationToken);

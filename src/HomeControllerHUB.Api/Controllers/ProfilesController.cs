@@ -1,5 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using Asp.Versioning;
+using HomeControllerHUB.Api.Extensions;
 using HomeControllerHUB.Application.Profiles.Commands.CreateProfile;
 using HomeControllerHUB.Application.Profiles.Commands.DeleteProfile;
 using HomeControllerHUB.Application.Profiles.Commands.UpdateProfile;
@@ -9,6 +10,7 @@ using HomeControllerHUB.Application.Profiles.Queries.GetProfileById;
 using HomeControllerHUB.Application.Profiles.Queries.GetProfileSelector;
 using HomeControllerHUB.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace HomeControllerHUB.Api.Controllers;
 
@@ -62,6 +64,7 @@ public class ProfilesController : ApiControllerBase
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+    [EnableRateLimiting(RateLimitingExtensions.SensitivePolicy)]
     public async Task<ActionResult> Delete([Required] Guid id, CancellationToken cancellationToken)
     {
         await Mediator.Send(new DeleteProfileCommand(id), cancellationToken);

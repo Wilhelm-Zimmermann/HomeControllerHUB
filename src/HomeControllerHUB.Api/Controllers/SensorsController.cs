@@ -10,8 +10,10 @@ using HomeControllerHUB.Application.Sensors.Queries.GetSensors;
 using HomeControllerHUB.Domain.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using System.Net.Mime;
 using Asp.Versioning;
+using HomeControllerHUB.Api.Extensions;
 
 namespace HomeControllerHUB.Api.Controllers;
 
@@ -64,6 +66,7 @@ public class SensorsController : ApiControllerBase
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+    [EnableRateLimiting(RateLimitingExtensions.SensitivePolicy)]
     public async Task<ActionResult> Delete([FromBody] DeleteSensorCommand command)
     {
         await Mediator.Send(command);
