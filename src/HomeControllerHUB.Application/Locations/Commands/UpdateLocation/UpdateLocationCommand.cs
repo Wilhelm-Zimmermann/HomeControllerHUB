@@ -20,15 +20,11 @@ public class UpdateLocationCommand : IRequest, IAuditableCommand
     public LocationType Type { get; set; }
     public Guid? ParentLocationId { get; set; }
 
-    public string AuditAction { get; set; } = "Location-Update";
-
-    public string AuditEntityName {get;set;} = "Location-Update";
-
-    public string? AuditEntityId {get;set;} = "Location-Update";
-
-    public string? AuditEntityDisplayName {get;set;} = "Location-Update";
-
-    public string? AuditDescription {get;set;} = "Location-Update";
+    public string AuditAction => "Update";
+    public string AuditEntityName => "Location";
+    public string? AuditEntityId => Id.ToString();
+    public string? AuditEntityDisplayName => Name;
+    public string? AuditDescription => "Update location";
 }
 
 public class UpdateLocationCommandHandler : IRequestHandler<UpdateLocationCommand>

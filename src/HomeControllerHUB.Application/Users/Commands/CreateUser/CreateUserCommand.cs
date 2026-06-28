@@ -16,7 +16,7 @@ using Microsoft.AspNetCore.Identity;
 namespace HomeControllerHUB.Application.Users.Commands.CreateUser;
 
 [Authorize(Domain = DomainNames.User, Action = SecurityActionType.Create)]
-public record CreateUserCommand : IRequest<BaseEntityResponse>
+public record CreateUserCommand : IRequest<BaseEntityResponse>, IAuditableCommand
 {
     public string Login { get; init; } = string.Empty;
     public string Email { get; init; } = string.Empty;
@@ -29,6 +29,11 @@ public record CreateUserCommand : IRequest<BaseEntityResponse>
     public IList<Guid>? ProfileIds { get; init; }
     public IList<Guid>? UserEstablishmentsIds { get; init; }
     public IList<Guid> UserProfilesIds { get; init; } = new List<Guid>();
+    public string AuditAction => "Create";
+    public string AuditEntityName => "User";
+    public string? AuditEntityId => null;
+    public string? AuditEntityDisplayName => Name;
+    public string? AuditDescription => "Create user";
 };
 
 public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, BaseEntityResponse>

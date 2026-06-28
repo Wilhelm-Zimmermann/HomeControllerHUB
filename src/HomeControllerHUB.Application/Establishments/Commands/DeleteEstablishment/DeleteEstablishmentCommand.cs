@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using HomeControllerHUB.Domain.Entities;
+using HomeControllerHUB.Domain.Interfaces;
 using HomeControllerHUB.Domain.Models;
 using HomeControllerHUB.Globalization;
 using HomeControllerHUB.Infra.DatabaseContext;
@@ -11,8 +12,13 @@ using Microsoft.EntityFrameworkCore;
 namespace HomeControllerHUB.Application.Establishments.Commands.DeleteEstablishment;
 
 [Authorize(Domain = DomainNames.Establishment, Action = SecurityActionType.Delete)]
-public record DeleteEstablishmentCommand(Guid Id) : IRequest
+public record DeleteEstablishmentCommand(Guid Id) : IRequest, IAuditableCommand
 {
+    public string AuditAction => "Delete";
+    public string AuditEntityName => "Establishment";
+    public string? AuditEntityId => Id.ToString();
+    public string? AuditEntityDisplayName => null;
+    public string? AuditDescription => "Delete establishment";
 }
 
 public class DeleteEstablishmentCommandHandler : IRequestHandler<DeleteEstablishmentCommand>

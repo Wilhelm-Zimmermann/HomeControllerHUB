@@ -23,15 +23,11 @@ public record UpdateEstablishmentCommand : IRequest, IAuditableCommand
     public bool Enable { get; set; } = false;
     public bool IsMaster { get; set; } = false;
     public List<Guid>? UserIds { get; set; }
-    public string AuditAction { get; set; } = "Establishment-Update";
-
-    public string AuditEntityName { get; set; } = "Establishment-Update";
-
-    public string? AuditEntityId { get; set; } = "Establishment-Update";
-
-    public string? AuditEntityDisplayName { get; set; } = "Establishment-Update";
-
-    public string? AuditDescription { get; set; } = "Establishment-Update";
+    public string AuditAction => "Update";
+    public string AuditEntityName => "Establishment";
+    public string? AuditEntityId => Id.ToString();
+    public string? AuditEntityDisplayName => Name;
+    public string? AuditDescription => "Update establishment";
 }
 
 public class UpdateEstablishmentCommandHandler : IRequestHandler<UpdateEstablishmentCommand>

@@ -12,9 +12,14 @@ using Microsoft.EntityFrameworkCore;
 namespace HomeControllerHUB.Application.Alerts.Commands.AcknowledgeAlert;
 
 [Authorize(Domain = DomainNames.IoT, Action = SecurityActionType.Update)]
-public class AcknowledgeAlertCommand : IRequest
+public class AcknowledgeAlertCommand : IRequest, IAuditableCommand
 {
     public Guid Id { get; set; }
+    public string AuditAction => "Acknowledge";
+    public string AuditEntityName => "Alert";
+    public string? AuditEntityId => Id.ToString();
+    public string? AuditEntityDisplayName => null;
+    public string? AuditDescription => "Acknowledge alert";
 }
 
 public class AcknowledgeAlertCommandValidator : AbstractValidator<AcknowledgeAlertCommand>

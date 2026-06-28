@@ -17,7 +17,7 @@ using Microsoft.EntityFrameworkCore;
 namespace HomeControllerHUB.Application.Users.Commands.UpdateUser;
 
 [Authorize(Domain = DomainNames.User, Action = SecurityActionType.Update)]
-public record UpdateUserCommand : IRequest<Unit>
+public record UpdateUserCommand : IRequest<Unit>, IAuditableCommand
 {
     public Guid Id { get; init; }
     public string Name { get; init; } = string.Empty;
@@ -30,6 +30,11 @@ public record UpdateUserCommand : IRequest<Unit>
     public IList<Guid>? UserEstablishmentsIds { get; init; }
     public IList<Guid>? UserProfilesIds { get; init; }
     public bool Enable { get; init; }
+    public string AuditAction => "Update";
+    public string AuditEntityName => "User";
+    public string? AuditEntityId => Id.ToString();
+    public string? AuditEntityDisplayName => Name;
+    public string? AuditDescription => "Update user";
 }
 
 public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, Unit>

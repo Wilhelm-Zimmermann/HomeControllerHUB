@@ -11,7 +11,7 @@ using MediatR;
 namespace HomeControllerHUB.Application.Establishments.Commands.CreateEstablishment;
 
 [Authorize(Domain = DomainNames.Establishment, Action = SecurityActionType.Create)]
-public record CreateEstablishmentCommand : IRequest<BaseEntityResponse>
+public record CreateEstablishmentCommand : IRequest<BaseEntityResponse>, IAuditableCommand
 {
     public string? Name { get; set; }
     public string? SiteName { get; set; }
@@ -19,6 +19,11 @@ public record CreateEstablishmentCommand : IRequest<BaseEntityResponse>
     public bool Enable { get; set; } = false;
     public bool IsMaster { get; set; } = false;
     public List<Guid>? UserIds { get; set; }
+    public string AuditAction => "Create";
+    public string AuditEntityName => "Establishment";
+    public string? AuditEntityId => null;
+    public string? AuditEntityDisplayName => Name;
+    public string? AuditDescription => "Create establishment";
 }
 
 public class CreateEstablishmentCommandHandler : IRequestHandler<CreateEstablishmentCommand, BaseEntityResponse>

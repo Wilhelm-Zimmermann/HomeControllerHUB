@@ -1,4 +1,5 @@
 using HomeControllerHUB.Domain.Entities;
+using HomeControllerHUB.Domain.Interfaces;
 using HomeControllerHUB.Domain.Models;
 using HomeControllerHUB.Globalization;
 using HomeControllerHUB.Infra.DatabaseContext;
@@ -13,7 +14,7 @@ using System.Text;
 namespace HomeControllerHUB.Application.Sensors.Commands.CreateSensor;
 
 [Authorize(Domain = DomainNames.Sensor, Action = SecurityActionType.Create)]
-public class CreateSensorCommand : IRequest<Guid>
+public class CreateSensorCommand : IRequest<Guid>, IAuditableCommand
 {
     public Guid EstablishmentId { get; set; }
     public Guid LocationId { get; set; }
@@ -24,6 +25,11 @@ public class CreateSensorCommand : IRequest<Guid>
     public string? FirmwareVersion { get; set; }
     public double? MinThreshold { get; set; }
     public double? MaxThreshold { get; set; }
+    public string AuditAction => "Create";
+    public string AuditEntityName => "Sensor";
+    public string? AuditEntityId => null;
+    public string? AuditEntityDisplayName => Name;
+    public string? AuditDescription => "Create sensor";
 }
 
 public class CreateSensorCommandHandler : IRequestHandler<CreateSensorCommand, Guid>

@@ -11,8 +11,13 @@ using Microsoft.EntityFrameworkCore;
 namespace HomeControllerHUB.Application.Profiles.Commands.DeleteProfile;
 
 [Authorize(Domain = DomainNames.Profile, Action = SecurityActionType.Delete)]
-public record DeleteProfileCommand(Guid Id) : IRequest
+public record DeleteProfileCommand(Guid Id) : IRequest, IAuditableCommand
 {
+    public string AuditAction => "Delete";
+    public string AuditEntityName => "Profile";
+    public string? AuditEntityId => Id.ToString();
+    public string? AuditEntityDisplayName => null;
+    public string? AuditDescription => "Delete profile";
 }
 
 public class DeleteProfilesCommandHandler : IRequestHandler<DeleteProfileCommand>

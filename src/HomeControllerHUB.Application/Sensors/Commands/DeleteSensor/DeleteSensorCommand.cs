@@ -1,5 +1,6 @@
 using FluentValidation;
 using HomeControllerHUB.Domain.Entities;
+using HomeControllerHUB.Domain.Interfaces;
 using HomeControllerHUB.Domain.Models;
 using HomeControllerHUB.Globalization;
 using HomeControllerHUB.Infra.DatabaseContext;
@@ -12,9 +13,14 @@ using Microsoft.EntityFrameworkCore;
 namespace HomeControllerHUB.Application.Sensors.Commands.DeleteSensor;
 
 [Authorize(Domain = DomainNames.IoT, Action = SecurityActionType.Delete)]
-public class DeleteSensorCommand : IRequest
+public class DeleteSensorCommand : IRequest, IAuditableCommand
 {
     public Guid Id { get; set; }
+    public string AuditAction => "Delete";
+    public string AuditEntityName => "Sensor";
+    public string? AuditEntityId => Id.ToString();
+    public string? AuditEntityDisplayName => null;
+    public string? AuditDescription => "Delete sensor";
 }
 
 public class DeleteSensorCommandValidator : AbstractValidator<DeleteSensorCommand>

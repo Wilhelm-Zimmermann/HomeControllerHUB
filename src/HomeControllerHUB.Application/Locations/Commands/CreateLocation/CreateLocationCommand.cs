@@ -15,15 +15,11 @@ public class CreateLocationCommand : IRequest<Guid>, IAuditableCommand
     public string? Description { get; set; }
     public LocationType Type { get; set; }
     public Guid? ParentLocationId { get; set; }
-    public string AuditAction { get; set; } = "Location-Create";
-
-    public string AuditEntityName { get; set; } = "Location-Create";
-
-    public string? AuditEntityId { get; set; } = "Location-Create";
-
-    public string? AuditEntityDisplayName { get; set; } = "Location-Create";
-
-    public string? AuditDescription { get; set; } = "Location-Create";
+    public string AuditAction => "Create";
+    public string AuditEntityName => "Location";
+    public string? AuditEntityId => null;
+    public string? AuditEntityDisplayName => Name;
+    public string? AuditDescription => "Create location";
 }
 
 public class CreateLocationCommandHandler : IRequestHandler<CreateLocationCommand, Guid>

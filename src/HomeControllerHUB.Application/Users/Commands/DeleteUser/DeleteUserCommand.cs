@@ -15,7 +15,14 @@ using Microsoft.EntityFrameworkCore;
 namespace HomeControllerHUB.Application.Users.Commands.DeleteUser;
 
 [Authorize(Domain = DomainNames.User, Action = SecurityActionType.Delete)]
-public record DeleteUserCommand(Guid Id) : IRequest<Unit>;
+public record DeleteUserCommand(Guid Id) : IRequest<Unit>, IAuditableCommand
+{
+    public string AuditAction => "Delete";
+    public string AuditEntityName => "User";
+    public string? AuditEntityId => Id.ToString();
+    public string? AuditEntityDisplayName => null;
+    public string? AuditDescription => "Delete user";
+}
 
 public class DeleteUserCommandHandler : IRequestHandler<DeleteUserCommand, Unit>
 {

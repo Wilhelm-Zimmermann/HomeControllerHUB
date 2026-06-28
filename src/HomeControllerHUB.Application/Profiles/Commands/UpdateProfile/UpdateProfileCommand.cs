@@ -13,13 +13,18 @@ using Profile = HomeControllerHUB.Domain.Entities.Profile;
 namespace HomeControllerHUB.Application.Profiles.Commands.UpdateProfile;
 
 [Authorize(Domain = DomainNames.Profile, Action = SecurityActionType.Update)]
-public record UpdateProfileCommand : IRequest
+public record UpdateProfileCommand : IRequest, IAuditableCommand
 {
     public Guid Id { get; init; }
     public string Name { get; set; } = null!;
     public string Description { get; set; } = null!;
     public bool Enable { get; set; }
     public List<Guid>? PrivilegeIds { get; set; }
+    public string AuditAction => "Update";
+    public string AuditEntityName => "Profile";
+    public string? AuditEntityId => Id.ToString();
+    public string? AuditEntityDisplayName => Name;
+    public string? AuditDescription => "Update profile";
 }
 
 public class UpdateProfilesCommandHandler : IRequestHandler<UpdateProfileCommand>

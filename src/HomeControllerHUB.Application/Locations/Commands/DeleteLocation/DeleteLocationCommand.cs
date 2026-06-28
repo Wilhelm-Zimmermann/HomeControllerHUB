@@ -1,5 +1,6 @@
 using HomeControllerHUB.Domain.Models;
 using HomeControllerHUB.Domain.Entities;
+using HomeControllerHUB.Domain.Interfaces;
 using HomeControllerHUB.Globalization;
 using HomeControllerHUB.Infra.DatabaseContext;
 using HomeControllerHUB.Shared.Common;
@@ -11,9 +12,14 @@ using Microsoft.EntityFrameworkCore;
 namespace HomeControllerHUB.Application.Locations.Commands.DeleteLocation;
 
 [Authorize(Domain = DomainNames.Location, Action = SecurityActionType.Delete)]
-public class DeleteLocationCommand : IRequest
+public class DeleteLocationCommand : IRequest, IAuditableCommand
 {
     public Guid Id { get; set; }
+    public string AuditAction => "Delete";
+    public string AuditEntityName => "Location";
+    public string? AuditEntityId => Id.ToString();
+    public string? AuditEntityDisplayName => null;
+    public string? AuditDescription => "Delete location";
 }
 
 public class DeleteLocationCommandHandler : IRequestHandler<DeleteLocationCommand>

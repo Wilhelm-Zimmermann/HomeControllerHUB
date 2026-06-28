@@ -1,5 +1,6 @@
 using FluentValidation;
 using HomeControllerHUB.Domain.Entities;
+using HomeControllerHUB.Domain.Interfaces;
 using HomeControllerHUB.Domain.Models;
 using HomeControllerHUB.Globalization;
 using HomeControllerHUB.Infra.DatabaseContext;
@@ -12,7 +13,7 @@ using Microsoft.EntityFrameworkCore;
 namespace HomeControllerHUB.Application.Sensors.Commands.UpdateSensor;
 
 [Authorize(Domain = DomainNames.IoT, Action = SecurityActionType.Update)]
-public class UpdateSensorCommand : IRequest
+public class UpdateSensorCommand : IRequest, IAuditableCommand
 {
     public Guid Id { get; set; }
     public Guid EstablishmentId { get; set; }
@@ -26,6 +27,11 @@ public class UpdateSensorCommand : IRequest
     public double? MinThreshold { get; set; }
     public double? MaxThreshold { get; set; }
     public bool IsActive { get; set; }
+    public string AuditAction => "Update";
+    public string AuditEntityName => "Sensor";
+    public string? AuditEntityId => Id.ToString();
+    public string? AuditEntityDisplayName => Name;
+    public string? AuditDescription => "Update sensor";
 }
 
 public class UpdateSensorCommandValidator : AbstractValidator<UpdateSensorCommand>
