@@ -6,10 +6,12 @@ namespace HomeControllerHUB.Api.Middlewares;
 public class ErrorHandlingMiddleware
 {
     private readonly RequestDelegate _next;
+    private readonly ILogger<ErrorHandlingMiddleware> _logger;
 
-    public ErrorHandlingMiddleware(RequestDelegate next)
+    public ErrorHandlingMiddleware(RequestDelegate next, ILogger<ErrorHandlingMiddleware> logger)
     {
         _next = next;
+        _logger = logger;
     }
 
     public async Task Invoke(HttpContext context)
@@ -20,6 +22,13 @@ public class ErrorHandlingMiddleware
         }
         catch (Exception ex)
         {
+            _logger.LogError(
+                ex,
+                "Unhandled exception for {Method} {Path} with correlation {CorrelationId}",
+                context.Request.Method,
+                context.Request.Path.Value,
+                GetCorrelationId(context));
+
             await HandleExceptionAsync(context, ex);
         }
     }
@@ -40,5 +49,12 @@ public class ErrorHandlingMiddleware
         result = JsonConvert.SerializeObject(new { error = exception.Message });
         context.Response.ContentType = "application/json";
         return context.Response.WriteAsync(result);
+    }
+
+    private static string? GetCorrelationId(HttpContext context)
+    {
+        return context.Items.TryGetValue(CorrelationIdMiddleware.ItemKey, out var correlationId)
+            ? correlationId?.ToString()
+            : context.Response.Headers[CorrelationIdMiddleware.HeaderName].FirstOrDefault();
     }
 }

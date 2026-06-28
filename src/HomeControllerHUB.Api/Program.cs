@@ -2,6 +2,7 @@ using System.Text.Json.Serialization;
 using FluentValidation.AspNetCore;
 using HomeControllerHUB.Api;
 using HomeControllerHUB.Api.Controllers;
+using HomeControllerHUB.Api.HealthChecks;
 using HomeControllerHUB.Api.Middlewares;
 using HomeControllerHUB.Application;
 using HomeControllerHUB.Domain;
@@ -28,6 +29,9 @@ builder.Services.ConfigureDatabase(builder.Configuration);
 builder.Services.AddGlobalizationServices();
 builder.Services.AddInfra(builder.Configuration);
 builder.Services.AddDomainServices();
+builder.Services.AddHealthChecks()
+    .AddCheck("application", () => Microsoft.Extensions.Diagnostics.HealthChecks.HealthCheckResult.Healthy("Application is running"), tags: new[] { "live", "ready" })
+    .AddCheck<ApplicationDbContextHealthCheck>("database", tags: new[] { "ready" });
 
 builder.Services.AddSingleton<ApplicationSettings>(sp =>
 {
@@ -52,10 +56,14 @@ builder.Services.AddCors(options =>
 var app = builder.Build();
 using var scope = app.Services.CreateScope();
 var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-dbContext.Database.Migrate();
+if (dbContext.Database.ProviderName != "Microsoft.EntityFrameworkCore.InMemory" && dbContext.Database.IsRelational())
+{
+    dbContext.Database.Migrate();
+}
 
 app.UseGlobalization();
 app.UseRouting();
+app.UseMiddleware<CorrelationIdMiddleware>();
 
 if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("Testing"))
 {
@@ -70,6 +78,11 @@ app.IntializeDatabase();
 app.UseCors(allowedOrigins);
 app.UseAuthentication();
 app.UseAuthorization();
+app.MapHealthChecks("/health", HealthCheckResponseWriter.ForTags());
+app.MapHealthChecks("/health/live", HealthCheckResponseWriter.ForTags("live"));
+app.MapHealthChecks("/health/ready", HealthCheckResponseWriter.ForTags("ready"));
 app.MapControllers();
 
 app.Run();
+
+public partial class Program;
