@@ -1,4 +1,3 @@
-using AutoMapper;
 using HomeControllerHUB.Application.Locations.Queries;
 using HomeControllerHUB.Infra.DatabaseContext;
 using HomeControllerHUB.Shared.Common;
@@ -18,12 +17,10 @@ public class GetLocationListQuery : IRequest<List<LocationDto>>
 public class GetLocationListQueryHandler : IRequestHandler<GetLocationListQuery, List<LocationDto>>
 {
     private readonly ApplicationDbContext _context;
-    private readonly IMapper _mapper;
     
-    public GetLocationListQueryHandler(ApplicationDbContext context, IMapper mapper)
+    public GetLocationListQueryHandler(ApplicationDbContext context)
     {
         _context = context;
-        _mapper = mapper;
     }
     
     public async Task<List<LocationDto>> Handle(GetLocationListQuery request, CancellationToken cancellationToken)
@@ -49,7 +46,7 @@ public class GetLocationListQueryHandler : IRequestHandler<GetLocationListQuery,
         query = query.OrderBy(l => l.Name);
         
         var locations = await query.ToListAsync(cancellationToken);
-        var locationDtos = _mapper.Map<List<LocationDto>>(locations);
+        var locationDtos = locations.Select(LocationDto.FromEntity).ToList();
         
         // Map navigation properties
         foreach (var locationDto in locationDtos)

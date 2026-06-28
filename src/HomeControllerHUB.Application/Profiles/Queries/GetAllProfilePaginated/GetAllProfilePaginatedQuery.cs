@@ -1,5 +1,3 @@
-﻿using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using HomeControllerHUB.Domain.Interfaces;
 using HomeControllerHUB.Domain.Models;
 using HomeControllerHUB.Infra.DatabaseContext;
@@ -21,13 +19,11 @@ public class GetAllProfilePaginatedQueryHandler : IRequestHandler<GetAllProfileP
 {
     private readonly ApplicationDbContext _context;
     private readonly ICurrentUserService _currentUserService;
-    private readonly IMapper _mapper;
 
-    public GetAllProfilePaginatedQueryHandler(ApplicationDbContext context, ICurrentUserService currentUserService, IMapper mapper)
+    public GetAllProfilePaginatedQueryHandler(ApplicationDbContext context, ICurrentUserService currentUserService)
     {
         _context = context;
         _currentUserService = currentUserService;
-        _mapper = mapper;
     }
 
     public async Task<PaginatedList<GetProfilePaginatedDto>> Handle(GetAllProfilePaginatedQuery request, CancellationToken cancellationToken)
@@ -50,7 +46,7 @@ public class GetAllProfilePaginatedQueryHandler : IRequestHandler<GetAllProfileP
 
         return await query
             .Where(p => p.EstablishmentId == establishmentId)
-            .ProjectTo<GetProfilePaginatedDto>(_mapper.ConfigurationProvider)
+            .Select(GetProfilePaginatedDto.Projection)
             .PaginateAsync(request, cancellationToken);
     }
 }

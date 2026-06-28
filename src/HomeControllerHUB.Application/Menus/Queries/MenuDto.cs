@@ -1,10 +1,8 @@
-﻿using HomeControllerHUB.Application.Domains.Queries;
+using HomeControllerHUB.Application.Domains.Queries;
 using HomeControllerHUB.Domain.Entities;
-using HomeControllerHUB.Domain.Mappings;
-
 namespace HomeControllerHUB.Application.Menus.Queries;
 
-public record MenuDto : IMapFrom<ApplicationMenu>
+public partial record MenuDto
 {
     public Guid Id { get; set; }
     public string? Name { get; set; }

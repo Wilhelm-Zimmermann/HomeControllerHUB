@@ -1,4 +1,3 @@
-﻿using AutoMapper;
 using FluentAssertions;
 using HomeControllerHUB.Application.Generics.Queries;
 using HomeControllerHUB.Application.Generics.Queries.GenericSelector;
@@ -11,20 +10,12 @@ namespace HomeControllerHUB.Application.Tests.Generics.Queries;
 
 public class GenericSelectorQueryTest : TestConfigs
 {
-    private readonly IMapper _mapper;
     private readonly Mock<ICurrentUserService> _currentUserServiceMock;
     private readonly Mock<ISharedResource> _resourceMock;
     
     public GenericSelectorQueryTest()
     {
-        var config = new MapperConfiguration(cfg =>
-        {
-            cfg.CreateMap<Generic, GenericDto>()
-                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Value));
-        });
-        _mapper = config.CreateMapper();
-
-        _currentUserServiceMock = new Mock<ICurrentUserService>();
+_currentUserServiceMock = new Mock<ICurrentUserService>();
         _resourceMock = new Mock<ISharedResource>();
     }
     
@@ -41,7 +32,7 @@ public class GenericSelectorQueryTest : TestConfigs
         await _context.SaveChangesAsync();
         
         var query = new GenericSelectorQuery(targetIdentifier);
-        var handler = new GenericSelectorQueryHandler(_currentUserServiceMock.Object, _context, _mapper, _resourceMock.Object);
+        var handler = new GenericSelectorQueryHandler(_currentUserServiceMock.Object, _context, _resourceMock.Object);
 
         // ACT
         var result = await handler.Handle(query, CancellationToken.None);
@@ -63,7 +54,7 @@ public class GenericSelectorQueryTest : TestConfigs
         await _context.SaveChangesAsync();
         
         var query = new GenericSelectorQuery("NON_EXISTENT_IDENTIFIER");
-        var handler = new GenericSelectorQueryHandler(_currentUserServiceMock.Object, _context, _mapper, _resourceMock.Object);
+        var handler = new GenericSelectorQueryHandler(_currentUserServiceMock.Object, _context, _resourceMock.Object);
 
         // ACT
         var result = await handler.Handle(query, CancellationToken.None);

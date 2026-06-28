@@ -1,4 +1,3 @@
-using AutoMapper;
 using HomeControllerHUB.Application.Locations.Queries;
 using HomeControllerHUB.Domain.Entities;
 using HomeControllerHUB.Domain.Models;
@@ -21,16 +20,13 @@ public class GetLocationQuery : IRequest<LocationDto>
 public class GetLocationQueryHandler : IRequestHandler<GetLocationQuery, LocationDto>
 {
     private readonly ApplicationDbContext _context;
-    private readonly IMapper _mapper;
     private readonly ISharedResource _sharedResource;
     
     public GetLocationQueryHandler(
         ApplicationDbContext context,
-        IMapper mapper,
         ISharedResource sharedResource)
     {
         _context = context;
-        _mapper = mapper;
         _sharedResource = sharedResource;
     }
     
@@ -49,7 +45,7 @@ public class GetLocationQueryHandler : IRequestHandler<GetLocationQuery, Locatio
                 _sharedResource.Message("TheRequestedLocationCouldNotBeFound"));
         }
         
-        var locationDto = _mapper.Map<LocationDto>(location);
+        var locationDto = LocationDto.FromEntity(location);
         
         // Map navigation properties
         locationDto.EstablishmentName = location.Establishment?.Name ?? "";

@@ -1,8 +1,6 @@
-﻿using AutoMapper;
 using FluentAssertions;
 using HomeControllerHUB.Application.Establishments.Queries.GetAllEstablishmentPaginated;
 using HomeControllerHUB.Domain.Interfaces;
-using HomeControllerHUB.Domain.Mappings;
 using HomeControllerHUB.Globalization;
 using Moq;
 
@@ -11,20 +9,13 @@ namespace HomeControllerHUB.Application.Tests.Establishments.Queries;
 public class GetAllEstablishmentPaginatedQueryTests : TestConfigs
 {
     private readonly Mock<ISharedResource> _resourceMock;
-    private readonly IMapper _mapper;
     private readonly Mock<ICurrentUserService> _currentUserServiceMock;
 
     public GetAllEstablishmentPaginatedQueryTests()
     {
         _resourceMock = new Mock<ISharedResource>();
         _currentUserServiceMock = new Mock<ICurrentUserService>();
-        var mapperConfig = new MapperConfiguration(cfg =>
-        {
-            cfg.AddProfile(new MappingProfile(typeof(GetAllEstablishmentPaginatedQueryHandler).Assembly));
-        });
-        
-        _mapper = mapperConfig.CreateMapper();
-    }
+}
     
     [Fact]
     public async Task Get_Should_Return_All_Establishments()
@@ -36,7 +27,7 @@ public class GetAllEstablishmentPaginatedQueryTests : TestConfigs
         await _context.SaveChangesAsync();
         
         var query = new GetAllEstablishmentPaginatedQuery();
-        var handler = new GetAllEstablishmentPaginatedQueryHandler(_context, _currentUserServiceMock.Object, _mapper);
+        var handler = new GetAllEstablishmentPaginatedQueryHandler(_context, _currentUserServiceMock.Object);
         // ACT
         var result = await handler.Handle(query, CancellationToken.None);
         
@@ -59,7 +50,7 @@ public class GetAllEstablishmentPaginatedQueryTests : TestConfigs
         {
             SearchBy = "Novo"
         };
-        var handler = new GetAllEstablishmentPaginatedQueryHandler(_context, _currentUserServiceMock.Object, _mapper);
+        var handler = new GetAllEstablishmentPaginatedQueryHandler(_context, _currentUserServiceMock.Object);
         // ACT
         var result = await handler.Handle(query, CancellationToken.None);
         
@@ -81,7 +72,7 @@ public class GetAllEstablishmentPaginatedQueryTests : TestConfigs
         {
             Enable = true
         };
-        var handler = new GetAllEstablishmentPaginatedQueryHandler(_context, _currentUserServiceMock.Object, _mapper);
+        var handler = new GetAllEstablishmentPaginatedQueryHandler(_context, _currentUserServiceMock.Object);
 
         // ACT
         var result = await handler.Handle(query, CancellationToken.None);
@@ -104,7 +95,7 @@ public class GetAllEstablishmentPaginatedQueryTests : TestConfigs
         {
             Enable = false
         };
-        var handler = new GetAllEstablishmentPaginatedQueryHandler(_context, _currentUserServiceMock.Object, _mapper);
+        var handler = new GetAllEstablishmentPaginatedQueryHandler(_context, _currentUserServiceMock.Object);
 
         // ACT
         var result = await handler.Handle(query, CancellationToken.None);
@@ -130,7 +121,7 @@ public class GetAllEstablishmentPaginatedQueryTests : TestConfigs
             PageNumber = 1,
             PageSize = 1
         };
-        var handler = new GetAllEstablishmentPaginatedQueryHandler(_context, _currentUserServiceMock.Object, _mapper);
+        var handler = new GetAllEstablishmentPaginatedQueryHandler(_context, _currentUserServiceMock.Object);
 
         // ACT
         var result = await handler.Handle(query, CancellationToken.None);
@@ -157,7 +148,7 @@ public class GetAllEstablishmentPaginatedQueryTests : TestConfigs
             Enable = true,
             SearchBy = "Target"
         };
-        var handler = new GetAllEstablishmentPaginatedQueryHandler(_context, _currentUserServiceMock.Object, _mapper);
+        var handler = new GetAllEstablishmentPaginatedQueryHandler(_context, _currentUserServiceMock.Object);
 
         // ACT
         var result = await handler.Handle(query, CancellationToken.None);

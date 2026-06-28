@@ -1,5 +1,4 @@
-﻿
-using AutoMapper;
+
 using HomeControllerHUB.Domain.Entities;
 using HomeControllerHUB.Domain.Interfaces;
 using HomeControllerHUB.Domain.Models;
@@ -9,8 +8,6 @@ using HomeControllerHUB.Shared.Common;
 using HomeControllerHUB.Shared.Common.Constants;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Profile = AutoMapper.Profile;
-
 namespace HomeControllerHUB.Application.Establishments.Commands.UpdateEstablishment;
 
 [Authorize(Domain = DomainNames.Establishment, Action = SecurityActionType.Update)]
@@ -34,14 +31,12 @@ public class UpdateEstablishmentCommandHandler : IRequestHandler<UpdateEstablish
 {
     private readonly ApplicationDbContext _context;
     private readonly ISharedResource _resource;
-    private readonly IMapper _mapper;
     private readonly ICurrentUserService _currentUserService;
 
-    public UpdateEstablishmentCommandHandler(ApplicationDbContext context, ISharedResource resource, IMapper mapper, ICurrentUserService currentUserService)
+    public UpdateEstablishmentCommandHandler(ApplicationDbContext context, ISharedResource resource, ICurrentUserService currentUserService)
     {
         _context = context;
         _resource = resource;
-        _mapper = mapper;
         _currentUserService = currentUserService;
     }
 

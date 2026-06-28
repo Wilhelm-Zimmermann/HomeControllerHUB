@@ -1,5 +1,3 @@
-﻿using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Dynamic.Core;
@@ -22,15 +20,13 @@ public record MenuSelectorQuery(string? SearchBy) : IRequest<List<MenuDto>>
 public class MenuSelectorQueryHandler : IRequestHandler<MenuSelectorQuery, List<MenuDto>>
 {
     private readonly ApplicationDbContext _context;
-    private readonly IMapper _mapper;
     private readonly ICurrentUserService _currentUserService;
     private readonly ApiUserManager _userManager;
     private readonly ISharedResource _resource;
 
-    public MenuSelectorQueryHandler(ApplicationDbContext context, IMapper mapper, ICurrentUserService currentUserService, ApiUserManager userManager, ISharedResource resource)
+    public MenuSelectorQueryHandler(ApplicationDbContext context, ICurrentUserService currentUserService, ApiUserManager userManager, ISharedResource resource)
     {
         _context = context;
-        _mapper = mapper;
         _currentUserService = currentUserService;
         _userManager = userManager;
         _resource = resource;
@@ -59,7 +55,7 @@ public class MenuSelectorQueryHandler : IRequestHandler<MenuSelectorQuery, List<
         }
 
         var menus = await query
-            .ProjectTo<MenuDto>(_mapper.ConfigurationProvider)
+            .Select(MenuDto.Projection)
             .OrderBy(c => c.Order)
             .ToListAsync();
 

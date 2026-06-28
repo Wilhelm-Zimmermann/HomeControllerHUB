@@ -1,10 +1,8 @@
-﻿using HomeControllerHUB.Domain.Entities;
+using HomeControllerHUB.Domain.Entities;
 using HomeControllerHUB.Domain.Interfaces;
-using HomeControllerHUB.Domain.Mappings;
-
 namespace HomeControllerHUB.Application.Establishments.Queries.GetAllEstablishmentPaginated;
 
-public class EstablishmentWithPaginationDto : IMapFrom<Establishment>, IPaginatedDto
+public partial class EstablishmentWithPaginationDto : IPaginatedDto
 {
     public Guid Id { get; set; }
     public string? Code { get; set; }

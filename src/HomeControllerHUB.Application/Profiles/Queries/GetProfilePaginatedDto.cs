@@ -1,10 +1,8 @@
-﻿using HomeControllerHUB.Domain.Entities;
 using HomeControllerHUB.Domain.Interfaces;
-using HomeControllerHUB.Domain.Mappings;
 
 namespace HomeControllerHUB.Application.Profiles.Queries;
 
-public class GetProfilePaginatedDto : IMapFrom<Profile>, IPaginatedDto
+public partial class GetProfilePaginatedDto : IPaginatedDto
 {
     public Guid Id { get; set; }
     public Guid EstablishmentId { get; set; }
@@ -17,11 +15,4 @@ public class GetProfilePaginatedDto : IMapFrom<Profile>, IPaginatedDto
     public int PrivilegesCount { get; set; }
     public DateTime Created { get; set; }
     public DateTime Modified { get; set; }
-
-    public void Mapping(AutoMapper.Profile profile)
-    {
-        profile.CreateMap<Profile, GetProfilePaginatedDto>()
-            .ForMember(d => d.UsersCount, opt => opt.MapFrom(s => s.UserProfiles.Count))
-            .ForMember(d => d.PrivilegesCount, opt => opt.MapFrom(s => s.ProfilePrivileges.Count));
-    }
 }

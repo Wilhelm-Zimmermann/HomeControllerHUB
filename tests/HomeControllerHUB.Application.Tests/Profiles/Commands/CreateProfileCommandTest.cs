@@ -1,4 +1,3 @@
-﻿using AutoMapper;
 using FluentAssertions;
 using FluentValidation.TestHelper;
 using HomeControllerHUB.Application.Profiles.Commands.CreateProfile;
@@ -12,14 +11,12 @@ namespace HomeControllerHUB.Application.Tests.Profiles.Commands;
 
 public class CreateProfileCommandTest : TestConfigs
 {
-    private readonly Mock<IMapper> _mapperMock;
     private readonly Mock<ISharedResource> _resourceMock;
     private readonly Mock<ICurrentUserService> _currentUserServiceMock;
     private readonly CreateProfileCommandValidator _validator;
 
     public CreateProfileCommandTest()
     {
-        _mapperMock = new Mock<IMapper>();
         _resourceMock = new Mock<ISharedResource>();
         _currentUserServiceMock = new Mock<ICurrentUserService>();
         _validator = new CreateProfileCommandValidator();
@@ -56,7 +53,7 @@ public class CreateProfileCommandTest : TestConfigs
             PrivilegeIds = privileges.Select(p => p.Id).ToList()
         };
         
-        var handler = new CreateProfileCommandHandler(_context, _mapperMock.Object, _resourceMock.Object, _currentUserServiceMock.Object);
+        var handler = new CreateProfileCommandHandler(_context, _resourceMock.Object, _currentUserServiceMock.Object);
 
         // ACT
         var result = await handler.Handle(command, CancellationToken.None);
@@ -82,7 +79,7 @@ public class CreateProfileCommandTest : TestConfigs
             Name = "Test Profile",
             PrivilegeIds = new List<Guid> { Guid.NewGuid() }
         };
-        var handler = new CreateProfileCommandHandler(_context, _mapperMock.Object, _resourceMock.Object, _currentUserServiceMock.Object);
+        var handler = new CreateProfileCommandHandler(_context, _resourceMock.Object, _currentUserServiceMock.Object);
 
         // ACT
         Func<Task> act = async () => await handler.Handle(command, CancellationToken.None);

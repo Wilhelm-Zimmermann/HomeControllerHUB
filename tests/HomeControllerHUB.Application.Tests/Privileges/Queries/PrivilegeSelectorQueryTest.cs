@@ -1,4 +1,3 @@
-﻿using AutoMapper;
 using FluentAssertions;
 using FluentValidation.TestHelper;
 using HomeControllerHUB.Application.Privileges.Queries;
@@ -6,7 +5,6 @@ using HomeControllerHUB.Application.Privileges.Queries.PrivilegeSelector;
 using HomeControllerHUB.Application.Users.Queries.GetCurrentUser;
 using HomeControllerHUB.Domain.Entities;
 using HomeControllerHUB.Domain.Interfaces;
-using HomeControllerHUB.Domain.Mappings;
 using HomeControllerHUB.Globalization;
 using HomeControllerHUB.Infra.Services;
 using MediatR;
@@ -19,7 +17,6 @@ namespace HomeControllerHUB.Application.Tests.Privileges.Queries;
 
 public class PrivilegeSelectorQueryTest : TestConfigs
 {
-    private readonly IMapper _mapper;
     private readonly Mock<ICurrentUserService> _currentUserServiceMock;
     private readonly Mock<ApiUserManager> _userManagerMock;
     private readonly Mock<ISharedResource> _resourceMock;
@@ -28,13 +25,7 @@ public class PrivilegeSelectorQueryTest : TestConfigs
 
     public PrivilegeSelectorQueryTest()
     {
-        var config = new MapperConfiguration(cfg =>
-        {
-            cfg.AddProfile(new MappingProfile(typeof(PrivilegeSelectorDto).Assembly));
-        });
-        _mapper = config.CreateMapper();
-        
-        _currentUserServiceMock = new Mock<ICurrentUserService>();
+_currentUserServiceMock = new Mock<ICurrentUserService>();
         _resourceMock = new Mock<ISharedResource>();
         _mediatorMock = new Mock<IMediator>();
         _validator = new PrivilegeSelectorQueryValidator();
@@ -77,7 +68,7 @@ public class PrivilegeSelectorQueryTest : TestConfigs
             .ReturnsAsync(userDto);
 
         var query = new PrivilegeSelectorQuery(null);
-        var handler = new PrivilegeSelectorQueryHandler(_context, _mapper, _currentUserServiceMock.Object, _userManagerMock.Object, _resourceMock.Object, _mediatorMock.Object);
+        var handler = new PrivilegeSelectorQueryHandler(_context, _currentUserServiceMock.Object, _userManagerMock.Object, _resourceMock.Object, _mediatorMock.Object);
 
         // ACT
         var result = await handler.Handle(query, CancellationToken.None);
@@ -97,7 +88,7 @@ public class PrivilegeSelectorQueryTest : TestConfigs
             .ReturnsAsync(userDto);
 
         var query = new PrivilegeSelectorQuery(null);
-        var handler = new PrivilegeSelectorQueryHandler(_context, _mapper, _currentUserServiceMock.Object, _userManagerMock.Object, _resourceMock.Object, _mediatorMock.Object);
+        var handler = new PrivilegeSelectorQueryHandler(_context, _currentUserServiceMock.Object, _userManagerMock.Object, _resourceMock.Object, _mediatorMock.Object);
 
         // ACT
         var result = await handler.Handle(query, CancellationToken.None);
@@ -119,7 +110,7 @@ public class PrivilegeSelectorQueryTest : TestConfigs
             .ReturnsAsync(userDto);
         
         var query = new PrivilegeSelectorQuery("sensor");
-        var handler = new PrivilegeSelectorQueryHandler(_context, _mapper, _currentUserServiceMock.Object, _userManagerMock.Object, _resourceMock.Object, _mediatorMock.Object);
+        var handler = new PrivilegeSelectorQueryHandler(_context, _currentUserServiceMock.Object, _userManagerMock.Object, _resourceMock.Object, _mediatorMock.Object);
 
         // ACT
         var result = await handler.Handle(query, CancellationToken.None);
@@ -140,7 +131,7 @@ public class PrivilegeSelectorQueryTest : TestConfigs
             .ReturnsAsync(userDto);
 
         var query = new PrivilegeSelectorQuery(null);
-        var handler = new PrivilegeSelectorQueryHandler(_context, _mapper, _currentUserServiceMock.Object, _userManagerMock.Object, _resourceMock.Object, _mediatorMock.Object);
+        var handler = new PrivilegeSelectorQueryHandler(_context, _currentUserServiceMock.Object, _userManagerMock.Object, _resourceMock.Object, _mediatorMock.Object);
 
         // ACT
         var result = await handler.Handle(query, CancellationToken.None);

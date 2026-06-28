@@ -7,8 +7,8 @@
 - If a new message needs to be created it must be created inside "HomeControllerHub.Globalization/Resources"
 - When you will implement a new entire crud, please take a look on the "Profile" crud it is a good example on how to implement
 - If a new DTO must be created for a entity it must follow this:
-    - NameOfDto : IMapFrom<EntityThatNeedsTheMapping>
-    - If needs the pagination NameOfDto : IMapFrom<NameOfDto>, IPaginatedDto
+    - Keep DTOs as plain classes and map them with explicit query projections or small mapper helpers
+    - If needs the pagination NameOfDto : IPaginatedDto
 
 # Errors
 - All errors or exceptions must use the AppError for example:

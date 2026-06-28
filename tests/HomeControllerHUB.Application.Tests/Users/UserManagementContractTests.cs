@@ -1,4 +1,3 @@
-using AutoMapper;
 using FluentAssertions;
 using HomeControllerHUB.Application.Users.Commands.CreateUser;
 using HomeControllerHUB.Application.Users.Commands.DeleteUser;
@@ -6,7 +5,6 @@ using HomeControllerHUB.Application.Users.Commands.UpdateUser;
 using HomeControllerHUB.Application.Users.Queries.GetUserById;
 using HomeControllerHUB.Application.Users.Queries.GetUserList;
 using HomeControllerHUB.Domain.Entities;
-using HomeControllerHUB.Domain.Mappings;
 using HomeControllerHUB.Globalization;
 using HomeControllerHUB.Infra.DatabaseContext;
 using HomeControllerHUB.Infra.Services;
@@ -21,19 +19,12 @@ namespace HomeControllerHUB.Application.Tests.Users;
 
 public class UserManagementContractTests : TestConfigs
 {
-    private readonly IMapper _mapper;
     private readonly Mock<ISharedResource> _resourceMock = new();
     private readonly Mock<HomeControllerHUB.Domain.Interfaces.IEmailService> _emailServiceMock = new();
 
     public UserManagementContractTests()
     {
-        var mapperConfig = new MapperConfiguration(cfg =>
-        {
-            cfg.AddProfile(new MappingProfile(typeof(GetUserListQueryHandler).Assembly));
-        });
-
-        _mapper = mapperConfig.CreateMapper();
-        _resourceMock.Setup(r => r.NotFoundMessage(It.IsAny<string>())).Returns("Not found");
+_resourceMock.Setup(r => r.NotFoundMessage(It.IsAny<string>())).Returns("Not found");
     }
 
     private ApiUserManager CreateUserManager()
@@ -130,7 +121,7 @@ public class UserManagementContractTests : TestConfigs
         await CreateUserAsync(userManager, establishment, "beta", enable: false);
         await CreateUserAsync(userManager, otherEstablishment, "gamma");
 
-        var handler = new GetUserListQueryHandler(_context, _mapper);
+        var handler = new GetUserListQueryHandler(_context);
 
         var page = await handler.Handle(new GetUserListQuery
         {

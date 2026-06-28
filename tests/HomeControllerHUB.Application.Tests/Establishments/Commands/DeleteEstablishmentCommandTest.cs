@@ -1,4 +1,3 @@
-﻿using AutoMapper;
 using HomeControllerHUB.Application.Establishments.Commands.CreateEstablishment;
 using HomeControllerHUB.Domain.Interfaces;
 using HomeControllerHUB.Globalization;
@@ -15,13 +14,11 @@ namespace HomeControllerHUB.Application.Tests.Establishments.Commands;
 
 public class DeleteEstablishmentCommandTest : TestConfigs
 {
-    private readonly Mock<IMapper> _mapperMock;
     private readonly Mock<ISharedResource> _resourceMock;
     private readonly Mock<ICurrentUserService> _currentUserServiceMock;
     
     public DeleteEstablishmentCommandTest()
     {
-        _mapperMock = new Mock<IMapper>();
         _resourceMock = new Mock<ISharedResource>();
         _currentUserServiceMock = new Mock<ICurrentUserService>();
     }

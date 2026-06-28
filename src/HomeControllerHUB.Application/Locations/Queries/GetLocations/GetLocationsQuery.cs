@@ -1,4 +1,3 @@
-using AutoMapper;
 using HomeControllerHUB.Domain.Entities;
 using HomeControllerHUB.Application.Locations.Queries;
 using HomeControllerHUB.Domain.Models;
@@ -24,12 +23,10 @@ public class GetLocationsQuery : IRequest<PaginatedList<LocationDto>>
 public class GetLocationsQueryHandler : IRequestHandler<GetLocationsQuery, PaginatedList<LocationDto>>
 {
     private readonly ApplicationDbContext _context;
-    private readonly IMapper _mapper;
     
-    public GetLocationsQueryHandler(ApplicationDbContext context, IMapper mapper)
+    public GetLocationsQueryHandler(ApplicationDbContext context)
     {
         _context = context;
-        _mapper = mapper;
     }
     
     public async Task<PaginatedList<LocationDto>> Handle(GetLocationsQuery request, CancellationToken cancellationToken)
@@ -78,7 +75,7 @@ public class GetLocationsQueryHandler : IRequestHandler<GetLocationsQuery, Pagin
             
         var totalCount = await query.CountAsync(cancellationToken);
         
-        var locationDtos = _mapper.Map<List<LocationDto>>(locations);
+        var locationDtos = locations.Select(LocationDto.FromEntity).ToList();
         
         // Map navigation properties
         foreach (var locationDto in locationDtos)

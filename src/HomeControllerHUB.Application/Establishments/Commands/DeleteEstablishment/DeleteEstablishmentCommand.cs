@@ -1,4 +1,3 @@
-﻿using AutoMapper;
 using HomeControllerHUB.Domain.Entities;
 using HomeControllerHUB.Domain.Interfaces;
 using HomeControllerHUB.Domain.Models;

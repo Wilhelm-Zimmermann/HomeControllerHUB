@@ -1,4 +1,3 @@
-﻿using AutoMapper;
 using HomeControllerHUB.Application.Establishments.Commands.CreateEstablishment;
 using HomeControllerHUB.Domain.Interfaces;
 using HomeControllerHUB.Globalization;
@@ -15,14 +14,12 @@ namespace HomeControllerHUB.Application.Tests.Establishments.Commands;
 
 public class UpdateEstablishmentCommandTest : TestConfigs
 {
-    private readonly Mock<IMapper> _mapperMock;
     private readonly Mock<ISharedResource> _resourceMock;
     private readonly Mock<ICurrentUserService> _currentUserServiceMock;
     private readonly UpdateEstablishmentCommandValidator _validator;
     
     public UpdateEstablishmentCommandTest()
     {
-        _mapperMock = new Mock<IMapper>();
         _resourceMock = new Mock<ISharedResource>();
         _currentUserServiceMock = new Mock<ICurrentUserService>();
         _validator = new UpdateEstablishmentCommandValidator();
@@ -54,7 +51,7 @@ public class UpdateEstablishmentCommandTest : TestConfigs
             IsMaster = true,
         };
         
-        var handler = new UpdateEstablishmentCommandHandler(_context, _resourceMock.Object, _mapperMock.Object, _currentUserServiceMock.Object);
+        var handler = new UpdateEstablishmentCommandHandler(_context, _resourceMock.Object, _currentUserServiceMock.Object);
 
         // ACT
         await handler.Handle(command, CancellationToken.None);
@@ -97,7 +94,7 @@ public class UpdateEstablishmentCommandTest : TestConfigs
             UserIds = null
         };
 
-        var handler = new UpdateEstablishmentCommandHandler(_context, _resourceMock.Object, _mapperMock.Object, _currentUserServiceMock.Object);
+        var handler = new UpdateEstablishmentCommandHandler(_context, _resourceMock.Object, _currentUserServiceMock.Object);
 
         // ACT
         await handler.Handle(command, CancellationToken.None);
@@ -168,7 +165,7 @@ public class UpdateEstablishmentCommandTest : TestConfigs
             UserIds = new List<Guid> { selectedUser.Id }
         };
 
-        var handler = new UpdateEstablishmentCommandHandler(_context, _resourceMock.Object, _mapperMock.Object, _currentUserServiceMock.Object);
+        var handler = new UpdateEstablishmentCommandHandler(_context, _resourceMock.Object, _currentUserServiceMock.Object);
 
         // ACT
         await handler.Handle(command, CancellationToken.None);
@@ -209,7 +206,7 @@ public class UpdateEstablishmentCommandTest : TestConfigs
             IsMaster = true,
         };
         
-        var handler = new UpdateEstablishmentCommandHandler(_context, _resourceMock.Object, _mapperMock.Object, _currentUserServiceMock.Object);
+        var handler = new UpdateEstablishmentCommandHandler(_context, _resourceMock.Object, _currentUserServiceMock.Object);
 
         // ACT
         await handler.Handle(command, CancellationToken.None);
@@ -374,7 +371,7 @@ public class UpdateEstablishmentCommandTest : TestConfigs
             IsMaster = true,
         };
         
-        var handler = new UpdateEstablishmentCommandHandler(_context, _resourceMock.Object, _mapperMock.Object, _currentUserServiceMock.Object);
+        var handler = new UpdateEstablishmentCommandHandler(_context, _resourceMock.Object, _currentUserServiceMock.Object);
 
         // ACT
         Func<Task> result = async () => await handler.Handle(command, CancellationToken.None);

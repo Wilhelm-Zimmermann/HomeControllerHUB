@@ -1,5 +1,3 @@
-using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using FluentValidation;
 using HomeControllerHUB.Application.Sensors.Queries;
 using HomeControllerHUB.Domain.Models;
@@ -42,16 +40,13 @@ public class GetSensorReadingsQueryValidator : AbstractValidator<GetSensorReadin
 public class GetSensorReadingsQueryHandler : IRequestHandler<GetSensorReadingsQuery, PaginatedList<SensorReadingDto>>
 {
     private readonly ApplicationDbContext _context;
-    private readonly IMapper _mapper;
     private readonly ISharedResource _sharedResource;
 
     public GetSensorReadingsQueryHandler(
         ApplicationDbContext context,
-        IMapper mapper,
         ISharedResource sharedResource)
     {
         _context = context;
-        _mapper = mapper;
         _sharedResource = sharedResource;
     }
 
@@ -90,7 +85,7 @@ public class GetSensorReadingsQueryHandler : IRequestHandler<GetSensorReadingsQu
 
         // Apply pagination and map to DTO
         var paginatedReadings = await PaginatedList<SensorReadingDto>.CreateAsync(
-            query.ProjectTo<SensorReadingDto>(_mapper.ConfigurationProvider),
+            query.Select(SensorReadingDto.Projection),
             request.PageNumber,
             request.PageSize,
             cancellationToken);

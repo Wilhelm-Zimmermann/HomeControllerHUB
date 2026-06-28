@@ -1,5 +1,3 @@
-﻿using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using HomeControllerHUB.Domain.Interfaces;
 using HomeControllerHUB.Globalization;
 using HomeControllerHUB.Infra.DatabaseContext;
@@ -18,14 +16,12 @@ public class GenericSelectorQueryHandler : IRequestHandler<GenericSelectorQuery,
 {
     private readonly ICurrentUserService _currentUserService;
     private readonly ApplicationDbContext _context;
-    private readonly IMapper _mapper;
     private readonly ISharedResource _resource;
 
-    public GenericSelectorQueryHandler(ICurrentUserService currentUserService, ApplicationDbContext context, IMapper mapper, ISharedResource resource)
+    public GenericSelectorQueryHandler(ICurrentUserService currentUserService, ApplicationDbContext context, ISharedResource resource)
     {
         _currentUserService = currentUserService;
         _context = context;
-        _mapper = mapper;
         _resource = resource;
     }
 
@@ -33,7 +29,7 @@ public class GenericSelectorQueryHandler : IRequestHandler<GenericSelectorQuery,
     {
         return await _context.Generics
             .Where(p => p.Identifier == request.Identifier)
-            .ProjectTo<GenericDto>(_mapper.ConfigurationProvider)
+            .Select(GenericDto.Projection)
             .ToListAsync(cancellationToken);
     }
 }

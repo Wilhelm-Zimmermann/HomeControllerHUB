@@ -1,4 +1,3 @@
-﻿using AutoMapper;
 using HomeControllerHUB.Domain.Entities;
 using HomeControllerHUB.Domain.Interfaces;
 using HomeControllerHUB.Domain.Models;
@@ -29,14 +28,12 @@ public record CreateProfileCommand : IRequest<BaseEntityResponse>, IAuditableCom
 public class CreateProfileCommandHandler : IRequestHandler<CreateProfileCommand, BaseEntityResponse>
 {
     private readonly ApplicationDbContext _context;
-    private readonly IMapper _mapper;
     private readonly ISharedResource _resource;
     private readonly ICurrentUserService _currentUserService;
 
-    public CreateProfileCommandHandler(ApplicationDbContext context, IMapper mapper, ISharedResource resource, ICurrentUserService currentUserService)
+    public CreateProfileCommandHandler(ApplicationDbContext context, ISharedResource resource, ICurrentUserService currentUserService)
     {
         _context = context;
-        _mapper = mapper;
         _resource = resource;
         _currentUserService = currentUserService;
     }

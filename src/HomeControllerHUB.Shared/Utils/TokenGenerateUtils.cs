@@ -9,8 +9,8 @@ namespace HomeControllerHUB.Shared.Utils;
 
 public static class TokenGenerateUtils
 {
-    private static readonly string SecretKey = "kEeQXprCS3Jubzt8FY6jB4sAaVhDnK7mLUNRf9yvqdgwPTG5ZH";
-    private static readonly string EncryptKey = "qB63uaSpAy4FT8Gs";
+    private static readonly string SecretKey = "local-shared-jwt-secret-key-change-me-32chars-minimum";
+    private static readonly string EncryptKey = "local-dev-key-16";
     private static readonly string Issuer = "HomeControllerHUB";
     private static readonly string Audience = "HomeControllerHUB";
 

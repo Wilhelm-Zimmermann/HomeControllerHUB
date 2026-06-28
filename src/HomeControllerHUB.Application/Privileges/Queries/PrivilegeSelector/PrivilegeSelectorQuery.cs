@@ -1,5 +1,3 @@
-﻿using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using HomeControllerHUB.Application.Users.Queries.GetCurrentUser;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -21,16 +19,14 @@ public record PrivilegeSelectorQuery(string? SearchBy) : IRequest<List<Privilege
 public class PrivilegeSelectorQueryHandler : IRequestHandler<PrivilegeSelectorQuery, List<PrivilegeSelectorDto>>
 {
     private readonly ApplicationDbContext _context;
-    private readonly IMapper _mapper;
     private readonly ICurrentUserService _currentUserService;
     private readonly ApiUserManager _userManager;
     private readonly ISharedResource _resource;
     private readonly IMediator _mediator;
 
-    public PrivilegeSelectorQueryHandler(ApplicationDbContext context, IMapper mapper, ICurrentUserService currentUserService, ApiUserManager userManager, ISharedResource resource, IMediator mediator)
+    public PrivilegeSelectorQueryHandler(ApplicationDbContext context, ICurrentUserService currentUserService, ApiUserManager userManager, ISharedResource resource, IMediator mediator)
     {
         _context = context;
-        _mapper = mapper;
         _currentUserService = currentUserService;
         _userManager = userManager;
         _resource = resource;
@@ -58,7 +54,7 @@ public class PrivilegeSelectorQueryHandler : IRequestHandler<PrivilegeSelectorQu
         }
 
         var result = await entity
-            .ProjectTo<PrivilegeSelectorDto>(_mapper.ConfigurationProvider)
+            .Select(PrivilegeSelectorDto.Projection)
             .OrderBy(c => c.Name)
             .ToListAsync();
 

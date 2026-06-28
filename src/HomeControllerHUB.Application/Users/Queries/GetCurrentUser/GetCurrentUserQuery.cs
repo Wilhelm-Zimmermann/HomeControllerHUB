@@ -1,5 +1,3 @@
-﻿using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using HomeControllerHUB.Domain.Entities;
 using HomeControllerHUB.Domain.Interfaces;
 using HomeControllerHUB.Domain.Models;
@@ -22,16 +20,14 @@ public class GetCurrentUserQueryHandler : IRequestHandler<GetCurrentUserQuery, C
 {
     private readonly ICurrentUserService _currentUserService;
     private readonly ApplicationDbContext _context;
-    private readonly IMapper _mapper;
     private readonly ApiUserManager _userManager;
     private readonly ISharedResource _resource;
 
     public GetCurrentUserQueryHandler(ICurrentUserService currentUserService, ApplicationDbContext context,
-        IMapper mapper, ApiUserManager userManager, ISharedResource resource)
+        ApiUserManager userManager, ISharedResource resource)
     {
         _currentUserService = currentUserService;
         _context = context;
-        _mapper = mapper;
         _userManager = userManager;
         _resource = resource;
     }
@@ -47,7 +43,7 @@ public class GetCurrentUserQueryHandler : IRequestHandler<GetCurrentUserQuery, C
         var record = await _context.Users
             .AsNoTracking()
             .Where(k => k.Id == currentUserId)
-            .ProjectTo<CurrentUserDto>(_mapper.ConfigurationProvider)
+            .Select(CurrentUserDto.Projection)
             .FirstOrDefaultAsync(cancellationToken);
 
         bool admin = false;

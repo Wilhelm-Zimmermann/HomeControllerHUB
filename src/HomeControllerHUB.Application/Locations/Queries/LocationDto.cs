@@ -1,10 +1,8 @@
 using HomeControllerHUB.Domain.Entities;
 using HomeControllerHUB.Domain.Interfaces;
-using HomeControllerHUB.Domain.Mappings;
-
 namespace HomeControllerHUB.Application.Locations.Queries;
 
-public class LocationDto : IMapFrom<Location>, IPaginatedDto
+public partial class LocationDto : IPaginatedDto
 {
     public Guid Id { get; set; }
     public Guid EstablishmentId { get; set; }

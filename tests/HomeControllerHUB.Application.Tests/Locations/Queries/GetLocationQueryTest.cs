@@ -1,4 +1,3 @@
-﻿using AutoMapper;
 using FluentAssertions;
 using FluentValidation.TestHelper;
 using HomeControllerHUB.Application.Locations.Queries;
@@ -12,13 +11,11 @@ namespace HomeControllerHUB.Application.Tests.Locations.Queries;
 
 public class GetLocationQueryTest : TestConfigs
 {
-    private readonly Mock<IMapper> _mapperMock;
     private readonly Mock<ISharedResource> _resourceMock;
     private readonly GetLocationQueryValidator _validator;
 
     public GetLocationQueryTest()
     {
-        _mapperMock = new Mock<IMapper>();
         _resourceMock = new Mock<ISharedResource>();
         _validator = new GetLocationQueryValidator();
     }
@@ -32,11 +29,8 @@ public class GetLocationQueryTest : TestConfigs
         _context.Locations.Add(location);
         await _context.SaveChangesAsync();
 
-        var locationDto = new LocationDto { Id = location.Id, Name = location.Name, EstablishmentName = establishment.Name! };
-        _mapperMock.Setup(m => m.Map<LocationDto>(It.IsAny<Location>())).Returns(locationDto);
-
         var query = new GetLocationQuery { Id = location.Id };
-        var handler = new GetLocationQueryHandler(_context, _mapperMock.Object, _resourceMock.Object);
+        var handler = new GetLocationQueryHandler(_context, _resourceMock.Object);
 
         // ACT
         var result = await handler.Handle(query, CancellationToken.None);
@@ -53,7 +47,7 @@ public class GetLocationQueryTest : TestConfigs
     {
         // ARRANGE
         var query = new GetLocationQuery { Id = Guid.NewGuid() };
-        var handler = new GetLocationQueryHandler(_context, _mapperMock.Object, _resourceMock.Object);
+        var handler = new GetLocationQueryHandler(_context, _resourceMock.Object);
         _resourceMock.Setup(r => r.NotFoundMessage(nameof(Location))).Returns("Location not found.");
 
         // ACT

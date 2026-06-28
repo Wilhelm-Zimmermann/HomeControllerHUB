@@ -1,5 +1,3 @@
-﻿using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using HomeControllerHUB.Domain.Interfaces;
 using HomeControllerHUB.Domain.Models;
 using HomeControllerHUB.Infra.DatabaseContext;
@@ -21,13 +19,11 @@ public class GetAllEstablishmentPaginatedQueryHandler : IRequestHandler<GetAllEs
 {
     private readonly ApplicationDbContext _context;
     private readonly ICurrentUserService _currentUserService;
-    private readonly IMapper _mapper;
 
-    public GetAllEstablishmentPaginatedQueryHandler(ApplicationDbContext context, ICurrentUserService currentUserService, IMapper mapper)
+    public GetAllEstablishmentPaginatedQueryHandler(ApplicationDbContext context, ICurrentUserService currentUserService)
     {
         _context = context;
         _currentUserService = currentUserService;
-        _mapper = mapper;
     }
 
     public async Task<PaginatedList<EstablishmentWithPaginationDto>> Handle(GetAllEstablishmentPaginatedQuery request, CancellationToken cancellationToken)
@@ -43,16 +39,11 @@ public class GetAllEstablishmentPaginatedQueryHandler : IRequestHandler<GetAllEs
         if (!string.IsNullOrEmpty(request.SearchBy) && request.SearchBy.Length > 0)
         {
             var normalizedSearch = string.Concat("%", StringExtensions.Normalize(string.Concat(request.SearchBy, string.Empty)), "%");
-
-            var normalizedQuery1 = query.Where(e => EF.Functions.Like(e.NormalizedName, normalizedSearch));
-
-            query = normalizedQuery1;
+            query = query.Where(e => EF.Functions.Like(e.NormalizedName, normalizedSearch));
         }
 
-        var establishments = await query
-            .ProjectTo<EstablishmentWithPaginationDto>(_mapper.ConfigurationProvider)
+        return await query
+            .Select(EstablishmentWithPaginationDto.Projection)
             .PaginateAsync(request, cancellationToken);
-
-        return establishments;
     }
 }

@@ -3,6 +3,11 @@
 # ----------------- 
 .idea/
 .vs/
+.build/
+.codex-build/
+.codex-build-*/
+.codex-test-bin/
+coverage/
 NuGet.Config
 # If you have any user files in /src/HomeControllerHUB.Api, ignore them
 /src/HomeControllerHUB.Api/*.user

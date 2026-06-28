@@ -1,4 +1,3 @@
-using AutoMapper;
 using HomeControllerHUB.Application.Locations.Queries;
 using HomeControllerHUB.Infra.DatabaseContext;
 using HomeControllerHUB.Shared.Common;
@@ -17,12 +16,10 @@ public class GetLocationHierarchyQuery : IRequest<List<LocationHierarchyDto>>
 public class GetLocationHierarchyQueryHandler : IRequestHandler<GetLocationHierarchyQuery, List<LocationHierarchyDto>>
 {
     private readonly ApplicationDbContext _context;
-    private readonly IMapper _mapper;
     
-    public GetLocationHierarchyQueryHandler(ApplicationDbContext context, IMapper mapper)
+    public GetLocationHierarchyQueryHandler(ApplicationDbContext context)
     {
         _context = context;
-        _mapper = mapper;
     }
     
     public async Task<List<LocationHierarchyDto>> Handle(GetLocationHierarchyQuery request, CancellationToken cancellationToken)
@@ -33,7 +30,7 @@ public class GetLocationHierarchyQueryHandler : IRequestHandler<GetLocationHiera
             .ToListAsync(cancellationToken);
             
         // Map all locations to DTOs
-        var locationDtos = _mapper.Map<List<LocationHierarchyDto>>(allLocations);
+        var locationDtos = allLocations.Select(LocationHierarchyDto.FromEntity).ToList();
         
         // Create a dictionary for quick lookup
         var dtoLookup = locationDtos.ToDictionary(dto => dto.Id);

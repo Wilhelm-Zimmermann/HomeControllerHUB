@@ -1,5 +1,3 @@
-using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using HomeControllerHUB.Domain.Interfaces;
 using HomeControllerHUB.Infra.DatabaseContext;
 using HomeControllerHUB.Shared.Common;
@@ -17,13 +15,11 @@ public record GetProfileSelectorQuery : IRequest<List<ProfileSelectorDto>>
 public class GetProfileSelectorQueryHandler : IRequestHandler<GetProfileSelectorQuery, List<ProfileSelectorDto>>
 {
     private readonly ApplicationDbContext _context;
-    private readonly IMapper _mapper;
     private readonly ICurrentUserService _currentUserService;
 
-    public GetProfileSelectorQueryHandler(ApplicationDbContext context, IMapper mapper, ICurrentUserService currentUserService)
+    public GetProfileSelectorQueryHandler(ApplicationDbContext context, ICurrentUserService currentUserService)
     {
         _context = context;
-        _mapper = mapper;
         _currentUserService = currentUserService;
     }
 
@@ -33,7 +29,7 @@ public class GetProfileSelectorQueryHandler : IRequestHandler<GetProfileSelector
 
         return await _context.Profiles
             .Where(p => p.EstablishmentId == establishmentId)
-            .ProjectTo<ProfileSelectorDto>(_mapper.ConfigurationProvider)
+            .Select(ProfileSelectorDto.Projection)
             .ToListAsync(cancellationToken);
     }
 }

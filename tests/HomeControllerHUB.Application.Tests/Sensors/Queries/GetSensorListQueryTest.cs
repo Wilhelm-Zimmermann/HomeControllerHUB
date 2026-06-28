@@ -1,4 +1,3 @@
-﻿using AutoMapper;
 using FluentAssertions;
 using HomeControllerHUB.Application.Sensors.Queries;
 using HomeControllerHUB.Application.Sensors.Queries.GetSensorList;
@@ -8,16 +7,10 @@ namespace HomeControllerHUB.Application.Tests.Sensors.Queries;
 
 public class GetSensorListQueryTest : TestConfigs
 {
-    private readonly IMapper _mapper;
 
     public GetSensorListQueryTest()
     {
-        var config = new MapperConfiguration(cfg =>
-        {
-            cfg.CreateMap<Sensor, SensorDto>();
-        });
-        _mapper = config.CreateMapper();
-    }
+}
 
     [Fact]
     public async Task Get_Should_ReturnFilteredList()
@@ -35,7 +28,7 @@ public class GetSensorListQueryTest : TestConfigs
         await _context.SaveChangesAsync();
 
         var query = new GetSensorListQuery { LocationId = location1.Id, IsActive = true };
-        var handler = new GetSensorListQueryHandler(_context, _mapper);
+        var handler = new GetSensorListQueryHandler(_context);
 
         // ACT
         var result = await handler.Handle(query, CancellationToken.None);

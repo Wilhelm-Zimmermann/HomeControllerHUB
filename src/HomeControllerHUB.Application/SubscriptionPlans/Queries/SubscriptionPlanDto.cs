@@ -1,10 +1,8 @@
 using HomeControllerHUB.Domain.Entities;
 using HomeControllerHUB.Domain.Interfaces;
-using HomeControllerHUB.Domain.Mappings;
-
 namespace HomeControllerHUB.Application.SubscriptionPlans.Queries;
 
-public class SubscriptionPlanDto : IMapFrom<SubscriptionPlan>, IPaginatedDto
+public class SubscriptionPlanDto : IPaginatedDto
 {
     public Guid Id { get; set; }
     public string Name { get; set; } = null!;

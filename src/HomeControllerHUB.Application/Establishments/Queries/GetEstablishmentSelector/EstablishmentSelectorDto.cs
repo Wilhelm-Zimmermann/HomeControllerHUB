@@ -1,9 +1,7 @@
-﻿using HomeControllerHUB.Domain.Entities;
-using HomeControllerHUB.Domain.Mappings;
-
+using HomeControllerHUB.Domain.Entities;
 namespace HomeControllerHUB.Application.Establishments.Queries.GetEstablishmentSelector;
 
-public class EstablishmentSelectorDto : IMapFrom<Establishment>
+public partial class EstablishmentSelectorDto
 {
     public Guid Id { get; set; }
     public string Name { get; set; }

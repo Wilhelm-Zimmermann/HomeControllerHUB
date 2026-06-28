@@ -1,10 +1,8 @@
-﻿using AutoMapper;
 using FluentAssertions;
 using HomeControllerHUB.Application.Profiles.Queries;
 using HomeControllerHUB.Application.Profiles.Queries.GetProfileById;
 using HomeControllerHUB.Domain.Entities;
 using HomeControllerHUB.Domain.Interfaces;
-using HomeControllerHUB.Domain.Mappings;
 using Moq;
 using Profile = HomeControllerHUB.Domain.Entities.Profile;
 
@@ -12,17 +10,11 @@ namespace HomeControllerHUB.Application.Tests.Profiles.Queries;
 
 public class GetProfileByIdQueryTest : TestConfigs
 {
-    private readonly IMapper _mapper;
     private readonly Mock<ICurrentUserService> _currentUserServiceMock;
 
     public GetProfileByIdQueryTest()
     {
-        var config = new MapperConfiguration(cfg =>
-        {
-            cfg.AddProfile(new MappingProfile(typeof(ProfileDto).Assembly));
-        });
-        _mapper = config.CreateMapper();
-        _currentUserServiceMock = new Mock<ICurrentUserService>();
+_currentUserServiceMock = new Mock<ICurrentUserService>();
     }
 
     [Fact]
@@ -36,7 +28,7 @@ public class GetProfileByIdQueryTest : TestConfigs
         await _context.SaveChangesAsync();
 
         var query = new GetProfileByIdQuery(profile.Id);
-        var handler = new GetProfileByIdQueryHandler(_context, _mapper, _currentUserServiceMock.Object);
+        var handler = new GetProfileByIdQueryHandler(_context, _currentUserServiceMock.Object);
 
         // ACT
         var result = await handler.Handle(query, CancellationToken.None);
@@ -53,7 +45,7 @@ public class GetProfileByIdQueryTest : TestConfigs
         // ARRANGE
         _currentUserServiceMock.Setup(s => s.EstablishmentId).Returns(Guid.NewGuid());
         var query = new GetProfileByIdQuery(Guid.NewGuid());
-        var handler = new GetProfileByIdQueryHandler(_context, _mapper, _currentUserServiceMock.Object);
+        var handler = new GetProfileByIdQueryHandler(_context, _currentUserServiceMock.Object);
 
         // ACT
         var result = await handler.Handle(query, CancellationToken.None);
@@ -87,7 +79,7 @@ public class GetProfileByIdQueryTest : TestConfigs
         await _context.SaveChangesAsync();
 
         var query = new GetProfileByIdQuery(profile.Id);
-        var handler = new GetProfileByIdQueryHandler(_context, _mapper, _currentUserServiceMock.Object);
+        var handler = new GetProfileByIdQueryHandler(_context, _currentUserServiceMock.Object);
 
         // ACT
         var result = await handler.Handle(query, CancellationToken.None);

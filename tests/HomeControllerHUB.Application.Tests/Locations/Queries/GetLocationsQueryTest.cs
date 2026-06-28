@@ -1,4 +1,3 @@
-﻿using AutoMapper;
 using FluentAssertions;
 using FluentValidation.TestHelper;
 using HomeControllerHUB.Application.Locations.Queries;
@@ -11,11 +10,9 @@ namespace HomeControllerHUB.Application.Tests.Locations.Queries;
 
 public class GetLocationsQueryTest : TestConfigs
 {
-    private readonly Mock<IMapper> _mapperMock;
 
     public GetLocationsQueryTest()
     {
-        _mapperMock = new Mock<IMapper>();
     }
 
     [Fact]
@@ -40,11 +37,8 @@ public class GetLocationsQueryTest : TestConfigs
         });
         await _context.SaveChangesAsync();
         
-        _mapperMock.Setup(m => m.Map<List<LocationDto>>(It.IsAny<List<Location>>()))
-            .Returns<List<Location>>(locs => locs.Select(l => new LocationDto { Id = l.Id }).ToList());
-
         var query = new GetLocationsQuery { EstablishmentId = establishment.Id, PageNumber = 2, PageSize = 10 };
-        var handler = new GetLocationsQueryHandler(_context, _mapperMock.Object);
+        var handler = new GetLocationsQueryHandler(_context);
 
         // ACT
         var result = await handler.Handle(query, CancellationToken.None);
@@ -75,11 +69,8 @@ public class GetLocationsQueryTest : TestConfigs
         });
         await _context.SaveChangesAsync();
 
-        _mapperMock.Setup(m => m.Map<List<LocationDto>>(It.IsAny<List<Location>>()))
-            .Returns<List<Location>>(locs => locs.Select(l => new LocationDto { Id = l.Id }).ToList());
-
         var query = new GetLocationsQuery { EstablishmentId = establishment.Id, RootOnly = true };
-        var handler = new GetLocationsQueryHandler(_context, _mapperMock.Object);
+        var handler = new GetLocationsQueryHandler(_context);
 
         // ACT
         var result = await handler.Handle(query, CancellationToken.None);
@@ -116,15 +107,12 @@ public class GetLocationsQueryTest : TestConfigs
             });
         await _context.SaveChangesAsync();
 
-        _mapperMock.Setup(m => m.Map<List<LocationDto>>(It.IsAny<List<Location>>()))
-            .Returns<List<Location>>(locs => locs.Select(l => new LocationDto { Id = l.Id }).ToList());
-
         var query = new GetLocationsQuery
         {
             EstablishmentId = establishment.Id,
             ParentLocationId = parentLocation.Id,
         };
-        var handler = new GetLocationsQueryHandler(_context, _mapperMock.Object);
+        var handler = new GetLocationsQueryHandler(_context);
 
         // ACT
         var result = await handler.Handle(query, CancellationToken.None);
@@ -153,11 +141,8 @@ public class GetLocationsQueryTest : TestConfigs
         _context.Locations.Add(childLocation);
         await _context.SaveChangesAsync();
 
-        _mapperMock.Setup(m => m.Map<List<LocationDto>>(It.IsAny<List<Location>>()))
-            .Returns<List<Location>>(locs => locs.Select(l => new LocationDto { Id = l.Id }).ToList());
-
         var query = new GetLocationsQuery { EstablishmentId = establishment.Id };
-        var handler = new GetLocationsQueryHandler(_context, _mapperMock.Object);
+        var handler = new GetLocationsQueryHandler(_context);
 
         // ACT
         var result = await handler.Handle(query, CancellationToken.None);
@@ -179,11 +164,8 @@ public class GetLocationsQueryTest : TestConfigs
         );
         await _context.SaveChangesAsync();
         
-        _mapperMock.Setup(m => m.Map<List<LocationDto>>(It.IsAny<List<Location>>()))
-            .Returns<List<Location>>(locs => locs.Select(l => new LocationDto { Id = l.Id }).ToList());
-
         var query = new GetLocationsQuery { EstablishmentId = establishment.Id, SearchString = "ROOM" };
-        var handler = new GetLocationsQueryHandler(_context, _mapperMock.Object);
+        var handler = new GetLocationsQueryHandler(_context);
 
         // ACT
         var result = await handler.Handle(query, CancellationToken.None);

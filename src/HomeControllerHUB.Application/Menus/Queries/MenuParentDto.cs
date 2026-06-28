@@ -1,9 +1,7 @@
-﻿using HomeControllerHUB.Domain.Entities;
-using HomeControllerHUB.Domain.Mappings;
-
+using HomeControllerHUB.Domain.Entities;
 namespace HomeControllerHUB.Application.Menus.Queries;
 
-public class MenuParentDto : IMapFrom<ApplicationMenu>
+public class MenuParentDto
 {
     public Guid Id { get; set; }
     public string? Name { get; set; }

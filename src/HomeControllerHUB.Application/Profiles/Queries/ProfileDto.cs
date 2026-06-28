@@ -1,9 +1,6 @@
-﻿using HomeControllerHUB.Domain.Entities;
-using HomeControllerHUB.Domain.Mappings;
-
 namespace HomeControllerHUB.Application.Profiles.Queries;
 
-public class ProfileDto : IMapFrom<Profile>
+public partial class ProfileDto
 {
     public Guid Id { get; set; }
     public Guid EstablishmentId { get; set; }
@@ -14,23 +11,6 @@ public class ProfileDto : IMapFrom<Profile>
     public bool Enable { get; set; }
     public List<Guid> PrivilegeIds { get; set; } = [];
     public List<ProfilePrivilegeDto> Privileges { get; set; } = [];
-
-    public void Mapping(AutoMapper.Profile profile)
-    {
-        profile.CreateMap<Profile, ProfileDto>()
-            .ForMember(d => d.PrivilegeIds, opt => opt.MapFrom(s =>
-                s.ProfilePrivileges.Select(pp => pp.PrivilegeId).ToList()))
-            .ForMember(d => d.Privileges, opt => opt.MapFrom(s =>
-                s.ProfilePrivileges.Select(pp => new ProfilePrivilegeDto
-                    {
-                        PrivilegeId = pp.PrivilegeId,
-                        Domain = pp.Privilege.Domain.Name,
-                        DomainDisplayName = pp.Privilege.Domain.Description,
-                        Action = pp.Privilege.Actions,
-                        ActionDisplayName = pp.Privilege.Actions,
-                        Description = pp.Privilege.Description
-                    }).ToList()));
-    }
 }
 
 public class ProfilePrivilegeDto

@@ -1,5 +1,4 @@
 ﻿using HomeControllerHUB.Domain.Entities;
-using HomeControllerHUB.Domain.Mappings;
 using HomeControllerHUB.Domain.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;

@@ -1,4 +1,3 @@
-﻿using AutoMapper;
 using FluentAssertions;
 using HomeControllerHUB.Application.Sensors.Queries;
 using HomeControllerHUB.Application.Sensors.Queries.GetSensorAlerts;
@@ -10,17 +9,11 @@ namespace HomeControllerHUB.Application.Tests.Sensors.Queries;
 
 public class GetSensorAlertsQueryTest : TestConfigs
 {
-    private readonly IMapper _mapper;
     private readonly Mock<ISharedResource> _resourceMock;
 
     public GetSensorAlertsQueryTest()
     {
-        var config = new MapperConfiguration(cfg =>
-        {
-            cfg.CreateMap<SensorAlert, SensorAlertDto>();
-        });
-        _mapper = config.CreateMapper();
-        _resourceMock = new Mock<ISharedResource>();
+_resourceMock = new Mock<ISharedResource>();
     }
 
     [Fact]
@@ -45,7 +38,7 @@ public class GetSensorAlertsQueryTest : TestConfigs
             AlertType = AlertType.ThresholdExceeded,
             IsAcknowledged = false
         };
-        var handler = new GetSensorAlertsQueryHandler(_context, _mapper, _resourceMock.Object);
+        var handler = new GetSensorAlertsQueryHandler(_context, _resourceMock.Object);
 
         // ACT
         var result = await handler.Handle(query, CancellationToken.None);

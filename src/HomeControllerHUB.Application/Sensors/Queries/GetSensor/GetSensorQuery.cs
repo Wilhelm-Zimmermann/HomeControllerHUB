@@ -1,5 +1,3 @@
-using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using FluentValidation;
 using HomeControllerHUB.Application.Sensors.Queries;
 using HomeControllerHUB.Domain.Models;
@@ -30,24 +28,22 @@ public class GetSensorQueryValidator : AbstractValidator<GetSensorQuery>
 public class GetSensorQueryHandler : IRequestHandler<GetSensorQuery, SensorDto>
 {
     private readonly ApplicationDbContext _context;
-    private readonly IMapper _mapper;
     private readonly ISharedResource _sharedResource;
 
     public GetSensorQueryHandler(
         ApplicationDbContext context,
-        IMapper mapper,
         ISharedResource sharedResource)
     {
         _context = context;
-        _mapper = mapper;
         _sharedResource = sharedResource;
     }
 
     public async Task<SensorDto> Handle(GetSensorQuery request, CancellationToken cancellationToken)
     {
         var sensor = await _context.Sensors
-            .Include(s => s.Location)
-            .FirstOrDefaultAsync(s => s.Id == request.Id, cancellationToken);
+            .Where(s => s.Id == request.Id)
+            .Select(SensorDto.Projection)
+            .FirstOrDefaultAsync(cancellationToken);
 
         if (sensor == null)
         {
@@ -57,6 +53,6 @@ public class GetSensorQueryHandler : IRequestHandler<GetSensorQuery, SensorDto>
                 _sharedResource.Message("SensorNotFound"));
         }
 
-        return _mapper.Map<SensorDto>(sensor);
+        return sensor;
     }
 } 

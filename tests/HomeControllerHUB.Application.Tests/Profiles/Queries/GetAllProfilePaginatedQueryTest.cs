@@ -1,9 +1,7 @@
-﻿using AutoMapper;
 using FluentAssertions;
 using HomeControllerHUB.Application.Profiles.Queries;
 using HomeControllerHUB.Application.Profiles.Queries.GetAllProfilePaginated;
 using HomeControllerHUB.Domain.Interfaces;
-using HomeControllerHUB.Domain.Mappings;
 using Moq;
 using Profile = HomeControllerHUB.Domain.Entities.Profile;
 
@@ -11,17 +9,11 @@ namespace HomeControllerHUB.Application.Tests.Profiles.Queries;
 
 public class GetAllProfilePaginatedQueryTest : TestConfigs
 {
-    private readonly IMapper _mapper;
     private readonly Mock<ICurrentUserService> _currentUserServiceMock;
 
     public GetAllProfilePaginatedQueryTest()
     {
-        var config = new MapperConfiguration(cfg =>
-        {
-            cfg.AddProfile(new MappingProfile(typeof(GetProfilePaginatedDto).Assembly));
-        });
-        _mapper = config.CreateMapper();
-        _currentUserServiceMock = new Mock<ICurrentUserService>();
+_currentUserServiceMock = new Mock<ICurrentUserService>();
     }
 
     [Fact]
@@ -44,7 +36,7 @@ public class GetAllProfilePaginatedQueryTest : TestConfigs
         await _context.SaveChangesAsync();
 
         var query = new GetAllProfilePaginatedQuery { PageNumber = 2, PageSize = 10 };
-        var handler = new GetAllProfilePaginatedQueryHandler(_context, _currentUserServiceMock.Object, _mapper);
+        var handler = new GetAllProfilePaginatedQueryHandler(_context, _currentUserServiceMock.Object);
 
         // ACT
         var result = await handler.Handle(query, CancellationToken.None);
@@ -71,7 +63,7 @@ public class GetAllProfilePaginatedQueryTest : TestConfigs
         await _context.SaveChangesAsync();
 
         var query = new GetAllProfilePaginatedQuery { SearchBy = "Profile" };
-        var handler = new GetAllProfilePaginatedQueryHandler(_context, _currentUserServiceMock.Object, _mapper);
+        var handler = new GetAllProfilePaginatedQueryHandler(_context, _currentUserServiceMock.Object);
 
         // ACT
         var result = await handler.Handle(query, CancellationToken.None);
@@ -95,7 +87,7 @@ public class GetAllProfilePaginatedQueryTest : TestConfigs
         await _context.SaveChangesAsync();
 
         var query = new GetAllProfilePaginatedQuery { Enable = true };
-        var handler = new GetAllProfilePaginatedQueryHandler(_context, _currentUserServiceMock.Object, _mapper);
+        var handler = new GetAllProfilePaginatedQueryHandler(_context, _currentUserServiceMock.Object);
 
         // ACT
         var result = await handler.Handle(query, CancellationToken.None);
@@ -126,7 +118,7 @@ public class GetAllProfilePaginatedQueryTest : TestConfigs
         await _context.SaveChangesAsync();
 
         var query = new GetAllProfilePaginatedQuery();
-        var handler = new GetAllProfilePaginatedQueryHandler(_context, _currentUserServiceMock.Object, _mapper);
+        var handler = new GetAllProfilePaginatedQueryHandler(_context, _currentUserServiceMock.Object);
 
         // ACT
         var result = await handler.Handle(query, CancellationToken.None);

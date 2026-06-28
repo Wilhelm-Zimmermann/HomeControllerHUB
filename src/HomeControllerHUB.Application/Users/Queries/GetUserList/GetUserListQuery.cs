@@ -1,11 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using AutoMapper;
-using AutoMapper.QueryableExtensions;
-using HomeControllerHUB.Domain.Entities;
-using HomeControllerHUB.Domain.Interfaces;
 using HomeControllerHUB.Domain.Models;
 using HomeControllerHUB.Infra.DatabaseContext;
 using HomeControllerHUB.Shared.Common;
@@ -25,16 +17,12 @@ public record GetUserListQuery : PaginatedRequest<UserListDto>
 public class GetUserListQueryHandler : IRequestHandler<GetUserListQuery, PaginatedList<UserListDto>>
 {
     private readonly ApplicationDbContext _context;
-    private readonly IMapper _mapper;
-    
-    public GetUserListQueryHandler(
-        ApplicationDbContext context,
-        IMapper mapper)
+
+    public GetUserListQueryHandler(ApplicationDbContext context)
     {
         _context = context;
-        _mapper = mapper;
     }
-    
+
     public async Task<PaginatedList<UserListDto>> Handle(GetUserListQuery request, CancellationToken cancellationToken)
     {
         var query = _context.Users
@@ -55,19 +43,19 @@ public class GetUserListQueryHandler : IRequestHandler<GetUserListQuery, Paginat
                 u.EstablishmentId == establishmentId ||
                 u.UserEstablishments.Any(ue => ue.EstablishmentId == establishmentId));
         }
-        
+
         if (!string.IsNullOrWhiteSpace(request.SearchBy))
         {
             var searchBy = request.SearchBy.ToLower();
-            query = query.Where(u => 
+            query = query.Where(u =>
                 (u.Name != null && u.Name.ToLower().Contains(searchBy)) ||
                 (u.Email != null && u.Email.ToLower().Contains(searchBy)) ||
                 (u.Login != null && u.Login.ToLower().Contains(searchBy)) ||
                 (u.Document != null && u.Document.ToLower().Contains(searchBy)));
         }
-        
+
         return await query
-            .ProjectTo<UserListDto>(_mapper.ConfigurationProvider)
+            .Select(UserListDto.Projection)
             .PaginateAsync(request, cancellationToken);
     }
-} 
+}

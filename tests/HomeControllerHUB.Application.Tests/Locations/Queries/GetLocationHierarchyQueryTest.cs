@@ -1,4 +1,3 @@
-﻿using AutoMapper;
 using FluentAssertions;
 using HomeControllerHUB.Application.Locations.Queries;
 using HomeControllerHUB.Application.Locations.Queries.GetLocationHierarchy;
@@ -9,11 +8,9 @@ namespace HomeControllerHUB.Application.Tests.Locations.Queries;
 
 public class GetLocationHierarchyQueryTest : TestConfigs
 {
-    private readonly Mock<IMapper> _mapperMock;
 
     public GetLocationHierarchyQueryTest()
     {
-        _mapperMock = new Mock<IMapper>();
     }
 
     [Fact]
@@ -35,14 +32,8 @@ public class GetLocationHierarchyQueryTest : TestConfigs
         _context.Locations.AddRange(allLocations);
         await _context.SaveChangesAsync();
 
-        _mapperMock.Setup(m => m.Map<List<LocationHierarchyDto>>(It.IsAny<List<Location>>()))
-            .Returns<List<Location>>(locations => locations.Select(l => new LocationHierarchyDto
-            {
-                Id = l.Id, Name = l.Name, ParentLocationId = l.ParentLocationId
-            }).ToList());
-        
         var query = new GetLocationHierarchyQuery { EstablishmentId = establishment1.Id };
-        var handler = new GetLocationHierarchyQueryHandler(_context, _mapperMock.Object);
+        var handler = new GetLocationHierarchyQueryHandler(_context);
 
         // ACT
         var result = await handler.Handle(query, CancellationToken.None);

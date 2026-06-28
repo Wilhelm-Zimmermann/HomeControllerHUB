@@ -1,4 +1,3 @@
-﻿using AutoMapper;
 using FluentAssertions;
 using HomeControllerHUB.Application.Domains.Queries;
 using HomeControllerHUB.Application.Menus.Queries;
@@ -18,22 +17,13 @@ namespace HomeControllerHUB.Application.Tests.Menus.Queries;
 
 public class MenuSelectorQueryTest : TestConfigs
 {
-    private readonly IMapper _mapper;
     private readonly Mock<ICurrentUserService> _currentUserServiceMock;
     private readonly Mock<ApiUserManager> _userManagerMock;
     private readonly Mock<ISharedResource> _resourceMock;
 
     public MenuSelectorQueryTest()
     {
-        var config = new MapperConfiguration(cfg =>
-        {
-            cfg.CreateMap<ApplicationMenu, MenuDto>();
-            cfg.CreateMap<ApplicationMenu, MenuParentDto>();
-            cfg.CreateMap<ApplicationDomain, ApplicationDomainDto>();
-        });
-        _mapper = config.CreateMapper();
-
-        _currentUserServiceMock = new Mock<ICurrentUserService>();
+_currentUserServiceMock = new Mock<ICurrentUserService>();
         _resourceMock = new Mock<ISharedResource>();
 
         var store = new Mock<IUserStore<ApplicationUser>>();
@@ -106,7 +96,7 @@ public class MenuSelectorQueryTest : TestConfigs
             DomainId = domainB.Id, Order = 4, Description = "Sensors Menu"
         };
         var menuHome = new ApplicationMenu
-            { Id = Guid.NewGuid(), Name = "Home", NormalizedName = "HOME", Order = 0, Description = "Início" };
+            { Id = Guid.NewGuid(), Name = "Home", NormalizedName = "HOME", Order = 0, Description = "In�cio" };
 
         _context.Domains.AddRange(domainA, domainB);
         _context.Privilege.Add(privilegeA);
@@ -126,7 +116,7 @@ public class MenuSelectorQueryTest : TestConfigs
         // ARRANGE
         await SeedDataForNonAdmin();
         var query = new MenuSelectorQuery(null);
-        var handler = new MenuSelectorQueryHandler(_context, _mapper, _currentUserServiceMock.Object,
+        var handler = new MenuSelectorQueryHandler(_context, _currentUserServiceMock.Object,
             _userManagerMock.Object, _resourceMock.Object);
 
         // ACT
@@ -194,7 +184,7 @@ public class MenuSelectorQueryTest : TestConfigs
         _currentUserServiceMock.Setup(s => s.UserId).Returns(user.Id);
 
         var query = new MenuSelectorQuery(null);
-        var handler = new MenuSelectorQueryHandler(_context, _mapper, _currentUserServiceMock.Object,
+        var handler = new MenuSelectorQueryHandler(_context, _currentUserServiceMock.Object,
             _userManagerMock.Object, _resourceMock.Object);
 
         // ACT
@@ -210,7 +200,7 @@ public class MenuSelectorQueryTest : TestConfigs
         // ARRANGE
         await SeedDataForNonAdmin();
         var query = new MenuSelectorQuery("Loca");
-        var handler = new MenuSelectorQueryHandler(_context, _mapper, _currentUserServiceMock.Object,
+        var handler = new MenuSelectorQueryHandler(_context, _currentUserServiceMock.Object,
             _userManagerMock.Object, _resourceMock.Object);
 
         // ACT
@@ -227,7 +217,7 @@ public class MenuSelectorQueryTest : TestConfigs
         // ARRANGE
         _currentUserServiceMock.Setup(s => s.UserId).Returns(Guid.NewGuid());
         var query = new MenuSelectorQuery(null);
-        var handler = new MenuSelectorQueryHandler(_context, _mapper, _currentUserServiceMock.Object,
+        var handler = new MenuSelectorQueryHandler(_context, _currentUserServiceMock.Object,
             _userManagerMock.Object, _resourceMock.Object);
 
         // ACT

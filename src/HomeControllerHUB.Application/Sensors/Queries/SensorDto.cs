@@ -1,10 +1,8 @@
 using HomeControllerHUB.Domain.Entities;
 using HomeControllerHUB.Domain.Interfaces;
-using HomeControllerHUB.Domain.Mappings;
-
 namespace HomeControllerHUB.Application.Sensors.Queries;
 
-public class SensorDto : IMapFrom<Sensor>, IPaginatedDto
+public partial class SensorDto : IPaginatedDto
 {
     public Guid Id { get; set; }
     public Guid EstablishmentId { get; set; }

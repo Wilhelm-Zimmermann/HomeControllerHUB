@@ -1,4 +1,3 @@
-﻿using AutoMapper;
 using FluentAssertions;
 using HomeControllerHUB.Application.Sensors.Queries;
 using HomeControllerHUB.Application.Sensors.Queries.GetSensor;
@@ -11,17 +10,11 @@ namespace HomeControllerHUB.Application.Tests.Sensors.Queries;
 
 public class GetSensorQueryTest : TestConfigs
 {
-    private readonly IMapper _mapper;
     private readonly Mock<ISharedResource> _resourceMock;
 
     public GetSensorQueryTest()
     {
-        var config = new MapperConfiguration(cfg =>
-        {
-            cfg.CreateMap<Sensor, SensorDto>();
-        });
-        _mapper = config.CreateMapper();
-        _resourceMock = new Mock<ISharedResource>();
+_resourceMock = new Mock<ISharedResource>();
     }
 
     [Fact]
@@ -35,7 +28,7 @@ public class GetSensorQueryTest : TestConfigs
         await _context.SaveChangesAsync();
 
         var query = new GetSensorQuery { Id = sensor.Id };
-        var handler = new GetSensorQueryHandler(_context, _mapper, _resourceMock.Object);
+        var handler = new GetSensorQueryHandler(_context, _resourceMock.Object);
 
         // ACT
         var result = await handler.Handle(query, CancellationToken.None);
@@ -52,7 +45,7 @@ public class GetSensorQueryTest : TestConfigs
     {
         // ARRANGE
         var query = new GetSensorQuery { Id = Guid.NewGuid() };
-        var handler = new GetSensorQueryHandler(_context, _mapper, _resourceMock.Object);
+        var handler = new GetSensorQueryHandler(_context, _resourceMock.Object);
         _resourceMock.Setup(r => r.NotFoundMessage(It.IsAny<string>())).Returns("Not found");
         _resourceMock.Setup(r => r.Message(It.IsAny<string>())).Returns("Error message");
 

@@ -1,9 +1,7 @@
 using HomeControllerHUB.Domain.Entities;
-using HomeControllerHUB.Domain.Mappings;
-
 namespace HomeControllerHUB.Application.Locations.Queries;
 
-public class LocationHierarchyDto : IMapFrom<Location>
+public partial class LocationHierarchyDto
 {
     public Guid Id { get; set; }
     public string Name { get; set; } = null!;

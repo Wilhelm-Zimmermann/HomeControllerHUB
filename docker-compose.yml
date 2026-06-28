@@ -3,7 +3,7 @@ services:
     container_name: home-controller-hub-postgres
     image: postgres
     environment:
-      - POSTGRES_PASSWORD=home-controller-hubp@ss
+      - POSTGRES_PASSWORD=local-dev-postgres-password
       - POSTGRES_USER=user_home-controller-hub
       - POSTGRES_DB=db_home-controller-hub
     ports:
@@ -16,7 +16,7 @@ services:
   # home-controller-hub-redis:
   #   container_name: home-controller-hub-redis
   #   image: redis:latest
-  #   command: ["redis-server", "--requirepass", "uTyhskijsuy", "--bind", "0.0.0.0"]
+  #   command: ["redis-server", "--requirepass", "local-dev-redis-password", "--bind", "0.0.0.0"]
   #   ports:
   #     - "6480:6379"
   #   networks:

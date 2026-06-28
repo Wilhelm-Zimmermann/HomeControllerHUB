@@ -1,5 +1,3 @@
-using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using FluentValidation;
 using HomeControllerHUB.Application.Sensors.Queries;
 using HomeControllerHUB.Domain.Entities;
@@ -45,16 +43,13 @@ public class GetSensorAlertsQueryValidator : AbstractValidator<GetSensorAlertsQu
 public class GetSensorAlertsQueryHandler : IRequestHandler<GetSensorAlertsQuery, PaginatedList<SensorAlertDto>>
 {
     private readonly ApplicationDbContext _context;
-    private readonly IMapper _mapper;
     private readonly ISharedResource _sharedResource;
 
     public GetSensorAlertsQueryHandler(
         ApplicationDbContext context,
-        IMapper mapper,
         ISharedResource sharedResource)
     {
         _context = context;
-        _mapper = mapper;
         _sharedResource = sharedResource;
     }
 
@@ -103,7 +98,7 @@ public class GetSensorAlertsQueryHandler : IRequestHandler<GetSensorAlertsQuery,
 
         // Apply pagination and map to DTO
         var paginatedAlerts = await PaginatedList<SensorAlertDto>.CreateAsync(
-            query.ProjectTo<SensorAlertDto>(_mapper.ConfigurationProvider),
+            query.Select(SensorAlertDto.Projection),
             request.PageNumber,
             request.PageSize,
             cancellationToken);

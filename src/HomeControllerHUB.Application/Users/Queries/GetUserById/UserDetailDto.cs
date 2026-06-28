@@ -1,9 +1,7 @@
 using HomeControllerHUB.Domain.Entities;
-using HomeControllerHUB.Domain.Mappings;
-
 namespace HomeControllerHUB.Application.Users.Queries.GetUserById;
 
-public class UserDetailDto : IMapFrom<ApplicationUser>
+public class UserDetailDto
 {
     public Guid Id { get; set; }
     public string? Name { get; set; }

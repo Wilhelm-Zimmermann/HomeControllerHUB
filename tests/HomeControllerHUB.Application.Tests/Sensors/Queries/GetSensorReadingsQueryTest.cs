@@ -1,4 +1,3 @@
-﻿using AutoMapper;
 using FluentAssertions;
 using HomeControllerHUB.Application.Sensors.Queries;
 using HomeControllerHUB.Application.Sensors.Queries.GetSensorReadings;
@@ -10,17 +9,11 @@ namespace HomeControllerHUB.Application.Tests.Sensors.Queries;
 
 public class GetSensorReadingsQueryTest : TestConfigs
 {
-    private readonly IMapper _mapper;
     private readonly Mock<ISharedResource> _resourceMock;
 
     public GetSensorReadingsQueryTest()
     {
-        var config = new MapperConfiguration(cfg =>
-        {
-            cfg.CreateMap<SensorReading, SensorReadingDto>();
-        });
-        _mapper = config.CreateMapper();
-        _resourceMock = new Mock<ISharedResource>();
+_resourceMock = new Mock<ISharedResource>();
     }
 
     [Fact]
@@ -39,7 +32,7 @@ public class GetSensorReadingsQueryTest : TestConfigs
         await _context.SaveChangesAsync();
 
         var query = new GetSensorReadingsQuery { SensorId = sensor.Id, PageNumber = 2, PageSize = 10 };
-        var handler = new GetSensorReadingsQueryHandler(_context, _mapper, _resourceMock.Object);
+        var handler = new GetSensorReadingsQueryHandler(_context, _resourceMock.Object);
 
         // ACT
         var result = await handler.Handle(query, CancellationToken.None);

@@ -1,5 +1,3 @@
-using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using FluentValidation;
 using HomeControllerHUB.Domain.Models;
 using HomeControllerHUB.Globalization;
@@ -35,14 +33,10 @@ public class GetSensorListQueryValidator : AbstractValidator<GetSensorListQuery>
 public class GetSensorListQueryHandler : IRequestHandler<GetSensorListQuery, List<SensorDto>>
 {
     private readonly ApplicationDbContext _context;
-    private readonly IMapper _mapper;
 
-    public GetSensorListQueryHandler(
-        ApplicationDbContext context,
-        IMapper mapper)
+    public GetSensorListQueryHandler(ApplicationDbContext context)
     {
         _context = context;
-        _mapper = mapper;
     }
 
     public async Task<List<SensorDto>> Handle(GetSensorListQuery request, CancellationToken cancellationToken)
@@ -78,7 +72,7 @@ public class GetSensorListQueryHandler : IRequestHandler<GetSensorListQuery, Lis
 
         // Map to DTO and materialize
         var sensors = await query
-            .ProjectTo<SensorDto>(_mapper.ConfigurationProvider)
+            .Select(SensorDto.Projection)
             .ToListAsync(cancellationToken);
 
         return sensors;

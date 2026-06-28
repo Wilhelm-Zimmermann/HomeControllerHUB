@@ -1,5 +1,3 @@
-using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using FluentValidation;
 using HomeControllerHUB.Domain.Models;
 using HomeControllerHUB.Globalization;
@@ -37,14 +35,10 @@ public class GetSensorsQueryValidator : AbstractValidator<GetSensorsQuery>
 public class GetSensorsQueryHandler : IRequestHandler<GetSensorsQuery, PaginatedList<SensorDto>>
 {
     private readonly ApplicationDbContext _context;
-    private readonly IMapper _mapper;
 
-    public GetSensorsQueryHandler(
-        ApplicationDbContext context,
-        IMapper mapper)
+    public GetSensorsQueryHandler(ApplicationDbContext context)
     {
         _context = context;
-        _mapper = mapper;
     }
 
     public async Task<PaginatedList<SensorDto>> Handle(GetSensorsQuery request, CancellationToken cancellationToken)
@@ -78,7 +72,7 @@ public class GetSensorsQueryHandler : IRequestHandler<GetSensorsQuery, Paginated
 
         // Apply pagination and map to DTO
         var paginatedSensors = await PaginatedList<SensorDto>.CreateAsync(
-            query.ProjectTo<SensorDto>(_mapper.ConfigurationProvider),
+            query.Select(SensorDto.Projection),
             request.PageNumber,
             request.PageSize,
             cancellationToken);

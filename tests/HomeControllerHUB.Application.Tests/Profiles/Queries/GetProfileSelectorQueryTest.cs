@@ -1,4 +1,3 @@
-using AutoMapper;
 using FluentAssertions;
 using HomeControllerHUB.Application.Profiles.Queries.GetProfileSelector;
 using HomeControllerHUB.Domain.Interfaces;
@@ -9,17 +8,11 @@ namespace HomeControllerHUB.Application.Tests.Profiles.Queries;
 
 public class GetProfileSelectorQueryTest : TestConfigs
 {
-    private readonly IMapper _mapper;
     private readonly Mock<ICurrentUserService> _currentUserServiceMock;
 
     public GetProfileSelectorQueryTest()
     {
-        var config = new MapperConfiguration(cfg =>
-        {
-            cfg.CreateMap<Profile, ProfileSelectorDto>();
-        });
-        _mapper = config.CreateMapper();
-        _currentUserServiceMock = new Mock<ICurrentUserService>();
+_currentUserServiceMock = new Mock<ICurrentUserService>();
     }
 
     [Fact]
@@ -38,7 +31,7 @@ public class GetProfileSelectorQueryTest : TestConfigs
         await _context.SaveChangesAsync();
 
         var query = new GetProfileSelectorQuery();
-        var handler = new GetProfileSelectorQueryHandler(_context, _mapper, _currentUserServiceMock.Object);
+        var handler = new GetProfileSelectorQueryHandler(_context, _currentUserServiceMock.Object);
 
         // ACT
         var result = await handler.Handle(query, CancellationToken.None);

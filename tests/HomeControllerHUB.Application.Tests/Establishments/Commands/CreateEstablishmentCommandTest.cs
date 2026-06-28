@@ -1,4 +1,3 @@
-﻿using AutoMapper;
 using HomeControllerHUB.Application.Establishments.Commands.CreateEstablishment;
 using HomeControllerHUB.Domain.Entities;
 using HomeControllerHUB.Domain.Interfaces;
@@ -13,14 +12,12 @@ namespace HomeControllerHUB.Application.Tests.Establishments.Commands;
 
 public class CreateEstablishmentCommandTest : TestConfigs
 {
-    private readonly Mock<IMapper> _mapperMock;
     private readonly Mock<ISharedResource> _resourceMock;
     private readonly Mock<ICurrentUserService> _currentUserServiceMock;
     private readonly CreateEstablishmentCommandValidator _validator;
     
     public CreateEstablishmentCommandTest()
     {
-        _mapperMock = new Mock<IMapper>();
         _resourceMock = new Mock<ISharedResource>();
         _currentUserServiceMock = new Mock<ICurrentUserService>();
         _validator = new CreateEstablishmentCommandValidator();
@@ -51,7 +48,7 @@ public class CreateEstablishmentCommandTest : TestConfigs
             IsMaster = true,
         };
         
-        var handler = new CreateEstablishmentCommandHandler(_context, _mapperMock.Object, _resourceMock.Object, _currentUserServiceMock.Object);
+        var handler = new CreateEstablishmentCommandHandler(_context, _resourceMock.Object, _currentUserServiceMock.Object);
 
         // ACT
         var result = await handler.Handle(command, CancellationToken.None);
@@ -180,7 +177,7 @@ public class CreateEstablishmentCommandTest : TestConfigs
             IsMaster = true,
         };
         
-        var handler = new CreateEstablishmentCommandHandler(_context, _mapperMock.Object, _resourceMock.Object, _currentUserServiceMock.Object);
+        var handler = new CreateEstablishmentCommandHandler(_context, _resourceMock.Object, _currentUserServiceMock.Object);
 
         // ACT
         Func<Task> result = async () => await handler.Handle(command, CancellationToken.None);
