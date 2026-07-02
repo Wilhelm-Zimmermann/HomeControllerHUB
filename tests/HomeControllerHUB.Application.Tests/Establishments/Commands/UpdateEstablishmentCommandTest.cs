@@ -377,7 +377,7 @@ public class UpdateEstablishmentCommandTest : TestConfigs
         Func<Task> result = async () => await handler.Handle(command, CancellationToken.None);
         
         // ASSERT
-        result.Should()
+        await result.Should()
             .ThrowAsync<AppError>()
             .Where(ex => ex.StatusCode == 404);
     }

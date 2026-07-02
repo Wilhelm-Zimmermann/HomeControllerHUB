@@ -84,7 +84,7 @@ public class DeleteEstablishmentCommandTest : TestConfigs
         var act = async () => await handler.Handle(command, CancellationToken.None);
 
         // ASSERT
-        act.Should()
+        await act.Should()
             .ThrowAsync<AppError>()
             .Where(x => x.StatusCode == 404);
     }
