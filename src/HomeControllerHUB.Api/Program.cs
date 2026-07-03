@@ -30,9 +30,11 @@ builder.Services.ConfigureDatabase(builder.Configuration);
 builder.Services.AddGlobalizationServices();
 builder.Services.AddInfra(builder.Configuration);
 builder.Services.AddDomainServices();
+builder.Services.AddHomeControllerHubMessageBus(builder.Configuration, builder.Environment);
 builder.Services.AddHealthChecks()
     .AddCheck("application", () => Microsoft.Extensions.Diagnostics.HealthChecks.HealthCheckResult.Healthy("Application is running"), tags: new[] { "live", "ready" })
-    .AddCheck<ApplicationDbContextHealthCheck>("database", tags: new[] { "ready" });
+    .AddCheck<ApplicationDbContextHealthCheck>("database", tags: new[] { "ready" })
+    .AddCheck<RabbitMqHealthCheck>("rabbitmq", tags: new[] { "ready" });
 builder.Services.AddHomeControllerHubRateLimiting();
 
 builder.Services.AddSingleton<ApplicationSettings>(sp =>

@@ -25,6 +25,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeControllerHUB.Applicati
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeControllerHUB.Domain.Tests", "tests\HomeControllerHUB.Domain.Tests\HomeControllerHUB.Domain.Tests.csproj", "{6B97D42E-2AA2-4B2F-BCDB-1AAF73C6609A}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{D5F5DD0B-6AA2-4EF1-8D37-71D6E69D5621}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeControllerHUB.SensorSimulator", "tools\HomeControllerHUB.SensorSimulator\HomeControllerHUB.SensorSimulator.csproj", "{EC42202B-72DE-44E8-92CF-64617CC62836}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -143,6 +147,18 @@ Global
 		{6B97D42E-2AA2-4B2F-BCDB-1AAF73C6609A}.Release|x64.Build.0 = Release|Any CPU
 		{6B97D42E-2AA2-4B2F-BCDB-1AAF73C6609A}.Release|x86.ActiveCfg = Release|Any CPU
 		{6B97D42E-2AA2-4B2F-BCDB-1AAF73C6609A}.Release|x86.Build.0 = Release|Any CPU
+		{EC42202B-72DE-44E8-92CF-64617CC62836}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC42202B-72DE-44E8-92CF-64617CC62836}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EC42202B-72DE-44E8-92CF-64617CC62836}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{EC42202B-72DE-44E8-92CF-64617CC62836}.Debug|x64.Build.0 = Debug|Any CPU
+		{EC42202B-72DE-44E8-92CF-64617CC62836}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{EC42202B-72DE-44E8-92CF-64617CC62836}.Debug|x86.Build.0 = Debug|Any CPU
+		{EC42202B-72DE-44E8-92CF-64617CC62836}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EC42202B-72DE-44E8-92CF-64617CC62836}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EC42202B-72DE-44E8-92CF-64617CC62836}.Release|x64.ActiveCfg = Release|Any CPU
+		{EC42202B-72DE-44E8-92CF-64617CC62836}.Release|x64.Build.0 = Release|Any CPU
+		{EC42202B-72DE-44E8-92CF-64617CC62836}.Release|x86.ActiveCfg = Release|Any CPU
+		{EC42202B-72DE-44E8-92CF-64617CC62836}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -157,5 +173,6 @@ Global
 		{3106DE48-E370-4A4A-AE87-021A563FC0CC} = {0AB3BF05-4346-4AA6-1389-037BE0695223}
 		{9088FC4C-A7D7-430B-82D4-BAA1B5839ED7} = {0AB3BF05-4346-4AA6-1389-037BE0695223}
 		{6B97D42E-2AA2-4B2F-BCDB-1AAF73C6609A} = {0AB3BF05-4346-4AA6-1389-037BE0695223}
+		{EC42202B-72DE-44E8-92CF-64617CC62836} = {D5F5DD0B-6AA2-4EF1-8D37-71D6E69D5621}
 	EndGlobalSection
 EndGlobal

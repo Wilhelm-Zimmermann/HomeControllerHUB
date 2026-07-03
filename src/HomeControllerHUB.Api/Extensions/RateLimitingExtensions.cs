@@ -10,10 +10,12 @@ public static class RateLimitingExtensions
     public const string AuthenticatedPolicy = nameof(AuthenticatedPolicy);
     public const string AuthPolicy = nameof(AuthPolicy);
     public const string SensitivePolicy = nameof(SensitivePolicy);
+    public const string SensorIngestionPolicy = nameof(SensorIngestionPolicy);
 
     private const int AuthenticatedPermitLimit = 100;
     private const int AuthPermitLimit = 10;
     private const int SensitivePermitLimit = 20;
+    private const int SensorIngestionPermitLimit = 60;
     private static readonly TimeSpan Window = TimeSpan.FromMinutes(1);
 
     public static IServiceCollection AddHomeControllerHubRateLimiting(this IServiceCollection services)
@@ -37,6 +39,11 @@ public static class RateLimitingExtensions
                 RateLimitPartition.GetFixedWindowLimiter(
                     GetAuthenticatedPartitionKey(httpContext),
                     _ => CreateFixedWindowOptions(SensitivePermitLimit)));
+
+            options.AddPolicy(SensorIngestionPolicy, httpContext =>
+                RateLimitPartition.GetFixedWindowLimiter(
+                    GetIpPartitionKey(httpContext),
+                    _ => CreateFixedWindowOptions(SensorIngestionPermitLimit)));
         });
 
         return services;

@@ -4,11 +4,15 @@
 .idea/
 .vs/
 .build/
+.codex-*/
+.codex-*
 .codex-build/
 .codex-build-*/
 .codex-test-bin/
 coverage/
 NuGet.Config
+local-demo-data.sql
+tools/HomeControllerHUB.SensorSimulator/sensor-simulator.local.json
 # If you have any user files in /src/HomeControllerHUB.Api, ignore them
 /src/HomeControllerHUB.Api/*.user
 

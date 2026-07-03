@@ -1,0 +1,33 @@
+{
+  "apiBaseUrl": "http://localhost:6001/api/v1",
+  "intervalSeconds": 5,
+  "runForSeconds": 300,
+  "sensors": [
+    {
+      "name": "Temperatura Sala",
+      "deviceId": "TEMP-SALA-001",
+      "apiKey": "DEMO_API_KEY_TEMP_SALA",
+      "unit": "C",
+      "minValue": 21,
+      "maxValue": 31,
+      "normalMin": 22,
+      "normalMax": 27,
+      "spikeChancePercent": 10,
+      "duplicateChancePercent": 0,
+      "batteryStart": 92
+    },
+    {
+      "name": "Umidade Cozinha",
+      "deviceId": "UMID-COZINHA-001",
+      "apiKey": "DEMO_API_KEY_UMID_COZINHA",
+      "unit": "%",
+      "minValue": 35,
+      "maxValue": 80,
+      "normalMin": 42,
+      "normalMax": 64,
+      "spikeChancePercent": 8,
+      "duplicateChancePercent": 0,
+      "batteryStart": 88
+    }
+  ]
+}

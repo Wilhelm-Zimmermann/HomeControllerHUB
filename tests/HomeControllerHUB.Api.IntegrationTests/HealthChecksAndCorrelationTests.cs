@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
@@ -72,6 +73,7 @@ public class HealthChecksAndCorrelationTests : IClassFixture<HealthChecksWebAppl
         Assert.Contains("\"status\":\"Healthy\"", body);
         Assert.Contains("\"name\":\"application\"", body);
         Assert.Contains("\"name\":\"database\"", body);
+        Assert.Contains("\"name\":\"rabbitmq\"", body);
     }
 
     [Fact]
@@ -99,6 +101,8 @@ public class HealthChecksAndCorrelationTests : IClassFixture<HealthChecksWebAppl
 
 public class HealthChecksWebApplicationFactory : WebApplicationFactory<Program>
 {
+    private static readonly InMemoryDatabaseRoot DatabaseRoot = new();
+
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.UseEnvironment("Testing");
@@ -109,7 +113,15 @@ public class HealthChecksWebApplicationFactory : WebApplicationFactory<Program>
             services.RemoveAll<ApplicationDbContext>();
             services.RemoveAll<DbContextOptions>();
             services.RemoveAll<DbContextOptions<ApplicationDbContext>>();
-            services.RemoveAll<IHostedService>();
+            var hostedServicesToRemove = services
+                .Where(descriptor => descriptor.ServiceType == typeof(IHostedService)
+                                     && descriptor.ImplementationType == typeof(DataRetentionService))
+                .ToList();
+
+            foreach (var descriptor in hostedServicesToRemove)
+            {
+                services.Remove(descriptor);
+            }
 
             var inMemoryDatabaseServiceProvider = new ServiceCollection()
                 .AddEntityFrameworkInMemoryDatabase()
@@ -118,7 +130,7 @@ public class HealthChecksWebApplicationFactory : WebApplicationFactory<Program>
             services.AddDbContext<ApplicationDbContext>(options =>
             {
                 options
-                    .UseInMemoryDatabase($"HomeControllerHUB-{Guid.NewGuid()}")
+                    .UseInMemoryDatabase("HomeControllerHUB-IntegrationTests", DatabaseRoot)
                     .UseInternalServiceProvider(inMemoryDatabaseServiceProvider);
             });
         });

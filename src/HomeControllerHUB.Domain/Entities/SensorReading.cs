@@ -4,6 +4,8 @@ public class SensorReading : Base
 {
     public Guid SensorId { get; set; }
     public virtual Sensor Sensor { get; set; } = null!;
+
+    public string? MessageId { get; set; }
     
     public DateTime Timestamp { get; set; }
     public double Value { get; set; }

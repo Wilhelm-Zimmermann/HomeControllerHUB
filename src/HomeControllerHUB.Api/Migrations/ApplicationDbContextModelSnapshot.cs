@@ -712,6 +712,10 @@ namespace HomeControllerHUB.Api.Migrations
                     b.Property<string>("Metadata")
                         .HasColumnType("jsonb");
 
+                    b.Property<string>("MessageId")
+                        .HasMaxLength(150)
+                        .HasColumnType("character varying(150)");
+
                     b.Property<DateTime>("Modified")
                         .HasColumnType("timestamp with time zone");
 
@@ -739,6 +743,9 @@ namespace HomeControllerHUB.Api.Migrations
                     b.HasIndex("Timestamp");
 
                     b.HasIndex("SensorId", "Timestamp");
+
+                    b.HasIndex("SensorId", "MessageId")
+                        .IsUnique();
 
                     b.ToTable("SensorReadings", (string)null);
                 });

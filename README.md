@@ -130,6 +130,167 @@ The IoT module supports:
 
 Sensor API keys are used by ingestion/status endpoints and are not exposed by sensor detail responses. This avoids leaking device credentials through regular management screens.
 
+## Sensor Telemetry Ingestion
+
+The current MVP uses HTTP as the telemetry ingress adapter and queue-based processing for sensor readings. In a future version, sensors can publish directly to an MQTT broker and reuse the same processing pipeline.
+
+Telemetry enters the system through HTTP:
+
+```text
+POST /api/v1/SensorReadings/ingest
+```
+
+The endpoint is public and does not use user JWT authentication. Each request must include the sensor API key in the `X-Api-Key` header. The API key authenticates only the HTTP ingress request and is validated against the sensor located by `deviceId`; it is never returned in responses, structured logs, audit metadata, or queue messages.
+
+Example payload:
+
+```json
+{
+  "messageId": "TEMP-SALA-001-20260702T120000Z",
+  "deviceId": "TEMP-SALA-001",
+  "timestamp": "2026-07-02T12:00:00Z",
+  "value": 28.7,
+  "unit": "C",
+  "batteryLevel": 87,
+  "rawData": {
+    "firmware": "1.0.3"
+  }
+}
+```
+
+`messageId`, `deviceId`, `value`, and `X-Api-Key` are required. `timestamp` is optional and falls back to `DateTime.UtcNow`. `batteryLevel` is optional and updates the sensor when provided. `rawData` is stored as JSON text for diagnostic data.
+
+After validation, the API publishes a `SensorTelemetryReceivedMessage` to RabbitMQ through MassTransit and returns `202 Accepted`:
+
+```json
+{
+  "sensorId": "00000000-0000-0000-0000-000000000000",
+  "messageId": "TEMP-SALA-001-20260702T120000Z",
+  "status": "Queued"
+}
+```
+
+If the same message was already processed and stored, the endpoint can return `status: "Duplicate"` instead of publishing another message. If a duplicate is still waiting in the queue, returning `Queued` is acceptable because idempotency is enforced by the consumer.
+
+The queued message contains `SensorId`, `DeviceId`, `MessageId`, timestamp, value, unit, battery level, raw data, received time, and correlation ID. It does not contain API keys, user tokens, authorization headers, passwords, or secrets.
+
+The API currently hosts the MassTransit consumer in the same process. The consumer calls the application processing command, which creates `SensorReading`, updates `LastCommunication`, updates `BatteryLevel` when present, and evaluates `MinThreshold`/`MaxThreshold`. Threshold violations create `SensorAlert` records unless there is already an unacknowledged alert for the same sensor and alert type.
+
+Idempotency is enforced by `messageId` with a unique `SensorId + MessageId` index. The consumer checks for an existing reading before insert and handles unique-index races by returning `status: "Duplicate"` without creating another reading.
+
+RabbitMQ is part of the readiness check:
+
+```text
+GET /health/ready
+```
+
+`/health/live` remains process-only and does not depend on the database or broker.
+
+Manual PowerShell check:
+
+```powershell
+Invoke-WebRequest -Method Post -Uri "http://localhost:6001/api/v1/SensorReadings/ingest" `
+  -ContentType "application/json" `
+  -Headers @{ "X-Api-Key" = "<demo-sensor-api-key>" } `
+  -Body '{"messageId":"TEMP-SALA-001-001","deviceId":"TEMP-SALA-001","timestamp":"2026-07-02T12:00:00Z","value":29.5,"unit":"C","batteryLevel":87,"rawData":{"firmware":"1.0.3"}}'
+```
+
+Local RabbitMQ can be started with Docker Compose:
+
+```bash
+docker compose up -d home-controller-hub-rabbitmq
+```
+
+Management UI:
+
+```text
+http://localhost:15672
+```
+
+The default local credentials are `guest` / `guest`, controlled by `RABBITMQ_DEFAULT_USER` and `RABBITMQ_DEFAULT_PASS`. Do not version real broker credentials.
+
+Current limitation: while sensors use HTTP, the API must be online to authenticate and enqueue telemetry. Future roadmap:
+
+- Sensor/ESP32 -> MQTT Broker -> Worker/Consumer -> same processing command -> database/alerts.
+- Move the consumer to a dedicated Worker Service when operational needs justify it.
+- Keep transport adapters thin so HTTP, MQTT, or background workers reuse the same command behavior.
+
+## Sensor Simulator
+
+The repository includes a local HTTP sensor simulator for development demos and visual telemetry data. It is not a production worker and does not use MQTT yet; the API receives HTTP telemetry and enqueues the readings for asynchronous processing.
+
+The simulator posts readings to:
+
+```text
+POST /api/v1/SensorReadings/ingest
+```
+
+It uses only the sensor API key through the `X-Api-Key` header. It does not require or send a user JWT token, and it does not print API keys in console output.
+
+Create a local config from the safe example:
+
+```bash
+copy tools\HomeControllerHUB.SensorSimulator\sensor-simulator.example.json tools\HomeControllerHUB.SensorSimulator\sensor-simulator.local.json
+```
+
+Edit `sensor-simulator.local.json` with the local/demo `deviceId` and sensor `apiKey` values that already exist in your development database. Keep real keys out of Git; `tools/HomeControllerHUB.SensorSimulator/sensor-simulator.local.json` is ignored.
+
+Run the API first, then start the simulator:
+
+```bash
+dotnet run --project tools/HomeControllerHUB.SensorSimulator
+```
+
+You can also pass an explicit config path:
+
+```bash
+dotnet run --project tools/HomeControllerHUB.SensorSimulator -- --config tools/HomeControllerHUB.SensorSimulator/sensor-simulator.local.json
+```
+
+Config fields:
+
+| Field | Purpose |
+| --- | --- |
+| `apiBaseUrl` | API version base URL, for example `http://localhost:6001/api/v1`. |
+| `intervalSeconds` | Delay between send cycles. |
+| `runForSeconds` | Optional automatic stop time. Omit it to run until `Ctrl+C`. |
+| `sensors` | Local/demo sensors to simulate. |
+| `deviceId` | Must match an existing sensor. |
+| `apiKey` | Must match that sensor's local/demo API key. |
+| `minValue` / `maxValue` | Threshold range used to generate occasional alert spikes. |
+| `normalMin` / `normalMax` | Normal operating range for regular readings. |
+| `spikeChancePercent` | Chance to generate a value below `minValue` or above `maxValue`. |
+| `duplicateChancePercent` | Optional chance to resend the last payload to validate `Duplicate`. |
+| `batteryStart` | Initial simulated battery percentage. |
+
+Each reading gets a unique `messageId` in the format `{deviceId}-{yyyyMMddHHmmssfff}-{random}`, a UTC timestamp, slowly decreasing battery level, and fake diagnostic `rawData`:
+
+```json
+{
+  "firmware": "1.0.3",
+  "simulated": true,
+  "source": "HomeControllerHUB.SensorSimulator"
+}
+```
+
+Normal values drift inside `normalMin`/`normalMax`. When a spike is generated, the value is sent below `minValue` or above `maxValue` so the backend threshold logic can create alerts after the consumer processes the message. Console output keeps secrets hidden:
+
+```text
+[12:00:01] TEMP-SALA-001 -> queued
+[12:00:06] TEMP-SALA-001 -> queued
+[12:00:11] TEMP-SALA-001 -> duplicate ignored
+```
+
+Manual validation flow:
+
+1. Run RabbitMQ with Docker Compose.
+2. Run the API.
+3. Confirm the database has sensors with matching local/demo `deviceId` and `apiKey`.
+4. Configure `sensor-simulator.local.json`.
+5. Run the simulator and confirm `queued` responses.
+6. Set `duplicateChancePercent` above zero if you want to verify `Duplicate` responses.
+7. Open the frontend and validate dashboard readings, sensor detail charts, and alert spikes.
+
 ## Audit Logs
 
 Audit logging is implemented through `IAuditableCommand` and `AuditLogBehaviour`. Commands that implement this interface can produce audit entries without duplicating logging code inside handlers.
@@ -174,7 +335,7 @@ GET /health/ready
 ```
 
 - `/health/live` checks whether the application process is running.
-- `/health/ready` checks whether the application is ready to receive traffic, including database readiness.
+- `/health/ready` checks whether the application is ready to receive traffic, including database and RabbitMQ readiness.
 - `/health` returns the overall health view.
 
 Examples:
@@ -210,6 +371,7 @@ The API uses native ASP.NET Core rate limiting with fixed one-minute windows.
 | `AuthenticatedPolicy` | 100 requests/minute | authenticated user id, with IP fallback | default API controller policy |
 | `AuthPolicy` | 10 requests/minute | IP address | public authentication and password-token endpoints |
 | `SensitivePolicy` | 20 requests/minute | authenticated user id, with IP fallback | destructive or sensitive actions |
+| `SensorIngestionPolicy` | 60 requests/minute | IP address | public sensor telemetry ingestion |
 
 `AuthenticatedPolicy` is applied at `ApiControllerBase`, so regular API controllers inherit it by default. `AuthPolicy` is applied to:
 
@@ -255,7 +417,8 @@ Useful module entry points:
 | Establishments | `GET /api/v1/Establishment`, `GET /api/v1/Establishment/list`, `GET /api/v1/Establishment/{id}`, `POST /api/v1/Establishment`, `PUT /api/v1/Establishment/{id}`, `DELETE /api/v1/Establishment/{id}` |
 | Locations | `GET /api/v1/Locations`, `GET /api/v1/Locations/list`, `GET /api/v1/Locations/hierarchical`, `GET /api/v1/Locations/{id}`, `POST /api/v1/Locations`, `PUT /api/v1/Locations`, `DELETE /api/v1/Locations` |
 | Sensors | `GET /api/v1/Sensors`, `GET /api/v1/Sensors/list`, `GET /api/v1/Sensors/{id}`, `GET /api/v1/Sensors/{id}/readings`, `GET /api/v1/Sensors/{id}/alerts`, `POST /api/v1/Sensors`, `PUT /api/v1/Sensors`, `DELETE /api/v1/Sensors` |
-| Sensor data | public IoT ingestion/status endpoints in `SensorDataController` |
+| Sensor readings | `POST /api/v1/SensorReadings/ingest` |
+| Sensor data | legacy public IoT ingestion/status endpoints in `SensorDataController` |
 | Alerts | `GET /api/v1/Alerts`, `PATCH /api/v1/Alerts/{id}/acknowledge` |
 | Dashboard | `GET /api/v1/Dashboard/summary` |
 | Audit logs | `GET /api/v1/AuditLogs` |

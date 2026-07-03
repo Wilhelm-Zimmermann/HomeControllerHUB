@@ -13,6 +13,18 @@ services:
     networks:
       - home-controller-hub-network
 
+  home-controller-hub-rabbitmq:
+    container_name: home-controller-hub-rabbitmq
+    image: rabbitmq:3-management
+    environment:
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER:-guest}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS:-guest}
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - home-controller-hub-network
+
   # home-controller-hub-redis:
   #   container_name: home-controller-hub-redis
   #   image: redis:latest

@@ -13,6 +13,7 @@ public class SensorReadingConfiguration : IEntityTypeConfiguration<SensorReading
         
         builder.Property(x => x.Value).IsRequired();
         builder.Property(x => x.Timestamp).IsRequired();
+        builder.Property(x => x.MessageId).HasMaxLength(150);
         builder.Property(x => x.Unit).HasMaxLength(20);
         builder.Property(x => x.RawData).HasMaxLength(1000);
         
@@ -26,6 +27,7 @@ public class SensorReadingConfiguration : IEntityTypeConfiguration<SensorReading
         builder.HasIndex(x => x.SensorId);
         builder.HasIndex(x => x.Timestamp);
         builder.HasIndex(x => new { x.SensorId, x.Timestamp });
+        builder.HasIndex(x => new { x.SensorId, x.MessageId }).IsUnique();
         
         builder.HasOne(x => x.Sensor)
             .WithMany(x => x.Readings)
