@@ -35,7 +35,7 @@ The project is intentionally structured around real backend concerns: authentica
 - Structured request and exception logs.
 - Native ASP.NET Core rate limiting.
 - Swagger/OpenAPI in Development and Testing.
-- Docker Compose support for local PostgreSQL.
+- Docker Compose support for local PostgreSQL and RabbitMQ.
 
 ## Architecture
 
@@ -85,6 +85,7 @@ Important patterns and decisions:
 | Documentation | Swagger / OpenAPI |
 | Observability | Health checks, correlation ID middleware, structured logs |
 | Tests | xUnit, EF Core InMemory, Testcontainers in existing test suites |
+| Messaging | RabbitMQ, MassTransit |
 | Local infrastructure | Docker, Docker Compose |
 | Email | Mailgun-compatible email service configuration |
 
@@ -132,7 +133,7 @@ Sensor API keys are used by ingestion/status endpoints and are not exposed by se
 
 ## Sensor Telemetry Ingestion
 
-The current MVP uses HTTP as the telemetry ingress adapter and queue-based processing for sensor readings. In a future version, sensors can publish directly to an MQTT broker and reuse the same processing pipeline.
+The current MVP uses HTTP as the telemetry ingress adapter and RabbitMQ/MassTransit for asynchronous sensor reading processing. The queue message does not contain the sensor API key. Future versions can replace the HTTP ingress with MQTT while keeping the same processing pipeline.
 
 Telemetry enters the system through HTTP:
 
@@ -160,7 +161,7 @@ Example payload:
 
 `messageId`, `deviceId`, `value`, and `X-Api-Key` are required. `timestamp` is optional and falls back to `DateTime.UtcNow`. `batteryLevel` is optional and updates the sensor when provided. `rawData` is stored as JSON text for diagnostic data.
 
-After validation, the API publishes a `SensorTelemetryReceivedMessage` to RabbitMQ through MassTransit and returns `202 Accepted`:
+After validation, the API sends a `SensorTelemetryReceivedMessage` to the configured RabbitMQ queue through MassTransit and returns `202 Accepted`:
 
 ```json
 {
@@ -172,7 +173,21 @@ After validation, the API publishes a `SensorTelemetryReceivedMessage` to Rabbit
 
 If the same message was already processed and stored, the endpoint can return `status: "Duplicate"` instead of publishing another message. If a duplicate is still waiting in the queue, returning `Queued` is acceptable because idempotency is enforced by the consumer.
 
-The queued message contains `SensorId`, `DeviceId`, `MessageId`, timestamp, value, unit, battery level, raw data, received time, and correlation ID. It does not contain API keys, user tokens, authorization headers, passwords, or secrets.
+The main queue is:
+
+```text
+homecontrollerhub.sensor-telemetry
+```
+
+The queued message contains `SensorId`, `DeviceId`, `MessageId`, `Timestamp`, `Value`, `Unit`, `BatteryLevel`, `RawData`, `ReceivedAt`, and `CorrelationId`. It does not contain API keys, user tokens, authorization headers, passwords, or secrets.
+
+MassTransit configures a durable receive endpoint for the telemetry queue. The retry policy is an interval retry with 3 retries and a 2-second delay between attempts. Delayed redelivery is not used in the current MVP, so no RabbitMQ delayed-message plugin is required.
+
+If the consumer keeps failing after retries, MassTransit moves the message to its standard error queue. Operationally, this is the telemetry DLQ:
+
+```text
+homecontrollerhub.sensor-telemetry_error
+```
 
 The API currently hosts the MassTransit consumer in the same process. The consumer calls the application processing command, which creates `SensorReading`, updates `LastCommunication`, updates `BatteryLevel` when present, and evaluates `MinThreshold`/`MaxThreshold`. Threshold violations create `SensorAlert` records unless there is already an unacknowledged alert for the same sensor and alert type.
 
@@ -208,6 +223,22 @@ http://localhost:15672
 ```
 
 The default local credentials are `guest` / `guest`, controlled by `RABBITMQ_DEFAULT_USER` and `RABBITMQ_DEFAULT_PASS`. Do not version real broker credentials.
+
+RabbitMQ appsettings:
+
+```json
+{
+  "RabbitMq": {
+    "Host": "localhost",
+    "Port": 5672,
+    "VirtualHost": "/",
+    "Username": "guest",
+    "Password": "guest",
+    "QueueName": "homecontrollerhub.sensor-telemetry",
+    "PublishTimeoutSeconds": 5
+  }
+}
+```
 
 Current limitation: while sensors use HTTP, the API must be online to authenticate and enqueue telemetry. Future roadmap:
 
@@ -284,12 +315,17 @@ Normal values drift inside `normalMin`/`normalMax`. When a spike is generated, t
 Manual validation flow:
 
 1. Run RabbitMQ with Docker Compose.
-2. Run the API.
-3. Confirm the database has sensors with matching local/demo `deviceId` and `apiKey`.
-4. Configure `sensor-simulator.local.json`.
-5. Run the simulator and confirm `queued` responses.
-6. Set `duplicateChancePercent` above zero if you want to verify `Duplicate` responses.
-7. Open the frontend and validate dashboard readings, sensor detail charts, and alert spikes.
+2. Open RabbitMQ Management at `http://localhost:15672`.
+3. Run the API.
+4. Confirm the database has sensors with matching local/demo `deviceId` and `apiKey`.
+5. Configure `sensor-simulator.local.json`.
+6. Run the simulator and confirm `queued` responses.
+7. Confirm messages arrive and are consumed from `homecontrollerhub.sensor-telemetry`.
+8. Confirm `SensorReading`, `LastCommunication`, `BatteryLevel`, and threshold alerts are updated.
+9. Set `duplicateChancePercent` above zero if you want to verify `Duplicate` responses.
+10. Stop RabbitMQ and confirm the API does not return `Queued` while enqueueing is unavailable.
+11. If a consumer failure is easy to simulate locally, confirm messages move to `homecontrollerhub.sensor-telemetry_error` after retries.
+12. Open the frontend and validate dashboard readings, sensor detail charts, and alert spikes.
 
 ## Audit Logs
 
@@ -527,6 +563,13 @@ Important configuration areas:
 - `EmailSettings:FrontendUrl`
 - `EmailSettings:SenderEmail`
 - `EmailSettings:SenderName`
+- `RabbitMq:Host`
+- `RabbitMq:Port`
+- `RabbitMq:VirtualHost`
+- `RabbitMq:Username`
+- `RabbitMq:Password`
+- `RabbitMq:QueueName`
+- `RabbitMq:PublishTimeoutSeconds`
 
 Do not commit real database credentials, JWT secrets, Mailgun keys, refresh tokens, sensor API keys, or production URLs.
 

@@ -15,6 +15,9 @@ public static class MessageBusExtensions
     {
         services.Configure<RabbitMqSettings>(configuration.GetSection(RabbitMqSettings.SectionName));
         services.AddScoped<ISensorTelemetryQueue, MassTransitSensorTelemetryQueue>();
+        var settings = configuration
+            .GetSection(RabbitMqSettings.SectionName)
+            .Get<RabbitMqSettings>() ?? new RabbitMqSettings();
 
         services.AddMassTransit(bus =>
         {
@@ -24,7 +27,7 @@ public static class MessageBusExtensions
             {
                 bus.UsingInMemory((context, cfg) =>
                 {
-                    cfg.ReceiveEndpoint("sensor-telemetry-received-test", endpoint =>
+                    cfg.ReceiveEndpoint(settings.QueueName, endpoint =>
                     {
                         endpoint.UseMessageRetry(retry => retry.Interval(3, TimeSpan.FromSeconds(1)));
                         endpoint.ConfigureConsumer<SensorTelemetryReceivedConsumer>(context);
@@ -34,10 +37,6 @@ public static class MessageBusExtensions
                 return;
             }
 
-            var settings = configuration
-                .GetSection(RabbitMqSettings.SectionName)
-                .Get<RabbitMqSettings>() ?? new RabbitMqSettings();
-
             bus.UsingRabbitMq((context, cfg) =>
             {
                 cfg.Host(BuildRabbitMqUri(settings), host =>
@@ -46,8 +45,9 @@ public static class MessageBusExtensions
                     host.Password(settings.Password);
                 });
 
-                cfg.ReceiveEndpoint(settings.SensorTelemetryQueueName, endpoint =>
+                cfg.ReceiveEndpoint(settings.QueueName, endpoint =>
                 {
+                    endpoint.Durable = true;
                     endpoint.UseMessageRetry(retry => retry.Interval(3, TimeSpan.FromSeconds(2)));
                     endpoint.ConfigureConsumer<SensorTelemetryReceivedConsumer>(context);
                 });

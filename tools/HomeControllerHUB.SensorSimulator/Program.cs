@@ -168,6 +168,12 @@ static async Task PostReadingAsync(
                 return;
             }
 
+            if (string.Equals(status, "Processed", StringComparison.OrdinalIgnoreCase))
+            {
+                console.WriteReading(sensor.DeviceId, "processed");
+                return;
+            }
+
             console.WriteReading(
                 sensor.DeviceId,
                 $"{FormatValue(payload.Value)} {payload.Unit}".TrimEnd() + $" | status={status}");
