@@ -8,14 +8,14 @@ namespace HomeControllerHUB.Api.Messaging;
 
 public class MassTransitSensorTelemetryQueue : ISensorTelemetryQueue
 {
-    private readonly IPublishEndpoint _publishEndpoint;
+    private readonly ISendEndpointProvider _sendEndpointProvider;
     private readonly RabbitMqSettings _settings;
 
     public MassTransitSensorTelemetryQueue(
-        IPublishEndpoint publishEndpoint,
+        ISendEndpointProvider sendEndpointProvider,
         IOptions<RabbitMqSettings> settings)
     {
-        _publishEndpoint = publishEndpoint;
+        _sendEndpointProvider = sendEndpointProvider;
         _settings = settings.Value;
     }
 
@@ -24,6 +24,7 @@ public class MassTransitSensorTelemetryQueue : ISensorTelemetryQueue
         using var publishTimeout = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
         publishTimeout.CancelAfter(TimeSpan.FromSeconds(Math.Max(_settings.PublishTimeoutSeconds, 1)));
 
-        await _publishEndpoint.Publish(message, publishTimeout.Token);
+        var endpoint = await _sendEndpointProvider.GetSendEndpoint(new Uri($"queue:{_settings.QueueName}"));
+        await endpoint.Send(message, publishTimeout.Token);
     }
 }
