@@ -55,16 +55,6 @@ public static class ConfigureServices
         services.AddLocalization(options => options.ResourcesPath = "Resources");
         ConfigureRateLimiter(services);
 
-        services.AddCors(options =>
-        {
-            options.AddPolicy(name: GeneralConfigs.CORS,
-                              policy =>
-                              {
-                                  policy.WithOrigins("http://localhost:5173")
-                                    .AllowAnyHeader()
-                                    .AllowAnyMethod();
-                              });
-        });
         return services;
     }
 

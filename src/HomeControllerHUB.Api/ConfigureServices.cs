@@ -7,13 +7,14 @@ using Microsoft.EntityFrameworkCore;
 using Asp.Versioning;
 using HomeControllerHUB.Infra.Settings;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.IdentityModel.Tokens;
 
 namespace HomeControllerHUB.Api;
 
 public static class ConfigureServices
 {
-    public static IServiceCollection ConfigureDatabase(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection ConfigureDatabase(this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment environment)
     {
         services.AddDbContext<ApplicationDbContext>(options =>
         {
@@ -21,7 +22,11 @@ public static class ConfigureServices
                 x => x.MigrationsAssembly("HomeControllerHUB.Api"));
             options.LogTo(Console.WriteLine, LogLevel.Information);
             options.EnableDetailedErrors();
-            options.EnableSensitiveDataLogging();
+
+            if (environment.IsDevelopment() && configuration.GetValue<bool>("Database:EnableSensitiveDataLogging"))
+            {
+                options.EnableSensitiveDataLogging();
+            }
         });
 
         services.AddIdentity<ApplicationUser, IdentityRole<Guid>>()

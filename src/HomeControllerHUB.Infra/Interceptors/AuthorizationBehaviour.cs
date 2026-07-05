@@ -20,15 +20,25 @@ public class AuthorizationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRe
 
     public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
     {
-        var authorizeAttributes = request.GetType().GetCustomAttributes(typeof(AuthorizeAttribute), false) as AuthorizeAttribute[];
+        var authorizeAttributes = request.GetType()
+            .GetCustomAttributes(typeof(AuthorizeAttribute), false)
+            .OfType<AuthorizeAttribute>()
+            .ToArray();
         
-        if(authorizeAttributes.Length == 0) return await next();;
+        if (authorizeAttributes.Length == 0) return await next();
+
+        if (_currentUserService.UserId is null) throw new AppError(401, "Unauthorized");
 
         foreach (var attribute in authorizeAttributes)
         {
-           if (attribute.Domain == string.Empty) return await next();
-           var isAuthorized = await IsInDomainAndActionAsync(_currentUserService.UserId, attribute.Domain, attribute.Action);
-           if(!isAuthorized) throw new AppError(401, "Unauthorized");
+            if (attribute.Domain == string.Empty) continue;
+
+            var isAuthorized = await IsInDomainAndActionAsync(
+                _currentUserService.UserId,
+                attribute.Domain,
+                attribute.Action);
+
+            if (!isAuthorized) throw new AppError(401, "Unauthorized");
         }
         
         return await next();
@@ -48,15 +58,10 @@ public class AuthorizationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRe
             return false;
         }
         
-        var userHasAuthorization = await _context.UserProfiles
+        return await _context.UserProfiles
             .Where(x => x.UserId == userId)
             .SelectMany(up => up.Profile.ProfilePrivileges)
             .AnyAsync(pp => (pp.Privilege.DomainId == domainEntity.Id &&
                              pp.Privilege.Actions == action) || pp.Privilege.NormalizedName == "PLATFORMALL");
-
-        if (userHasAuthorization)
-            return true;
-
-        return false;
     }
 }

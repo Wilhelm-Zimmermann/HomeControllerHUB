@@ -103,6 +103,12 @@ The refresh flow validates the stored refresh token, email confirmation, and the
 
 Authorization is enforced through MediatR pipeline behavior. Use cases declare the required domain and action with the shared `Authorize` attribute, and the behavior checks the current user's permissions before the handler executes.
 
+## Backend Configuration
+
+CORS is configured with a single named policy from `Cors:AllowedOrigins`. Local development expects the frontend origin `http://localhost:5174`; override the setting per environment instead of enabling all origins.
+
+EF Core sensitive data logging is disabled by default. It is only enabled when the environment is `Development` and `Database:EnableSensitiveDataLogging` is explicitly set to `true`.
+
 ## Domain-Based Permissions
 
 Permissions are modeled around a domain and an action. Examples:
