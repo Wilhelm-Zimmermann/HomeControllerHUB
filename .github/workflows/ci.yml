@@ -34,5 +34,11 @@ jobs:
       - name: Build
         run: dotnet build --configuration Release --no-restore
 
-      - name: Test
-        run: dotnet test --configuration Release --no-build --verbosity normal
+      - name: Test Domain
+        run: dotnet test tests/HomeControllerHUB.Domain.Tests/HomeControllerHUB.Domain.Tests.csproj --configuration Release --no-build --verbosity normal
+
+      - name: Test Application
+        run: dotnet test tests/HomeControllerHUB.Application.Tests/HomeControllerHUB.Application.Tests.csproj --configuration Release --no-build --verbosity normal
+
+      - name: Test API Integration
+        run: dotnet test tests/HomeControllerHUB.Api.IntegrationTests/HomeControllerHUB.Api.IntegrationTests.csproj --configuration Release --no-build --verbosity normal

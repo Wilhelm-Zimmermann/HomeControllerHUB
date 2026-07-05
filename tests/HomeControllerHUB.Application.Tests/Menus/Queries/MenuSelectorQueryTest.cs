@@ -81,22 +81,22 @@ _currentUserServiceMock = new Mock<ICurrentUserService>();
         var menuParentA = new ApplicationMenu
         {
             Id = Guid.NewGuid(), Name = "Registrations", NormalizedName = "REGISTRATIONS", Order = 1,
-            Description = "Registrations"
+            Description = "Registrations", Enable = true
         };
         var menuChildA = new ApplicationMenu
         {
             Id = Guid.NewGuid(), Name = "Locations", NormalizedName = "LOCATIONS", ParentId = menuParentA.Id,
-            DomainId = domainA.Id, Order = 2, Description = "Locations Menu"
+            DomainId = domainA.Id, Order = 2, Description = "Locations Menu", Enable = true
         };
         var menuParentB = new ApplicationMenu
-            { Id = Guid.NewGuid(), Name = "Devices", NormalizedName = "DEVICES", Order = 3, Description = "Devices" };
+            { Id = Guid.NewGuid(), Name = "Devices", NormalizedName = "DEVICES", Order = 3, Description = "Devices", Enable = true };
         var menuChildB = new ApplicationMenu
         {
             Id = Guid.NewGuid(), Name = "Sensors", NormalizedName = "SENSORS", ParentId = menuParentB.Id,
-            DomainId = domainB.Id, Order = 4, Description = "Sensors Menu"
+            DomainId = domainB.Id, Order = 4, Description = "Sensors Menu", Enable = true
         };
         var menuHome = new ApplicationMenu
-            { Id = Guid.NewGuid(), Name = "Home", NormalizedName = "HOME", Order = 0, Description = "Início" };
+            { Id = Guid.NewGuid(), Name = "Home", NormalizedName = "HOME", Order = 0, Description = "In\u00edcio", Enable = true };
 
         _context.Domains.AddRange(domainA, domainB);
         _context.Privilege.Add(privilegeA);
@@ -123,10 +123,8 @@ _currentUserServiceMock = new Mock<ICurrentUserService>();
         var result = await handler.Handle(query, CancellationToken.None);
 
         // ASSERT
-        result.Should().HaveCount(3);
-        result.Should().Contain(m => m.Name == "Home");
-        result.Should().Contain(m => m.Name == "Registrations");
-        result.Should().Contain(m => m.Name == "Locations");
+        result.Select(m => m.Name).Should().BeEquivalentTo("Home", "Registrations", "Locations");
+        result.Should().OnlyContain(m => m.Enable);
         result.Should().NotContain(m => m.Name == "Devices");
         result.Should().NotContain(m => m.Name == "Sensors");
     }
