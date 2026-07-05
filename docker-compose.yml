@@ -3,7 +3,7 @@ services:
     container_name: home-controller-hub-postgres
     image: postgres:18
     environment:
-      - POSTGRES_PASSWORD=local-dev-postgres-password
+      - POSTGRES_PASSWORD=home-controller-hubp@ss
       - POSTGRES_USER=user_home-controller-hub
       - POSTGRES_DB=db_home-controller-hub
     ports:
