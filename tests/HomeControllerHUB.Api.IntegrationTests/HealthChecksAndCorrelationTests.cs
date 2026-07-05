@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
 namespace HomeControllerHUB.Api.IntegrationTests;
@@ -107,6 +108,7 @@ public class HealthChecksWebApplicationFactory : WebApplicationFactory<Program>
     {
         builder.UseEnvironment("Testing");
         builder.UseSetting("ApplicationSettings:InitializeDataBase", "false");
+        builder.ConfigureLogging(logging => logging.ClearProviders());
 
         builder.ConfigureTestServices(services =>
         {

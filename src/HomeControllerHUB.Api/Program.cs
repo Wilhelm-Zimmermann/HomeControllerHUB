@@ -26,7 +26,7 @@ Console.WriteLine("Home Controller HUB - ENV: " + builder.Environment.Environmen
 
 builder.Services.AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Program>());
 builder.Services.AddApplicationServices();
-builder.Services.ConfigureDatabase(builder.Configuration);
+builder.Services.ConfigureDatabase(builder.Configuration, builder.Environment);
 builder.Services.AddGlobalizationServices();
 builder.Services.AddInfra(builder.Configuration);
 builder.Services.AddDomainServices();
@@ -45,13 +45,15 @@ builder.Services.AddSingleton<ApplicationSettings>(sp =>
 });
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddCustomOpenApi();
-const string allowedOrigins = "AllowAllOrigins";
+
+var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>()
+    ?? ["http://localhost:5173"];
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy(allowedOrigins, policy =>
+    options.AddPolicy(GeneralConfigs.CORS, policy =>
     {
-        policy.AllowAnyOrigin()
+        policy.WithOrigins(allowedOrigins)
             .AllowAnyMethod()
             .AllowAnyHeader();
     });
@@ -75,10 +77,9 @@ if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("Testing"))
 
 }
 
-app.UseCors(GeneralConfigs.CORS);
 app.UseMiddleware<ErrorHandlingMiddleware>();
 app.IntializeDatabase();
-app.UseCors(allowedOrigins);
+app.UseCors(GeneralConfigs.CORS);
 app.UseAuthentication();
 app.UseRateLimiter();
 app.UseAuthorization();
