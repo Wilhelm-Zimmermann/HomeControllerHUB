@@ -26,9 +26,9 @@ public class AuthorizationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRe
 
         foreach (var attribute in authorizeAttributes)
         {
-            if (attribute.Domain == string.Empty) return await next();
-            var isAuthorized = await IsInDomainAndActionAsync(_currentUserService.UserId, attribute.Domain, attribute.Action);
-            if(!isAuthorized) throw new AppError(401, "Unauthorized");
+           if (attribute.Domain == string.Empty) return await next();
+           var isAuthorized = await IsInDomainAndActionAsync(_currentUserService.UserId, attribute.Domain, attribute.Action);
+           if(!isAuthorized) throw new AppError(401, "Unauthorized");
         }
         
         return await next();
