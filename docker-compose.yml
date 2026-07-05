@@ -1,7 +1,7 @@
 services:
   home-controller-hub-postgres:
     container_name: home-controller-hub-postgres
-    image: postgres
+    image: postgres:18
     environment:
       - POSTGRES_PASSWORD=local-dev-postgres-password
       - POSTGRES_USER=user_home-controller-hub
@@ -9,7 +9,7 @@ services:
     ports:
       - 15432:5432
     volumes:
-      - pg_data:/var/lib/postgresql/data
+      - pg_data:/var/lib/postgresql
     networks:
       - home-controller-hub-network
 
