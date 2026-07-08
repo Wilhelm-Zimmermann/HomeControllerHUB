@@ -4,8 +4,10 @@ using HomeControllerHUB.Api;
 using HomeControllerHUB.Api.Controllers;
 using HomeControllerHUB.Api.Extensions;
 using HomeControllerHUB.Api.HealthChecks;
+using HomeControllerHUB.Api.HostedServices;
 using HomeControllerHUB.Api.Middlewares;
 using HomeControllerHUB.Application;
+using HomeControllerHUB.Application.Sensors.Commands.MonitorSensorHealth;
 using HomeControllerHUB.Domain;
 using HomeControllerHUB.Globalization;
 using HomeControllerHUB.Infra;
@@ -31,6 +33,9 @@ builder.Services.AddGlobalizationServices();
 builder.Services.AddInfra(builder.Configuration);
 builder.Services.AddDomainServices();
 builder.Services.AddHomeControllerHubMessageBus(builder.Configuration, builder.Environment);
+builder.Services.Configure<SensorHealthMonitoringOptions>(
+    builder.Configuration.GetSection(SensorHealthMonitoringOptions.SectionName));
+builder.Services.AddHostedService<SensorHealthMonitoringHostedService>();
 builder.Services.AddHealthChecks()
     .AddCheck("application", () => Microsoft.Extensions.Diagnostics.HealthChecks.HealthCheckResult.Healthy("Application is running"), tags: new[] { "live", "ready" })
     .AddCheck<ApplicationDbContextHealthCheck>("database", tags: new[] { "ready" })

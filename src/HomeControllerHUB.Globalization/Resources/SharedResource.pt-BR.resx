@@ -87,6 +87,9 @@
     <data name="SensorLowBattery" xml:space="preserve">
         <value>Sensor está com a bateria baixa</value>
     </data>
+    <data name="SensorOffline" xml:space="preserve">
+        <value>Sensor {0} está sem comunicação há mais de {1} minutos.</value>
+    </data>
     <data name="InvalidLogin" xml:space="preserve">
         <value>Login inválido</value>
     </data>
