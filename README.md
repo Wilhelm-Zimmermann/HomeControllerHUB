@@ -199,6 +199,29 @@ The API currently hosts the MassTransit consumer in the same process. The consum
 
 Idempotency is enforced by `messageId` with a unique `SensorId + MessageId` index. The consumer checks for an existing reading before insert and handles unique-index races by returning `status: "Duplicate"` without creating another reading.
 
+## Sensor Health Monitoring
+
+The API runs an automatic sensor health monitor as a hosted service. It periodically sends a MediatR command that checks active sensors and creates technical alerts when a sensor is offline or has low battery.
+
+An active sensor is considered offline when `LastCommunication` has not been set by telemetry yet or is older than `SensorHealthMonitoring:OfflineThresholdMinutes`. A low-battery alert is created when `BatteryLevel` is present and lower than `SensorHealthMonitoring:LowBatteryThreshold`.
+
+The monitor does not create duplicate pending alerts for the same `SensorId` and alert type (`DeviceOffline` or `BatteryLow`). It also does not automatically acknowledge alerts when the sensor recovers.
+
+Configuration:
+
+```json
+{
+  "SensorHealthMonitoring": {
+    "Enabled": true,
+    "IntervalSeconds": 60,
+    "OfflineThresholdMinutes": 10,
+    "LowBatteryThreshold": 20
+  }
+}
+```
+
+These automatic technical alerts are not user actions and do not create audit log entries.
+
 RabbitMQ is part of the readiness check:
 
 ```text
@@ -576,6 +599,10 @@ Important configuration areas:
 - `RabbitMq:Password`
 - `RabbitMq:QueueName`
 - `RabbitMq:PublishTimeoutSeconds`
+- `SensorHealthMonitoring:Enabled`
+- `SensorHealthMonitoring:IntervalSeconds`
+- `SensorHealthMonitoring:OfflineThresholdMinutes`
+- `SensorHealthMonitoring:LowBatteryThreshold`
 
 Do not commit real database credentials, JWT secrets, Mailgun keys, refresh tokens, sensor API keys, or production URLs.
 
