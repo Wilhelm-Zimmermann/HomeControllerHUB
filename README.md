@@ -5,8 +5,10 @@ Backend API for a home automation and IoT monitoring system. The API combines ad
 This repository contains the backend only. The frontend lives in a separate repository:
 
 ```text
-C:\proj\personal\HomeControllerHUB-Front
+C:\Projects\HomeControllerHub-Front
 ```
+
+For a presentation-ready end-to-end setup, follow the [demo readiness and local run guide](docs/demo-readiness.md).
 
 ## Overview
 
