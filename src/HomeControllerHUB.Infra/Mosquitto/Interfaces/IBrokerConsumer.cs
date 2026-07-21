@@ -3,5 +3,5 @@
 public interface IBrokerConsumer
 {
     public string Topic { get; }
-    public Task ExecuteTopicAsync(string payload);
+    public Task ExecuteTopicAsync(string payload, CancellationToken cancellationToken);
 }

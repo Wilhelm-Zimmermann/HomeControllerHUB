@@ -1,28 +1,35 @@
-﻿using HomeControllerHUB.Infra.Mosquitto.Interfaces;
+﻿using HomeControllerHUB.Api.HostedServices;
+using HomeControllerHUB.Infra.Mosquitto.Interfaces;
+using Microsoft.Extensions.Logging;
 
 namespace HomeControllerHUB.Infra.Mosquitto;
 
 public class MosquittoDispatcher
 {
     private readonly IEnumerable<IBrokerConsumer> _consumers;
-    public MosquittoDispatcher(IEnumerable<IBrokerConsumer> consumers)
+    private readonly ILogger<MosquittoDispatcher> _logger;
+
+
+    public MosquittoDispatcher(IEnumerable<IBrokerConsumer> consumers, ILogger<MosquittoDispatcher> logger)
     {
         _consumers = consumers;
+        _logger = logger;
     }
 
     public async Task DispatchAsync(
        string topic,
-       string payload)
+       string payload,
+       CancellationToken cancellationToken)
     {
         IBrokerConsumer? consumer = _consumers.FirstOrDefault(
             consumer => consumer.Topic == topic);
 
         if (consumer is null)
         {
-            throw new InvalidOperationException(
-                $"Nenhum consumer foi registrado para o tópico '{topic}'.");
+            _logger.LogInformation($"Não foi encontrado nenhum tópico configurado: {topic}");
+            return;
         }
 
-        await consumer.ExecuteTopicAsync(payload);
+        await consumer.ExecuteTopicAsync(payload, cancellationToken);
     }
 }

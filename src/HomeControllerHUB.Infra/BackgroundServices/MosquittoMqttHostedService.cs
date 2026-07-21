@@ -3,19 +3,16 @@ using HomeControllerHUB.Infra.Mosquitto.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Microsoft.OpenApi.Writers;
 using MQTTnet;
-using System.Reflection;
 using System.Text;
 
-namespace HomeControllerHUB.Api.HostedServices;
+namespace HomeControllerHUB.Infra.HostedServices;
 
 public sealed class MosquittoMqttHostedService : BackgroundService
 {
     private readonly ILogger<MosquittoMqttHostedService> _logger;
     private readonly MqttClientFactory _factory = new();
     private IMqttClient? _mqttClient;
-    private MosquittoDispatcher _dispatcher;
     private readonly IServiceScopeFactory _serviceScopeFactory;
 
     public MosquittoMqttHostedService(ILogger<MosquittoMqttHostedService> logger, IServiceScopeFactory serviceScopeFactory)
@@ -27,17 +24,12 @@ public sealed class MosquittoMqttHostedService : BackgroundService
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         _mqttClient = _factory.CreateMqttClient();
-        using var scope = _serviceScopeFactory.CreateScope();
-        _dispatcher = scope.ServiceProvider.GetRequiredService<MosquittoDispatcher>();
 
         _mqttClient.ApplicationMessageReceivedAsync += async e =>
         {
             var payload = Encoding.UTF8.GetString(e.ApplicationMessage.Payload);
+            var topic = e.ApplicationMessage.Topic;
 
-            _logger.LogInformation(
-                "Received MQTT message. Topic: {Topic}. Payload: {Payload}",
-                e.ApplicationMessage.Topic,
-                payload);
             #region código legal
             // Vou deixar comentado, pois esse código abaixo é muito bonito, e quero olhar mais vezes para ele.
             //Type consumerType = typeof(IBrokerConsumer);
@@ -60,7 +52,11 @@ public sealed class MosquittoMqttHostedService : BackgroundService
             //}
             #endregion
 
-            await _dispatcher.DispatchAsync(e.ApplicationMessage.Topic, payload);
+            using var scope = _serviceScopeFactory.CreateScope();
+
+            var dispatcher = scope.ServiceProvider.GetRequiredService<MosquittoDispatcher>();
+
+            await dispatcher.DispatchAsync(topic, payload, stoppingToken);
         };
 
         _mqttClient.DisconnectedAsync += async e =>
@@ -112,19 +108,20 @@ public sealed class MosquittoMqttHostedService : BackgroundService
         using var scope = _serviceScopeFactory.CreateScope();
         var topics = scope.ServiceProvider.GetRequiredService<IEnumerable<IBrokerConsumer>>();
 
-        var subscribeOptions = _factory.CreateSubscribeOptionsBuilder()
-            .WithTopicFilter(f =>
+
+        var subscribeOptionsBuilder = _factory.CreateSubscribeOptionsBuilder();
+
+        foreach (var consumer in topics)
+        {
+            subscribeOptionsBuilder.WithTopicFilter(f =>
             {
-                foreach(var topic in topics)
-                {
-                    f.WithTopic(topic.Topic);
-                }
-            })
-            .Build();
+                f.WithTopic(consumer.Topic);
+            });
+        }
+
+        var subscribeOptions = subscribeOptionsBuilder.Build();
 
         await _mqttClient.SubscribeAsync(subscribeOptions, cancellationToken);
-
-        _logger.LogInformation("Subscribed to MQTT topic my/test/topic.");
     }
 
     public override async Task StopAsync(CancellationToken cancellationToken)
