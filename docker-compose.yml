@@ -32,6 +32,18 @@ services:
     networks:
       - home-controller-hub-network
 
+  homecontrollerhub-mosquitto:
+      image: eclipse-mosquitto:2
+      container_name: homecontrollerhub-mosquitto
+      restart: unless-stopped
+      ports:
+        - "1883:1883"
+        - "9001:9001"
+      volumes:
+        - ./mosquitto/config:/mosquitto/config
+        - ./mosquitto/data:/mosquitto/data
+        - ./mosquitto/log:/mosquitto/log
+
   # home-controller-hub-redis:
   #   container_name: home-controller-hub-redis
   #   image: redis:latest
