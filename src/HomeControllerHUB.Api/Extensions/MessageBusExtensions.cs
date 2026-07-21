@@ -21,17 +21,27 @@ public static class MessageBusExtensions
 
         services.AddMassTransit(bus =>
         {
-            bus.AddConsumer<SensorTelemetryReceivedConsumer>();
+            bus.SetKebabCaseEndpointNameFormatter();
+            bus.AddConsumers(typeof(IConsumerAssemblyMarker).Assembly);
+            bus.AddConfigureEndpointsCallback((_, _, endpoint) =>
+            {
+                var retryDelay = environment.IsEnvironment("Testing")
+                    ? TimeSpan.FromSeconds(1)
+                    : TimeSpan.FromSeconds(2);
+
+                endpoint.UseMessageRetry(retry => retry.Interval(3, retryDelay));
+
+                if (endpoint is IRabbitMqReceiveEndpointConfigurator rabbitMqEndpoint)
+                {
+                    rabbitMqEndpoint.Durable = true;
+                }
+            });
 
             if (environment.IsEnvironment("Testing"))
             {
                 bus.UsingInMemory((context, cfg) =>
                 {
-                    cfg.ReceiveEndpoint(settings.QueueName, endpoint =>
-                    {
-                        endpoint.UseMessageRetry(retry => retry.Interval(3, TimeSpan.FromSeconds(1)));
-                        endpoint.ConfigureConsumer<SensorTelemetryReceivedConsumer>(context);
-                    });
+                    cfg.ConfigureEndpoints(context);
                 });
 
                 return;
@@ -45,12 +55,7 @@ public static class MessageBusExtensions
                     host.Password(settings.Password);
                 });
 
-                cfg.ReceiveEndpoint(settings.QueueName, endpoint =>
-                {
-                    endpoint.Durable = true;
-                    endpoint.UseMessageRetry(retry => retry.Interval(3, TimeSpan.FromSeconds(2)));
-                    endpoint.ConfigureConsumer<SensorTelemetryReceivedConsumer>(context);
-                });
+                cfg.ConfigureEndpoints(context);
             });
         });
 

@@ -167,7 +167,7 @@ Example payload:
 
 `messageId`, `deviceId`, `value`, and `X-Api-Key` are required. `timestamp` is optional and falls back to `DateTime.UtcNow`. `batteryLevel` is optional and updates the sensor when provided. `rawData` is stored as JSON text for diagnostic data.
 
-After validation, the API sends a `SensorTelemetryReceivedMessage` to the configured RabbitMQ queue through MassTransit and returns `202 Accepted`:
+After validation, the API publishes a `SensorTelemetryReceivedMessage` through MassTransit and returns `202 Accepted`:
 
 ```json
 {
@@ -179,10 +179,10 @@ After validation, the API sends a `SensorTelemetryReceivedMessage` to the config
 
 If the same message was already processed and stored, the endpoint can return `status: "Duplicate"` instead of publishing another message. If a duplicate is still waiting in the queue, returning `Queued` is acceptable because idempotency is enforced by the consumer.
 
-The main queue is:
+MassTransit discovers consumers in the API assembly and creates their receive endpoints automatically. With the kebab-case endpoint name formatter, the telemetry queue is:
 
 ```text
-homecontrollerhub.sensor-telemetry
+sensor-telemetry-received
 ```
 
 The queued message contains `SensorId`, `DeviceId`, `MessageId`, `Timestamp`, `Value`, `Unit`, `BatteryLevel`, `RawData`, `ReceivedAt`, and `CorrelationId`. It does not contain API keys, user tokens, authorization headers, passwords, or secrets.
@@ -192,7 +192,7 @@ MassTransit configures a durable receive endpoint for the telemetry queue. The r
 If the consumer keeps failing after retries, MassTransit moves the message to its standard error queue. Operationally, this is the telemetry DLQ:
 
 ```text
-homecontrollerhub.sensor-telemetry_error
+sensor-telemetry-received_error
 ```
 
 The API currently hosts the MassTransit consumer in the same process. The consumer calls the application processing command, which creates `SensorReading`, updates `LastCommunication`, updates `BatteryLevel` when present, and evaluates `MinThreshold`/`MaxThreshold`. Threshold violations create `SensorAlert` records unless there is already an unacknowledged alert for the same sensor and alert type.
@@ -263,7 +263,6 @@ RabbitMQ appsettings:
     "VirtualHost": "/",
     "Username": "guest",
     "Password": "guest",
-    "QueueName": "homecontrollerhub.sensor-telemetry",
     "PublishTimeoutSeconds": 5
   }
 }
@@ -349,11 +348,11 @@ Manual validation flow:
 4. Confirm the database has sensors with matching local/demo `deviceId` and `apiKey`.
 5. Configure `sensor-simulator.local.json`.
 6. Run the simulator and confirm `queued` responses.
-7. Confirm messages arrive and are consumed from `homecontrollerhub.sensor-telemetry`.
+7. Confirm messages arrive and are consumed from `sensor-telemetry-received`.
 8. Confirm `SensorReading`, `LastCommunication`, `BatteryLevel`, and threshold alerts are updated.
 9. Set `duplicateChancePercent` above zero if you want to verify `Duplicate` responses.
 10. Stop RabbitMQ and confirm the API does not return `Queued` while enqueueing is unavailable.
-11. If a consumer failure is easy to simulate locally, confirm messages move to `homecontrollerhub.sensor-telemetry_error` after retries.
+11. If a consumer failure is easy to simulate locally, confirm messages move to `sensor-telemetry-received_error` after retries.
 12. Open the frontend and validate dashboard readings, sensor detail charts, and alert spikes.
 
 ## Audit Logs
@@ -597,7 +596,6 @@ Important configuration areas:
 - `RabbitMq:VirtualHost`
 - `RabbitMq:Username`
 - `RabbitMq:Password`
-- `RabbitMq:QueueName`
 - `RabbitMq:PublishTimeoutSeconds`
 - `SensorHealthMonitoring:Enabled`
 - `SensorHealthMonitoring:IntervalSeconds`
