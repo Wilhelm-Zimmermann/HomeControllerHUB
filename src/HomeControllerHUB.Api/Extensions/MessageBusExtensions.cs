@@ -22,7 +22,7 @@ public static class MessageBusExtensions
         services.AddMassTransit(bus =>
         {
             bus.SetKebabCaseEndpointNameFormatter();
-            bus.AddConsumers(typeof(SensorTelemetryReceivedConsumer).Assembly);
+            bus.AddConsumers(typeof(IConsumerAssemblyMarker).Assembly);
             bus.AddConfigureEndpointsCallback((_, _, endpoint) =>
             {
                 var retryDelay = environment.IsEnvironment("Testing")
