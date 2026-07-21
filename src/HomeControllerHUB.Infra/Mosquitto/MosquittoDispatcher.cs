@@ -1,4 +1,4 @@
-﻿using HomeControllerHUB.Api.HostedServices;
+﻿using HomeControllerHUB.Infra.HostedServices;
 using HomeControllerHUB.Infra.Mosquitto.Interfaces;
 using Microsoft.Extensions.Logging;
 

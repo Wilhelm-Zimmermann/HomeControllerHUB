@@ -1,4 +1,4 @@
-﻿using HomeControllerHUB.Api.HostedServices;
+﻿using HomeControllerHUB.Infra.HostedServices;
 using HomeControllerHUB.Domain.Entities;
 using HomeControllerHUB.Domain.Interfaces;
 using HomeControllerHUB.Infra.Constants;
