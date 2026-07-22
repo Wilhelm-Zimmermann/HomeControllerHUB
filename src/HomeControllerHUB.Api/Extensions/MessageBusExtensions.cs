@@ -1,7 +1,5 @@
 using HomeControllerHUB.Api.Consumers;
-using HomeControllerHUB.Api.Messaging;
 using HomeControllerHUB.Api.Settings;
-using HomeControllerHUB.Domain.Interfaces;
 using MassTransit;
 
 namespace HomeControllerHUB.Api.Extensions;
@@ -14,7 +12,6 @@ public static class MessageBusExtensions
         IHostEnvironment environment)
     {
         services.Configure<RabbitMqSettings>(configuration.GetSection(RabbitMqSettings.SectionName));
-        services.AddScoped<ISensorTelemetryQueue, MassTransitSensorTelemetryQueue>();
         var settings = configuration
             .GetSection(RabbitMqSettings.SectionName)
             .Get<RabbitMqSettings>() ?? new RabbitMqSettings();

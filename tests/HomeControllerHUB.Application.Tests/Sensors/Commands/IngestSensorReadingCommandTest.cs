@@ -6,6 +6,7 @@ using HomeControllerHUB.Domain.Interfaces;
 using HomeControllerHUB.Domain.Messages;
 using HomeControllerHUB.Domain.Models;
 using HomeControllerHUB.Globalization;
+using MassTransit;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
@@ -28,8 +29,8 @@ public class IngestSensorReadingCommandTest : TestConfigs
     public async Task Ingest_Should_PublishMessageAndReturnQueued_WhenPayloadIsValid()
     {
         var sensor = await CreateSensorAsync();
-        var queueMock = CreateQueueMock(out var queuedMessage);
-        var handler = CreateIngestHandler(queueMock.Object);
+        var publishEndpointMock = CreatePublishEndpointMock(out var queuedMessage);
+        var handler = CreateIngestHandler(publishEndpointMock.Object);
 
         var response = await handler.Handle(CreateIngestCommand(sensor.DeviceId), CancellationToken.None);
 
@@ -48,8 +49,8 @@ public class IngestSensorReadingCommandTest : TestConfigs
     public async Task Ingest_Should_NotPublishMessage_WhenApiKeyIsInvalid()
     {
         var sensor = await CreateSensorAsync();
-        var queueMock = CreateQueueMock(out _);
-        var handler = CreateIngestHandler(queueMock.Object);
+        var publishEndpointMock = CreatePublishEndpointMock(out _);
+        var handler = CreateIngestHandler(publishEndpointMock.Object);
         var command = CreateIngestCommand(sensor.DeviceId);
         command.ApiKey = "wrong-key";
 
@@ -57,23 +58,23 @@ public class IngestSensorReadingCommandTest : TestConfigs
 
         var error = await act.Should().ThrowAsync<AppError>();
         error.Which.StatusCode.Should().Be(StatusCodes.Status401Unauthorized);
-        queueMock.Verify(
-            queue => queue.EnqueueAsync(It.IsAny<SensorTelemetryReceivedMessage>(), It.IsAny<CancellationToken>()),
+        publishEndpointMock.Verify(
+            endpoint => endpoint.Publish(It.IsAny<SensorTelemetryReceivedMessage>(), It.IsAny<CancellationToken>()),
             Times.Never);
     }
 
     [Fact]
     public async Task Ingest_Should_NotPublishMessage_WhenSensorDoesNotExist()
     {
-        var queueMock = CreateQueueMock(out _);
-        var handler = CreateIngestHandler(queueMock.Object);
+        var publishEndpointMock = CreatePublishEndpointMock(out _);
+        var handler = CreateIngestHandler(publishEndpointMock.Object);
 
         var act = () => handler.Handle(CreateIngestCommand("missing-device"), CancellationToken.None);
 
         var error = await act.Should().ThrowAsync<AppError>();
         error.Which.StatusCode.Should().Be(StatusCodes.Status404NotFound);
-        queueMock.Verify(
-            queue => queue.EnqueueAsync(It.IsAny<SensorTelemetryReceivedMessage>(), It.IsAny<CancellationToken>()),
+        publishEndpointMock.Verify(
+            endpoint => endpoint.Publish(It.IsAny<SensorTelemetryReceivedMessage>(), It.IsAny<CancellationToken>()),
             Times.Never);
     }
 
@@ -81,15 +82,15 @@ public class IngestSensorReadingCommandTest : TestConfigs
     public async Task Ingest_Should_NotPublishMessage_WhenSensorIsInactive()
     {
         var sensor = await CreateSensorAsync(isActive: false);
-        var queueMock = CreateQueueMock(out _);
-        var handler = CreateIngestHandler(queueMock.Object);
+        var publishEndpointMock = CreatePublishEndpointMock(out _);
+        var handler = CreateIngestHandler(publishEndpointMock.Object);
 
         var act = () => handler.Handle(CreateIngestCommand(sensor.DeviceId), CancellationToken.None);
 
         var error = await act.Should().ThrowAsync<AppError>();
         error.Which.StatusCode.Should().Be(StatusCodes.Status403Forbidden);
-        queueMock.Verify(
-            queue => queue.EnqueueAsync(It.IsAny<SensorTelemetryReceivedMessage>(), It.IsAny<CancellationToken>()),
+        publishEndpointMock.Verify(
+            endpoint => endpoint.Publish(It.IsAny<SensorTelemetryReceivedMessage>(), It.IsAny<CancellationToken>()),
             Times.Never);
     }
 
@@ -98,14 +99,14 @@ public class IngestSensorReadingCommandTest : TestConfigs
     {
         var sensor = await CreateSensorAsync();
         await CreateProcessHandler().Handle(CreateProcessCommand(sensor), CancellationToken.None);
-        var queueMock = CreateQueueMock(out _);
-        var handler = CreateIngestHandler(queueMock.Object);
+        var publishEndpointMock = CreatePublishEndpointMock(out _);
+        var handler = CreateIngestHandler(publishEndpointMock.Object);
 
         var response = await handler.Handle(CreateIngestCommand(sensor.DeviceId), CancellationToken.None);
 
         response.Status.Should().Be(IngestSensorReadingStatus.Duplicate);
-        queueMock.Verify(
-            queue => queue.EnqueueAsync(It.IsAny<SensorTelemetryReceivedMessage>(), It.IsAny<CancellationToken>()),
+        publishEndpointMock.Verify(
+            endpoint => endpoint.Publish(It.IsAny<SensorTelemetryReceivedMessage>(), It.IsAny<CancellationToken>()),
             Times.Never);
     }
 
@@ -113,8 +114,8 @@ public class IngestSensorReadingCommandTest : TestConfigs
     public async Task Ingest_Should_NotExposeApiKey_InMessageOrResponse()
     {
         var sensor = await CreateSensorAsync();
-        var queueMock = CreateQueueMock(out var queuedMessage);
-        var handler = CreateIngestHandler(queueMock.Object);
+        var publishEndpointMock = CreatePublishEndpointMock(out var queuedMessage);
+        var handler = CreateIngestHandler(publishEndpointMock.Object);
 
         var response = await handler.Handle(CreateIngestCommand(sensor.DeviceId), CancellationToken.None);
 
@@ -236,12 +237,12 @@ public class IngestSensorReadingCommandTest : TestConfigs
         _context.SensorReadings.Single().RawData.Should().Be(rawData);
     }
 
-    private IngestSensorReadingCommandHandler CreateIngestHandler(ISensorTelemetryQueue queue)
+    private IngestSensorReadingCommandHandler CreateIngestHandler(IPublishEndpoint publishEndpoint)
     {
         return new IngestSensorReadingCommandHandler(
             _context,
             _resourceMock.Object,
-            queue,
+            publishEndpoint,
             NullLogger<IngestSensorReadingCommandHandler>.Instance);
     }
 
@@ -253,17 +254,17 @@ public class IngestSensorReadingCommandTest : TestConfigs
             NullLogger<ProcessSensorReadingCommandHandler>.Instance);
     }
 
-    private static Mock<ISensorTelemetryQueue> CreateQueueMock(out CapturedMessage capturedMessage)
+    private static Mock<IPublishEndpoint> CreatePublishEndpointMock(out CapturedMessage capturedMessage)
     {
         var capture = new CapturedMessage();
-        var queueMock = new Mock<ISensorTelemetryQueue>();
-        queueMock
-            .Setup(queue => queue.EnqueueAsync(It.IsAny<SensorTelemetryReceivedMessage>(), It.IsAny<CancellationToken>()))
+        var publishEndpointMock = new Mock<IPublishEndpoint>();
+        publishEndpointMock
+            .Setup(endpoint => endpoint.Publish(It.IsAny<SensorTelemetryReceivedMessage>(), It.IsAny<CancellationToken>()))
             .Callback<SensorTelemetryReceivedMessage, CancellationToken>((message, _) => capture.Value = message)
             .Returns(Task.CompletedTask);
 
         capturedMessage = capture;
-        return queueMock;
+        return publishEndpointMock;
     }
 
     private static IngestSensorReadingCommand CreateIngestCommand(
