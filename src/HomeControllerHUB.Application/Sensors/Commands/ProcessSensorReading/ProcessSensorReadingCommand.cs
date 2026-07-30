@@ -14,6 +14,7 @@ public class ProcessSensorReadingCommand : IRequest<ProcessSensorReadingResponse
 {
     public Guid SensorId { get; set; }
     public string DeviceId { get; set; } = null!;
+    public string ApiKey { get; set; } = null!;
     public string MessageId { get; set; } = null!;
     public DateTime Timestamp { get; set; }
     public double Value { get; set; }
@@ -43,7 +44,6 @@ public class ProcessSensorReadingCommandValidator : AbstractValidator<ProcessSen
 {
     public ProcessSensorReadingCommandValidator()
     {
-        RuleFor(x => x.SensorId).NotEmpty();
         RuleFor(x => x.DeviceId).NotEmpty().MaximumLength(100);
         RuleFor(x => x.MessageId).NotEmpty().MaximumLength(150);
         RuleFor(x => x.Unit).MaximumLength(20);
@@ -82,7 +82,7 @@ public class ProcessSensorReadingCommandHandler : IRequestHandler<ProcessSensorR
 
         var sensor = await _context.Sensors
             .FirstOrDefaultAsync(
-                s => s.Id == request.SensorId && s.DeviceId == request.DeviceId,
+                s =>  s.DeviceId == request.DeviceId,
                 cancellationToken);
 
         if (sensor is null)

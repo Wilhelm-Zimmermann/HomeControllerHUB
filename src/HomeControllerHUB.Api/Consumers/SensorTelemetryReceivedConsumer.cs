@@ -1,3 +1,4 @@
+using HomeControllerHUB.Application.Sensors.Commands.IngestSensorReading;
 using HomeControllerHUB.Application.Sensors.Commands.ProcessSensorReading;
 using HomeControllerHUB.Domain.Messages;
 using MassTransit;
@@ -25,10 +26,10 @@ public class SensorTelemetryReceivedConsumer : IConsumer<SensorTelemetryReceived
 
         var response = await _sender.Send(new ProcessSensorReadingCommand
         {
-            SensorId = message.SensorId,
             DeviceId = message.DeviceId,
             MessageId = message.MessageId,
             Timestamp = message.Timestamp,
+            ApiKey = message.ApiKey,
             Value = message.Value,
             Unit = message.Unit,
             BatteryLevel = message.BatteryLevel,
@@ -37,13 +38,11 @@ public class SensorTelemetryReceivedConsumer : IConsumer<SensorTelemetryReceived
         }, context.CancellationToken);
 
         _logger.LogInformation(
-            "Sensor telemetry consumed for device {DeviceId}, sensor {SensorId}, message {MessageId}, status {Status}, alertCreated {AlertCreated}, alert {AlertId}, correlation {CorrelationId}",
+            "Sensor telemetry consumed for device {DeviceId}, sensor {SensorId}, message {MessageId}, status {Status}, correlation {CorrelationId}",
             message.DeviceId,
             response.SensorId,
             response.MessageId,
             response.Status,
-            response.AlertCreated,
-            response.AlertId,
             message.CorrelationId);
     }
 
