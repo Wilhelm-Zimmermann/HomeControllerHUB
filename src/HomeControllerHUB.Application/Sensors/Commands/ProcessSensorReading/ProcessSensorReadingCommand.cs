@@ -82,7 +82,7 @@ public class ProcessSensorReadingCommandHandler : IRequestHandler<ProcessSensorR
 
         var sensor = await _context.Sensors
             .FirstOrDefaultAsync(
-                s =>  s.DeviceId == request.DeviceId,
+                s => s.DeviceId == request.DeviceId,
                 cancellationToken);
 
         if (sensor is null)
@@ -111,11 +111,15 @@ public class ProcessSensorReadingCommandHandler : IRequestHandler<ProcessSensorR
             return CreateDuplicateResponse(sensor.Id, existingReading.Id, request.MessageId);
         }
 
+        var timestamp = request.Timestamp == default
+            ? DateTime.UtcNow
+            : request.Timestamp;
+
         var reading = new SensorReading
         {
             SensorId = sensor.Id,
             MessageId = request.MessageId,
-            Timestamp = request.Timestamp,
+            Timestamp = timestamp,
             Value = request.Value,
             Unit = request.Unit,
             RawData = request.RawData
@@ -139,6 +143,12 @@ public class ProcessSensorReadingCommandHandler : IRequestHandler<ProcessSensorR
         try
         {
             await _context.SaveChangesAsync(cancellationToken);
+            _logger.LogInformation(
+                "Sensor reading processed. SensorId={SensorId}, ReadingId={ReadingId}, MessageId={MessageId}",
+                sensor.Id,
+                reading.Id,
+                request.MessageId
+            );
         }
         catch (DbUpdateException)
         {
