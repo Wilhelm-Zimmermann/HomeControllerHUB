@@ -4,10 +4,12 @@ using HomeControllerHUB.Domain.Messages;
 using HomeControllerHUB.Domain.Models;
 using HomeControllerHUB.Globalization;
 using HomeControllerHUB.Infra.DatabaseContext;
+using MassTransit;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using static MassTransit.Monitoring.Performance.BuiltInCounters;
 
 namespace HomeControllerHUB.Application.Sensors.Commands.IngestSensorReading;
 
@@ -56,18 +58,18 @@ public class IngestSensorReadingCommandHandler : IRequestHandler<IngestSensorRea
 {
     private readonly ApplicationDbContext _context;
     private readonly ISharedResource _sharedResource;
-    private readonly ISensorTelemetryQueue _sensorTelemetryQueue;
+    private readonly IPublishEndpoint _publishEndpoint;
     private readonly ILogger<IngestSensorReadingCommandHandler> _logger;
 
     public IngestSensorReadingCommandHandler(
         ApplicationDbContext context,
         ISharedResource sharedResource,
-        ISensorTelemetryQueue sensorTelemetryQueue,
+        IPublishEndpoint publishEndpoint,
         ILogger<IngestSensorReadingCommandHandler> logger)
     {
         _context = context;
         _sharedResource = sharedResource;
-        _sensorTelemetryQueue = sensorTelemetryQueue;
+        _publishEndpoint = publishEndpoint;
         _logger = logger;
     }
 
@@ -162,7 +164,7 @@ public class IngestSensorReadingCommandHandler : IRequestHandler<IngestSensorRea
             CorrelationId = request.CorrelationId
         };
 
-        await _sensorTelemetryQueue.EnqueueAsync(telemetryMessage, cancellationToken);
+        await _publishEndpoint.Publish(telemetryMessage, cancellationToken);
 
         _logger.LogInformation(
             "Sensor telemetry message {MessageId} for device {DeviceId} and sensor {SensorId} queued with correlation {CorrelationId}",

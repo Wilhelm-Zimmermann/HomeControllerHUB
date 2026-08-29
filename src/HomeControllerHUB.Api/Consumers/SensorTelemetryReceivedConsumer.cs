@@ -37,13 +37,11 @@ public class SensorTelemetryReceivedConsumer : IConsumer<SensorTelemetryReceived
         }, context.CancellationToken);
 
         _logger.LogInformation(
-            "Sensor telemetry consumed for device {DeviceId}, sensor {SensorId}, message {MessageId}, status {Status}, alertCreated {AlertCreated}, alert {AlertId}, correlation {CorrelationId}",
+            "Sensor telemetry consumed for device {DeviceId}, sensor {SensorId}, message {MessageId}, status {Status}, correlation {CorrelationId}",
             message.DeviceId,
             response.SensorId,
             response.MessageId,
             response.Status,
-            response.AlertCreated,
-            response.AlertId,
             message.CorrelationId);
     }
 

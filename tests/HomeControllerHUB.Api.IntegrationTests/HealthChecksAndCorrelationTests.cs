@@ -1,5 +1,6 @@
 using HomeControllerHUB.Api.Middlewares;
 using HomeControllerHUB.Infra.DatabaseContext;
+using HomeControllerHUB.Infra.HostedServices;
 using HomeControllerHUB.Infra.Services;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -15,7 +16,8 @@ using Microsoft.Extensions.Logging.Abstractions;
 
 namespace HomeControllerHUB.Api.IntegrationTests;
 
-public class HealthChecksAndCorrelationTests : IClassFixture<HealthChecksWebApplicationFactory>
+[Collection(ApiIntegrationCollection.Name)]
+public class HealthChecksAndCorrelationTests
 {
     private readonly HealthChecksWebApplicationFactory _factory;
 
@@ -100,6 +102,12 @@ public class HealthChecksAndCorrelationTests : IClassFixture<HealthChecksWebAppl
     }
 }
 
+[CollectionDefinition(Name)]
+public class ApiIntegrationCollection : ICollectionFixture<HealthChecksWebApplicationFactory>
+{
+    public const string Name = "API integration tests";
+}
+
 public class HealthChecksWebApplicationFactory : WebApplicationFactory<Program>
 {
     private static readonly InMemoryDatabaseRoot DatabaseRoot = new();
@@ -117,7 +125,9 @@ public class HealthChecksWebApplicationFactory : WebApplicationFactory<Program>
             services.RemoveAll<DbContextOptions<ApplicationDbContext>>();
             var hostedServicesToRemove = services
                 .Where(descriptor => descriptor.ServiceType == typeof(IHostedService)
-                                     && descriptor.ImplementationType == typeof(DataRetentionService))
+                                     && descriptor.ImplementationType is not null
+                                     && (descriptor.ImplementationType == typeof(DataRetentionService)
+                                         || descriptor.ImplementationType == typeof(MosquittoMqttHostedService)))
                 .ToList();
 
             foreach (var descriptor in hostedServicesToRemove)

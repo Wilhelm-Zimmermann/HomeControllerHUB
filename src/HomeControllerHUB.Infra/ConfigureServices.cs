@@ -1,9 +1,12 @@
-﻿using HomeControllerHUB.Domain.Entities;
+﻿using HomeControllerHUB.Infra.HostedServices;
+using HomeControllerHUB.Domain.Entities;
 using HomeControllerHUB.Domain.Interfaces;
 using HomeControllerHUB.Infra.Constants;
 using HomeControllerHUB.Infra.DatabaseContext;
 using HomeControllerHUB.Infra.DataInitializers;
 using HomeControllerHUB.Infra.Interceptors;
+using HomeControllerHUB.Infra.Mosquitto;
+using HomeControllerHUB.Infra.Mosquitto.Interfaces;
 using HomeControllerHUB.Infra.Services;
 using HomeControllerHUB.Infra.Settings;
 using HomeControllerHUB.Infra.Swagger;
@@ -14,6 +17,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System.Reflection;
 using System.Threading.RateLimiting;
 
 namespace HomeControllerHUB.Infra;
@@ -39,7 +43,10 @@ public static class ConfigureServices
         services.AddScoped<IDateTime, DateTimeService>();
         services.AddScoped<IAuditLogService, AuditLogService>();
         services.AddScoped<IAuditMetadataSanitizer, AuditMetadataSanitizer>();
+        services.AddScoped<MosquittoDispatcher>();
         services.AddInitializers();
+
+        services.AddHostedService<MosquittoMqttHostedService>();
 
         // Register background services
         services.AddHostedService<DataRetentionService>();
@@ -53,6 +60,7 @@ public static class ConfigureServices
 
         services.AddSwagger(new List<string>() { "1" }, "OAuth2", appSettings);
         services.AddLocalization(options => options.ResourcesPath = "Resources");
+        AddMosquittoServices(services);
         ConfigureRateLimiter(services);
 
         return services;
@@ -109,5 +117,23 @@ public static class ConfigureServices
                         Window = TimeSpan.FromMinutes(1)
                     }));
         });
+    }
+
+    private static void AddMosquittoServices(IServiceCollection services)
+    {
+        Type consumerType = typeof(IBrokerConsumer);
+
+        IEnumerable<Type> consumers = Assembly
+        .GetExecutingAssembly()
+        .GetTypes()
+        .Where(type =>
+            consumerType.IsAssignableFrom(type)
+            && type.IsClass
+            && !type.IsAbstract);
+
+        foreach (var consumer in consumers)
+        {
+            services.AddScoped(typeof(IBrokerConsumer), consumer);
+        }
     }
 }
