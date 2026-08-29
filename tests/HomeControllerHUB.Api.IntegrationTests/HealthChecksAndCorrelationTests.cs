@@ -1,5 +1,6 @@
 using HomeControllerHUB.Api.Middlewares;
 using HomeControllerHUB.Infra.DatabaseContext;
+using HomeControllerHUB.Infra.HostedServices;
 using HomeControllerHUB.Infra.Services;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -124,7 +125,9 @@ public class HealthChecksWebApplicationFactory : WebApplicationFactory<Program>
             services.RemoveAll<DbContextOptions<ApplicationDbContext>>();
             var hostedServicesToRemove = services
                 .Where(descriptor => descriptor.ServiceType == typeof(IHostedService)
-                                     && descriptor.ImplementationType == typeof(DataRetentionService))
+                                     && descriptor.ImplementationType is not null
+                                     && (descriptor.ImplementationType == typeof(DataRetentionService)
+                                         || descriptor.ImplementationType == typeof(MosquittoMqttHostedService)))
                 .ToList();
 
             foreach (var descriptor in hostedServicesToRemove)
