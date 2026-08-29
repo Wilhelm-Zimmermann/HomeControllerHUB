@@ -5,7 +5,8 @@ using Microsoft.AspNetCore.Http;
 
 namespace HomeControllerHUB.Api.IntegrationTests;
 
-public class RateLimitingTests : IClassFixture<HealthChecksWebApplicationFactory>
+[Collection(ApiIntegrationCollection.Name)]
+public class RateLimitingTests
 {
     private readonly HealthChecksWebApplicationFactory _factory;
 

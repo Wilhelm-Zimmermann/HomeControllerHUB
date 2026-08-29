@@ -4,7 +4,6 @@ public class SensorTelemetryReceivedMessage
 {
     public Guid SensorId { get; set; }
     public string DeviceId { get; set; } = null!;
-    public string ApiKey { get; set; } = null!;
     public string MessageId { get; set; } = null!;
     public DateTime Timestamp { get; set; }
     public double Value { get; set; }

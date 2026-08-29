@@ -1,4 +1,3 @@
-using HomeControllerHUB.Application.Sensors.Commands.IngestSensorReading;
 using HomeControllerHUB.Application.Sensors.Commands.ProcessSensorReading;
 using HomeControllerHUB.Domain.Messages;
 using MassTransit;
@@ -26,10 +25,10 @@ public class SensorTelemetryReceivedConsumer : IConsumer<SensorTelemetryReceived
 
         var response = await _sender.Send(new ProcessSensorReadingCommand
         {
+            SensorId = message.SensorId,
             DeviceId = message.DeviceId,
             MessageId = message.MessageId,
             Timestamp = message.Timestamp,
-            ApiKey = message.ApiKey,
             Value = message.Value,
             Unit = message.Unit,
             BatteryLevel = message.BatteryLevel,

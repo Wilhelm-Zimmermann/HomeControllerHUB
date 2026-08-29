@@ -122,6 +122,24 @@ public class IngestSensorReadingCommandTest : TestConfigs
         response.GetType().GetProperty("ApiKey").Should().BeNull();
         queuedMessage.Value.Should().NotBeNull();
         queuedMessage.Value!.GetType().GetProperty("ApiKey").Should().BeNull();
+        typeof(ProcessSensorReadingCommand).GetProperty("ApiKey").Should().BeNull();
+    }
+
+    [Fact]
+    public async Task Ingest_Should_UseCurrentUtcTimestamp_WhenTimestampIsMissing()
+    {
+        var sensor = await CreateSensorAsync();
+        var publishEndpointMock = CreatePublishEndpointMock(out var queuedMessage);
+        var handler = CreateIngestHandler(publishEndpointMock.Object);
+        var command = CreateIngestCommand(sensor.DeviceId);
+        command.Timestamp = null;
+        var before = DateTime.UtcNow;
+
+        await handler.Handle(command, CancellationToken.None);
+
+        var after = DateTime.UtcNow;
+        queuedMessage.Value.Should().NotBeNull();
+        queuedMessage.Value!.Timestamp.Should().BeOnOrAfter(before).And.BeOnOrBefore(after);
     }
 
     [Fact]
@@ -136,6 +154,23 @@ public class IngestSensorReadingCommandTest : TestConfigs
         response.SensorId.Should().Be(sensor.Id);
         response.ReadingId.Should().NotBeEmpty();
         _context.SensorReadings.Should().ContainSingle(r => r.SensorId == sensor.Id && r.MessageId == "message-1");
+    }
+
+    [Fact]
+    public async Task Process_Should_UseCurrentUtcTimestamp_WhenTimestampIsDefault()
+    {
+        var sensor = await CreateSensorAsync();
+        var handler = CreateProcessHandler();
+        var command = CreateProcessCommand(sensor);
+        command.Timestamp = default;
+        var before = DateTime.UtcNow;
+
+        await handler.Handle(command, CancellationToken.None);
+
+        var after = DateTime.UtcNow;
+        var reading = _context.SensorReadings.Single();
+        reading.Timestamp.Should().NotBe(default);
+        reading.Timestamp.Should().BeOnOrAfter(before).And.BeOnOrBefore(after);
     }
 
     [Fact]

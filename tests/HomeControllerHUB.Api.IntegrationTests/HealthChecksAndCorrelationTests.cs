@@ -15,7 +15,8 @@ using Microsoft.Extensions.Logging.Abstractions;
 
 namespace HomeControllerHUB.Api.IntegrationTests;
 
-public class HealthChecksAndCorrelationTests : IClassFixture<HealthChecksWebApplicationFactory>
+[Collection(ApiIntegrationCollection.Name)]
+public class HealthChecksAndCorrelationTests
 {
     private readonly HealthChecksWebApplicationFactory _factory;
 
@@ -98,6 +99,12 @@ public class HealthChecksAndCorrelationTests : IClassFixture<HealthChecksWebAppl
         Assert.Equal(StatusCodes.Status500InternalServerError, context.Response.StatusCode);
         Assert.Equal(correlationId, context.Response.Headers[CorrelationIdMiddleware.HeaderName].Single());
     }
+}
+
+[CollectionDefinition(Name)]
+public class ApiIntegrationCollection : ICollectionFixture<HealthChecksWebApplicationFactory>
+{
+    public const string Name = "API integration tests";
 }
 
 public class HealthChecksWebApplicationFactory : WebApplicationFactory<Program>

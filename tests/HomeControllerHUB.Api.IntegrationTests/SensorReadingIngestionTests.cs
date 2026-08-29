@@ -9,7 +9,8 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace HomeControllerHUB.Api.IntegrationTests;
 
-public class SensorReadingIngestionTests : IClassFixture<HealthChecksWebApplicationFactory>
+[Collection(ApiIntegrationCollection.Name)]
+public class SensorReadingIngestionTests
 {
     private const string ApiKey = "integration-sensor-key";
     private readonly HealthChecksWebApplicationFactory _factory;

@@ -13,6 +13,7 @@ using HomeControllerHUB.Globalization;
 using HomeControllerHUB.Infra;
 using HomeControllerHUB.Infra.Constants;
 using HomeControllerHUB.Infra.DatabaseContext;
+using HomeControllerHUB.Infra.Mosquitto.Interfaces;
 using HomeControllerHUB.Infra.Settings;
 using HomeControllerHUB.Infra.Swagger;
 using Microsoft.EntityFrameworkCore;
@@ -31,6 +32,7 @@ builder.Services.AddApplicationServices();
 builder.Services.ConfigureDatabase(builder.Configuration, builder.Environment);
 builder.Services.AddGlobalizationServices();
 builder.Services.AddInfra(builder.Configuration);
+builder.Services.AddScoped<IBrokerConsumer, HomeControllerHUB.Api.Mosquitto.SensorTelemetryReceivedConsumer>();
 builder.Services.AddDomainServices();
 builder.Services.AddHomeControllerHubMessageBus(builder.Configuration, builder.Environment);
 builder.Services.Configure<SensorHealthMonitoringOptions>(
